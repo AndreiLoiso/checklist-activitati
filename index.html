@@ -414,6 +414,16 @@
   .changelog-entry h4 { font-size: 14px; margin: 0 0 6px; display: flex; align-items: center; gap: 8px; }
   .changelog-entry .v-badge { background: var(--primary-bg); color: var(--primary-text); font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 700; }
   .changelog-entry ul { margin: 0; padding-left: 18px; font-size: 12.5px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 3px; }
+  .autosave-modal-inner { max-width: 480px; }
+  .autosave-info { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5; }
+  .autosave-list { display: flex; flex-direction: column; gap: 8px; }
+  .autosave-entry { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; }
+  .autosave-entry .ae-meta { font-size: 12.5px; }
+  .autosave-entry .ae-meta .ae-date { font-weight: 600; }
+  .autosave-entry .ae-meta .ae-time { color: var(--text-secondary); font-size: 11.5px; }
+  .autosave-entry .ae-actions { display: flex; gap: 6px; }
+  .autosave-entry button { font-size: 12px; padding: 4px 10px; }
+  .autosave-empty { font-size: 12.5px; color: var(--text-secondary); font-style: italic; }
   body.focus-mode #focus-exit-hint { display: flex; }
   body.focus-mode .toolbar,
   body.focus-mode #tabs,
@@ -930,6 +940,7 @@
         <button id="export-excel-btn" data-tip="Exportă tot ca foaie de calcul Excel (.xls)">⬇ Excel (.xls)</button>
         <button id="export-json-btn" data-tip="(Alt+S) - Descarcă o copie de siguranță a tuturor datelor (.json)">⬇ Backup date (.json)</button>
         <button id="import-json-btn" data-tip="Restaurează datele dintr-un backup (.json)">⬆ Importă date</button>
+        <button id="autosave-btn" data-tip="Autosave zilnic (18:00) — vezi și descarcă istoricul ultimelor 10 salvări">🕕 Autosave zilnic</button>
       </div>
     </details>
     <input type="file" id="import-file" accept="application/json">
@@ -1360,6 +1371,13 @@
     <div id="changelog-content"></div>
   </div>
 </div>
+<div id="autosave-modal" class="shortcuts-modal" style="display:none;">
+  <div class="shortcuts-modal-inner autosave-modal-inner">
+    <h3>🕕 Autosave zilnic <button type="button" id="autosave-close" class="icon-btn">✕</button></h3>
+    <div class="autosave-info">Aplicația salvează automat o copie a datelor prima dată când o deschizi la sau după ora 18:00, cel mult o dată pe zi. Se păstrează ultimele 10 salvări — mai vechi de atât sunt șterse automat. Fiecare salvare poate fi descărcată separat ca fișier .json (poate fi re-importat din secțiunea „Importă date").</div>
+    <div id="autosave-content"></div>
+  </div>
+</div>
 <div id="toast-container"></div>
 
 <script>
@@ -1641,6 +1659,9 @@ function seedData() {
 }
 
 const STORAGE_KEY = 'sbg-checklist-v3';
+const AUTOSAVE_KEY = 'sbg-daily-autosave-v1';
+const AUTOSAVE_HOUR = 18;
+const AUTOSAVE_MAX = 10;
 
 // ===================== FOI PRIVATE =====================
 // Foile marcate „private" (implicit: „Personal" și „Task obiective", plus
@@ -1656,12 +1677,16 @@ function visibleSheets() { return state.sheets.filter(s => !s.private || private
 // ===================== /FOI PRIVATE =====================
 const THEME_KEY = 'sbg-checklist-theme';
 const VIEW_PREFS_KEY = 'sbg-checklist-view-prefs';
-const APP_VERSION = '6.6.0';
+const APP_VERSION = '6.7.0';
 document.getElementById('app-version').textContent = APP_VERSION;
 document.getElementById('h1-version').textContent = 'v' + APP_VERSION;
 document.title = 'Checklist activități v' + APP_VERSION;
 
 const CHANGELOG = [
+  { v:'6.7.0', items:[
+    'Nou: autosave zilnic — buton „🕕 Autosave zilnic" (secțiunea „📤 Export, import și backup"). Fiindcă aplicația rulează doar în browser, fără server, o salvare exact la ora 18:00 indiferent dacă aplicația e deschisă nu e posibilă tehnic — în schimb, se face automat o salvare, cel mult o dată pe zi, la prima verificare (deschidere, sau la fiecare 5 minute cât timp fila e deschisă) care are loc la sau după ora 18:00',
+    'Se păstrează un istoric al ultimelor 10 salvări automate; cele mai vechi se elimină singure. Fiecare poate fi descărcată individual ca fișier .json, cu același format ca „Backup date (.json)" — deci se poate reimporta oricând din „Importă date" — sau ștearsă manual din istoric'
+  ]},
   { v:'6.6.0', items:[
     'Alt+K e acum o tastă dedicată, curată — deschide direct fereastra independentă cu scurtături, fără să mai deschidă și panoul Info ca efect secundar (diferită de Ctrl+K, care rămâne paleta de comenzi căutabilă, cu scroll)',
     'Fereastra independentă de scurtături (Alt+K / „⌨️ Keys") se deschide acum realmente maximizată (ocupă tot ecranul util, fără bara de task-uri), în orice browser — încercarea anterioară cu requestFullscreen() eșua adesea silențios. Pe alt monitor: browserul cere o permisiune specială și doar Chrome/Edge, pe https sau localhost, o pot oferi — dacă acele condiții sunt îndeplinite, se poziționează automat acolo; altfel rămâne maximizată pe ecranul curent',
@@ -3217,6 +3242,30 @@ document.getElementById('changelog-modal').addEventListener('click', e => {
   if (e.target.id === 'changelog-modal') document.getElementById('changelog-modal').style.display = 'none';
 });
 
+document.getElementById('autosave-btn').addEventListener('click', () => {
+  renderAutosaveModal();
+  document.getElementById('autosave-modal').style.display = 'flex';
+});
+document.getElementById('autosave-close').addEventListener('click', () => {
+  document.getElementById('autosave-modal').style.display = 'none';
+});
+document.getElementById('autosave-modal').addEventListener('click', e => {
+  if (e.target.id === 'autosave-modal') document.getElementById('autosave-modal').style.display = 'none';
+  const dl = e.target.closest('[data-action="autosave-download"]');
+  if (dl) {
+    const entry = loadAutosaves().find(x => x.id === dl.dataset.id);
+    if (entry) downloadBlob(JSON.stringify(entry.payload, null, 2), 'application/json', 'Checklist_activitati_autosave_'+entry.dateKey+'.json');
+    return;
+  }
+  const del = e.target.closest('[data-action="autosave-delete"]');
+  if (del) {
+    const list = loadAutosaves().filter(x => x.id !== del.dataset.id);
+    saveAutosaves(list);
+    renderAutosaveModal();
+    updateAutosaveBtn();
+  }
+});
+
 function buildHelpPageHtml() {
   return `<!DOCTYPE html>
 <html lang="ro">
@@ -3964,6 +4013,8 @@ document.addEventListener('keydown', e => {
     if (gModal.style.display !== 'none') { gModal.style.display = 'none'; ui.ganttTarget = null; return; }
     const clModal = document.getElementById('changelog-modal');
     if (clModal.style.display !== 'none') { clModal.style.display = 'none'; return; }
+    const asModal = document.getElementById('autosave-modal');
+    if (asModal.style.display !== 'none') { asModal.style.display = 'none'; return; }
     if (document.getElementById('private-unlock-modal').style.display !== 'none') { document.getElementById('private-unlock-modal').style.display = 'none'; return; }
     if (document.getElementById('context-menu').style.display !== 'none') { closeContextMenu(); return; }
     if (document.getElementById('filter-panel').classList.contains('open')) { closeFilterPanel(); return; }
@@ -5281,6 +5332,78 @@ function addDays(iso, n) { const d = new Date(iso); d.setDate(d.getDate()+n); re
 function fmtDate(iso) { if (!iso) return ''; const [y,m,d] = iso.split('-'); return d+'.'+m+'.'+y; }
 function fmtDayMonth(iso) { const [y,m,d] = iso.split('-'); return d+'.'+m; }
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+// ===================== AUTOSAVE ZILNIC =====================
+// Aplicație 100% client-side, fără server/proces în fundal — nu există o
+// modalitate tehnică de a rula "exact la ora 18:00", indiferent dacă
+// aplicația e deschisă sau nu. Comportamentul real: la prima deschidere (sau
+// verificare periodică) din ziua curentă care are loc la sau după ora
+// AUTOSAVE_HOUR (ora locală a browser-ului), se face o salvare automată,
+// cel mult una pe zi. Se păstrează ultimele AUTOSAVE_MAX salvări; cele mai
+// vechi sunt eliminate automat.
+function autosaveDateKey(d) {
+  d = d || new Date();
+  const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+day;
+}
+function loadAutosaves() {
+  try {
+    const raw = localStorage.getItem(AUTOSAVE_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    return Array.isArray(list) ? list : [];
+  } catch (e) { return []; }
+}
+function saveAutosaves(list) {
+  // Dacă spațiul de stocare local e insuficient (aplicație cu foarte multe
+  // date), renunță treptat la cele mai vechi salvări, în loc să eșueze tăcut
+  // și să piardă și salvarea curentă (cea mai recentă rămâne prioritară).
+  let trimmed = list.slice(0, AUTOSAVE_MAX);
+  while (trimmed.length > 0) {
+    try { localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(trimmed)); return; }
+    catch (e) { trimmed = trimmed.slice(0, -1); }
+  }
+  try { localStorage.removeItem(AUTOSAVE_KEY); } catch (e) {}
+}
+function maybeRunDailyAutosave(now) {
+  now = now || new Date();
+  if (now.getHours() < AUTOSAVE_HOUR) return false;
+  const dateKey = autosaveDateKey(now);
+  const list = loadAutosaves();
+  if (list.length && list[0].dateKey === dateKey) return false;
+  const entry = {
+    id: 'as-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8),
+    dateKey: dateKey,
+    savedAt: now.toISOString(),
+    payload: { appVersion: 2, exportedAt: now.toISOString(), data: state }
+  };
+  list.unshift(entry);
+  saveAutosaves(list);
+  updateAutosaveBtn();
+  return true;
+}
+function updateAutosaveBtn() {
+  const b = document.getElementById('autosave-btn');
+  if (!b) return;
+  const list = loadAutosaves();
+  b.textContent = '🕕 Autosave zilnic' + (list.length ? ' ('+list.length+')' : '');
+}
+function renderAutosaveModal() {
+  const list = loadAutosaves();
+  const el = document.getElementById('autosave-content');
+  if (!el) return;
+  if (!list.length) {
+    el.innerHTML = '<div class="autosave-empty">Încă nu există nicio salvare automată. Prima va fi făcută azi dacă deschizi aplicația la sau după ora '+AUTOSAVE_HOUR+':00.</div>';
+    return;
+  }
+  el.innerHTML = '<div class="autosave-list">' + list.map(entry => {
+    const dt = new Date(entry.savedAt);
+    const time = String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0');
+    return '<div class="autosave-entry"><div class="ae-meta"><span class="ae-date">'+fmtDate(entry.dateKey)+'</span> <span class="ae-time">ora '+time+'</span></div>'
+      + '<div class="ae-actions"><button type="button" data-action="autosave-download" data-id="'+entry.id+'">⬇ Descarcă</button>'
+      + '<button type="button" class="icon-btn" data-action="autosave-delete" data-id="'+entry.id+'" title="Șterge din istoric">✕</button></div></div>';
+  }).join('') + '</div>';
+}
+// ===================== /AUTOSAVE ZILNIC =====================
 function textColorFor(bgHex) { return '#1f1e1c'; }
 function hexToRgba(hex, alpha) {
   const h = hex.replace('#','');
@@ -10539,6 +10662,12 @@ document.getElementById('scroll-bottom-btn').addEventListener('click', () => {
 
 load();
 checkReminders();
+updateAutosaveBtn();
+maybeRunDailyAutosave();
+setInterval(maybeRunDailyAutosave, 5 * 60 * 1000);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') maybeRunDailyAutosave();
+});
 
 if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
   window.addEventListener('load', () => {
