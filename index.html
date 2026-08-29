@@ -424,6 +424,10 @@
   .autosave-entry .ae-actions { display: flex; gap: 6px; }
   .autosave-entry button { font-size: 12px; padding: 4px 10px; }
   .autosave-empty { font-size: 12.5px; color: var(--text-secondary); font-style: italic; }
+  .synchist-modal-inner { max-width: 520px; max-height: 76vh; overflow-y: auto; }
+  .synchist-group { margin-bottom: 16px; }
+  .synchist-group h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .03em; color: var(--text-secondary); margin: 0 0 8px; }
+  .synchist-group .autosave-entry .ae-actions { flex-wrap: wrap; justify-content: flex-end; }
   body.focus-mode #focus-exit-hint { display: flex; }
   body.focus-mode .toolbar,
   body.focus-mode #tabs,
@@ -941,6 +945,7 @@
         <button id="export-json-btn" data-tip="(Alt+S) - Descarcă o copie de siguranță a tuturor datelor (.json)">⬇ Backup date (.json)</button>
         <button id="import-json-btn" data-tip="Restaurează datele dintr-un backup (.json)">⬆ Importă date</button>
         <button id="autosave-btn" data-tip="Autosave zilnic (18:00) — vezi și descarcă istoricul ultimelor 10 salvări">🕕 Autosave zilnic</button>
+        <button id="sync-history-btn" data-tip="(Alt+Y) - Istoricul salvărilor sincronizate în cloud, pe zile/săptămâni/luni — restaurează sau descarcă oricare">☁️ Istoric sincronizat</button>
       </div>
     </details>
     <input type="file" id="import-file" accept="application/json">
@@ -1196,7 +1201,7 @@
       <li><kbd>A</kbd> Adaugă sarcină/subsarcină nouă</li>
       <li><kbd>Shift</kbd>+<kbd>A</kbd> Arhivează / scoate din arhivă</li>
       <li><kbd>↑</kbd> / <kbd>↓</kbd> Mută sus / jos</li>
-      <li><kbd>Delete</kbd> Șterge</li>
+      <li><kbd>Delete</kbd> Șterge (sarcină/subsarcină; și capitol/proiect, dacă hovers pe antetul lor — util mai ales pentru cele arhivate)</li>
       <li><kbd>V</kbd> Convertește (subsarcină→sarcină; sarcină→proiect)</li>
       <li><kbd>Shift</kbd>+<kbd>V</kbd> Sarcina → subsarcina celei de deasupra</li>
 
@@ -1207,6 +1212,7 @@
       <li><kbd>Shift</kbd>+<kbd>E</kbd> Extinde/restrânge complet, în cascadă</li>
       <li><kbd>O</kbd> Opțiuni avansate pe sarcinile din proiect</li>
       <li><kbd>M</kbd> Mută/copiază sarcină/subsarcină/capitol/proiect (în alt proiect/capitol/sheet — o subsarcină mutată fără sarcina-părinte devine sarcină)</li>
+      <li><kbd>H</kbd> Arată/ascunde arhivatele <em>din acest</em> capitol/proiect (spre deosebire de Alt+H, care e global)</li>
 
       <li><strong>— Structura foii —</strong></li>
       <li><kbd>[</kbd> Restrânge un nivel, apoi tot (în modul carduri: restrânge toate cardurile)</li>
@@ -1224,7 +1230,8 @@
       <li><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd> Statistici jos</li>
       <li><kbd>Alt</kbd>+<kbd>T</kbd> Administrare tag-uri</li>
       <li><kbd>Alt</kbd>+<kbd>D</kbd> Comută mod luminos/întunecat</li>
-      <li><kbd>Alt</kbd>+<kbd>H</kbd> Arată/ascunde elementele arhivate</li>
+      <li><kbd>Alt</kbd>+<kbd>H</kbd> Arată/ascunde elementele arhivate (global, pe tot ce ai)</li>
+      <li><kbd>Alt</kbd>+<kbd>Y</kbd> Istoric salvări sincronizate (cloud) — pe zile/săptămâni/luni, cu restaurare</li>
       <li><kbd>Alt</kbd>+<kbd>R</kbd> Raport de revizuire săptămânală</li>
       <li><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> Resetează toate filtrele, extinde tot</li>
       <li><kbd>Alt</kbd>+<kbd>B</kbd> Vizualizare pe carduri</li>
@@ -1376,6 +1383,13 @@
     <h3>🕕 Autosave zilnic <button type="button" id="autosave-close" class="icon-btn">✕</button></h3>
     <div class="autosave-info">Aplicația salvează automat o copie a datelor prima dată când o deschizi la sau după ora 18:00, cel mult o dată pe zi. Se păstrează ultimele 10 salvări — mai vechi de atât sunt șterse automat. Fiecare salvare poate fi descărcată separat ca fișier .json (poate fi re-importat din secțiunea „Importă date").</div>
     <div id="autosave-content"></div>
+  </div>
+</div>
+<div id="sync-history-modal" class="shortcuts-modal" style="display:none;">
+  <div class="shortcuts-modal-inner autosave-modal-inner synchist-modal-inner">
+    <h3>☁️ Istoric salvări sincronizate <button type="button" id="sync-history-close" class="icon-btn">✕</button></h3>
+    <div class="autosave-info">O salvare nouă se adaugă automat la fiecare sincronizare cu cloud-ul, cel mult o dată la 3 ore și cel mult 5 pe zi — comună pe toate dispozitivele conectate la același cont. Restaurarea unei salvări mai vechi nu șterge nimic din istoric — rămân vizibile și cele de dinainte, și cele de după.</div>
+    <div id="sync-history-content"></div>
   </div>
 </div>
 <div id="toast-container"></div>
@@ -1677,12 +1691,19 @@ function visibleSheets() { return state.sheets.filter(s => !s.private || private
 // ===================== /FOI PRIVATE =====================
 const THEME_KEY = 'sbg-checklist-theme';
 const VIEW_PREFS_KEY = 'sbg-checklist-view-prefs';
-const APP_VERSION = '6.7.0';
+const APP_VERSION = '6.8.0';
 document.getElementById('app-version').textContent = APP_VERSION;
 document.getElementById('h1-version').textContent = 'v' + APP_VERSION;
 document.title = 'Checklist activități v' + APP_VERSION;
 
 const CHANGELOG = [
+  { v:'6.8.0', items:[
+    'Nou: istoric al salvărilor sincronizate în cloud — buton „☁️ Istoric sincronizat" (lângă „🕕 Autosave zilnic", sau Alt+Y). Diferit de autosave: e comun pe toate dispozitivele conectate la același cont de cloud, organizat pe grupuri (Astăzi, Ieri, Săptămâna aceasta, Luna aceasta, apoi lună câte lună). Se adaugă o salvare nouă automat la fiecare sincronizare reală, cel mult o dată la 3 ore și cel mult 5 pe zi',
+    'Restaurarea unei salvări din istoric nu șterge nimic — rămân vizibile atât cele de dinainte, cât și cele de după, oricând poți trece la altă versiune. Fiecare salvare se poate și descărca individual (.json, reimportabil) sau șterge din istoric',
+    'Nou: comutator LOCAL pentru elemente arhivate — tasta H (fără Alt), cu mouse-ul deasupra unui capitol sau proiect, arată/ascunde doar arhivatele din acela, spre deosebire de Alt+H care rămâne global, pe toată lista. Disponibil și din meniul contextual (click dreapta)',
+    'Nou: capitolele și proiectele arhivate se pot șterge acum definitiv cu tasta Delete (cu mouse-ul pe antetul lor) sau din meniul contextual — înainte erau ștergibile doar din butonul ✕ al antetului',
+    'Corecție în manual: secțiunea de scurtături încă mai menționa Alt+L pentru „Selectează sarcini" — scurtătura reală e doar L, fără Alt, de la v6.6.0'
+  ]},
   { v:'6.7.0', items:[
     'Nou: autosave zilnic — buton „🕕 Autosave zilnic" (secțiunea „📤 Export, import și backup"). Fiindcă aplicația rulează doar în browser, fără server, o salvare exact la ora 18:00 indiferent dacă aplicația e deschisă nu e posibilă tehnic — în schimb, se face automat o salvare, cel mult o dată pe zi, la prima verificare (deschidere, sau la fiecare 5 minute cât timp fila e deschisă) care are loc la sau după ora 18:00',
     'Se păstrează un istoric al ultimelor 10 salvări automate; cele mai vechi se elimină singure. Fiecare poate fi descărcată individual ca fișier .json, cu același format ca „Backup date (.json)" — deci se poate reimporta oricând din „Importă date" — sau ștearsă manual din istoric'
@@ -2627,7 +2648,10 @@ const CONTEXT_MENU_ITEMS = {
     { sep: true },
     { label: 'Mută/copiază în alt sheet', icon: '📤', key: 'm', kbd: 'M' },
     { label: 'Convertește în sarcină', icon: '📋', key: 'v', kbd: 'V' },
+    { sep: true },
+    { label: 'Arată/ascunde arhivatele din acesta', icon: '🗃️', key: 'h', kbd: 'H' },
     { label: 'Arhivează', icon: '🗄', key: 'a', shiftKey: true, kbd: 'Shift+A' },
+    { label: 'Șterge', icon: '🗑', key: 'Delete', kbd: 'Del', danger: true },
   ],
   chapter: [
     { label: 'Extinde/restrânge', icon: '↕️', key: 'e', kbd: 'E' },
@@ -2637,7 +2661,10 @@ const CONTEXT_MENU_ITEMS = {
     { label: 'Restrânge butoanele din antet', icon: '🎛️', key: 'z', shiftKey: true, kbd: 'Shift+Z' },
     { sep: true },
     { label: 'Mută/copiază în alt sheet', icon: '📤', key: 'm', kbd: 'M' },
+    { sep: true },
+    { label: 'Arată/ascunde arhivatele din acesta', icon: '🗃️', key: 'h', kbd: 'H' },
     { label: 'Arhivează', icon: '🗄', key: 'a', shiftKey: true, kbd: 'Shift+A' },
+    { label: 'Șterge', icon: '🗑', key: 'Delete', kbd: 'Del', danger: true },
   ],
 };
 const CONTEXT_MENU_TITLES = { task: 'Sarcină', subtask: 'Subsarcină', project: 'Proiect', chapter: 'Capitol' };
@@ -2694,13 +2721,15 @@ const COMMAND_GROUPS = [
     { label: 'Încărcarea pe responsabil', short: 'încărcare', keys: 'Alt+W', run: () => dispatchShortcutKey('w', { altKey: true }) },
     { label: 'Șabloane de proiect', short: 'șabloane', keys: 'Alt+M', run: () => dispatchShortcutKey('m', { altKey: true }) },
     { label: 'Sincronizare cloud', short: 'cloud', keys: 'Alt+C', run: () => dispatchShortcutKey('c', { altKey: true }) },
+    { label: 'Istoric salvări sincronizate (cloud)', short: 'istoric sync', keys: 'Alt+Y', run: () => dispatchShortcutKey('y', { altKey: true }) },
   ]},
   { category: 'Panouri', items: [
     { label: 'Arată/ascunde Sumar general', keys: 'Alt+G', run: () => dispatchShortcutKey('g', { altKey: true }) },
     { label: 'Administrare tag-uri', keys: 'Alt+T', run: () => dispatchShortcutKey('t', { altKey: true }) },
     { label: 'Șabloane de proiect', keys: '', run: () => document.getElementById('templates-btn').click() },
     { label: 'Sincronizare cloud', keys: '', run: () => document.getElementById('cloud-btn').click() },
-    { label: 'Arată/ascunde elemente arhivate', keys: 'Alt+H', run: () => dispatchShortcutKey('h', { altKey: true }) },
+    { label: 'Istoric salvări sincronizate', keys: 'Alt+Y', run: () => document.getElementById('sync-history-btn').click() },
+    { label: 'Arată/ascunde elemente arhivate (global)', keys: 'Alt+H', run: () => dispatchShortcutKey('h', { altKey: true }) },
     { label: 'Raport de revizuire săptămânală', keys: 'Alt+R', run: () => dispatchShortcutKey('r', { altKey: true }) },
     { label: 'Manual de utilizare', keys: '', run: () => document.getElementById('help-btn').click() },
   ]},
@@ -2710,7 +2739,7 @@ const COMMAND_GROUPS = [
     { label: 'Adaugă sarcină/subsarcină sub cea de sub mouse', short: 'adaugă', keys: 'A', run: () => dispatchShortcutKey('a') },
     { label: 'Adaugă subsarcină (dedicat)', short: 'adaugă subsarcină', keys: 'S', run: () => dispatchShortcutKey('s') },
     { label: 'Arhivează/scoate din arhivă', short: 'arhivează', keys: 'Shift+A', run: () => dispatchShortcutKey('a', { shiftKey: true }) },
-    { label: 'Șterge sarcina/subsarcina de sub mouse', short: 'șterge', keys: 'Delete', run: () => dispatchShortcutKey('Delete') },
+    { label: 'Șterge sarcina/subsarcina de sub mouse (sau capitolul/proiectul, dacă hovers pe antetul lor)', short: 'șterge', keys: 'Delete', run: () => dispatchShortcutKey('Delete') },
     { label: 'Duplică sarcina/subsarcina de sub mouse', short: 'duplică', keys: 'U', run: () => dispatchShortcutKey('u') },
     { label: 'Marchează finalizată/nefinalizată', short: 'bifează', keys: 'Space', run: () => dispatchShortcutKey(' ') },
     { label: 'Fixează/anulează fixarea (pin)', short: 'pin', keys: 'P', run: () => dispatchShortcutKey('p') },
@@ -2731,6 +2760,7 @@ const COMMAND_GROUPS = [
     { label: 'Convertește (subsarcină→sarcină, sarcină→proiect)', short: 'convertește', keys: 'V', run: () => dispatchShortcutKey('v') },
     { label: 'Transformă sarcina în subsarcina celei de deasupra', short: 'subsarcina de deasupra', keys: 'Shift+V', run: () => dispatchShortcutKey('v', { shiftKey: true }) },
     { label: 'Mută/copiază capitol/proiect în alt sheet', short: 'mută sheet', keys: 'M', run: () => dispatchShortcutKey('m') },
+    { label: 'Arată/ascunde arhivatele din capitolul/proiectul de sub mouse', short: 'arhivate (local)', keys: 'H', run: () => dispatchShortcutKey('h') },
   ]},
   { category: 'Navigare', items: [
     { label: 'Mută sarcina/subsarcina de sub mouse mai sus', short: 'mută sus', keys: '↑', run: () => dispatchShortcutKey('ArrowUp') },
@@ -3266,6 +3296,23 @@ document.getElementById('autosave-modal').addEventListener('click', e => {
   }
 });
 
+document.getElementById('sync-history-btn').addEventListener('click', () => {
+  document.getElementById('sync-history-modal').style.display = 'flex';
+  loadSyncHistoryList();
+});
+document.getElementById('sync-history-close').addEventListener('click', () => {
+  document.getElementById('sync-history-modal').style.display = 'none';
+});
+document.getElementById('sync-history-modal').addEventListener('click', e => {
+  if (e.target.id === 'sync-history-modal') { document.getElementById('sync-history-modal').style.display = 'none'; return; }
+  const restore = e.target.closest('[data-action="synchist-restore"]');
+  if (restore) { restoreSyncHistoryEntry(restore.dataset.id); return; }
+  const dl = e.target.closest('[data-action="synchist-download"]');
+  if (dl) { downloadSyncHistoryEntry(dl.dataset.id); return; }
+  const del = e.target.closest('[data-action="synchist-delete"]');
+  if (del) { deleteSyncHistoryEntry(del.dataset.id); return; }
+});
+
 function buildHelpPageHtml() {
   return `<!DOCTYPE html>
 <html lang="ro">
@@ -3519,6 +3566,14 @@ function buildHelpPageHtml() {
   <li><strong>Fără internet</strong> aplicația funcționează exact ca înainte — datele rămân salvate local și se urcă în cloud când revii online.</li>
   <li><strong>Conflicte</strong> — dacă modifici aceeași sarcină simultan pe două dispozitive, câștigă ultima salvare. Pentru uz personal e suficient; nu e o aplicație de lucru simultan în echipă.</li>
 </ul>
+<p><strong>☁️ Istoric salvări sincronizate</strong> — butonul <em>„☁️ Istoric sincronizat"</em> (lângă „🕕 Autosave zilnic", sau <kbd>Alt</kbd>+<kbd>Y</kbd>) ține un istoric separat de „poze" ale datelor tale, comun pe toate dispozitivele conectate la același cont — diferit de autosave-ul zilnic, care rămâne doar în acest browser.</p>
+<ul>
+  <li>Se adaugă automat o salvare nouă la fiecare sincronizare reală cu cloud-ul, dar nu mai des de o dată la 3 ore și nu mai mult de 5 pe zi — ca istoricul să rămână util, nu copleșit de intrări.</li>
+  <li>Lista e organizată pe grupuri: <strong>Astăzi</strong>, <strong>Ieri</strong>, <strong>Săptămâna aceasta</strong>, <strong>Luna aceasta</strong>, apoi lună câte lună pentru ce e mai vechi.</li>
+  <li><strong>Restaurează</strong> — aduce înapoi datele exact cum erau la acea salvare. Nu șterge nimic din istoric: rămân vizibile atât salvările de dinainte, cât și cele de după (inclusiv una făcută ulterior restaurării) — poți oricând să te răzgândești și să treci la altă versiune.</li>
+  <li><strong>Descarcă</strong> — fiecare salvare din istoric poate fi descărcată individual ca fișier .json, cu același format ca backup-ul manual (deci reimportabilă oricând din „Importă date").</li>
+  <li><strong>Șterge</strong> — elimină definitiv o intrare din istoric, dacă vrei să faci curat.</li>
+</ul>
 <p><strong>Confidențialitate:</strong> regulile bazei de date sunt scrise astfel încât fiecare cont poate citi și scrie doar propriile date.</p>
 <p><strong>Siguranța datelor:</strong> spațiul de salvare al browserului e limitat (în jur de 5 MB). Aplicația îl urmărește singură: la peste 70% ocupare primești un avertisment galben, iar dacă salvarea chiar eșuează apare un avertisment roșu care îți spune explicit că modificările <em>nu</em> s-au salvat, cu un buton de export backup la un click. Fără asta, o salvare eșuată ar trece complet neobservată.</p>
 <p><strong>Notă tehnică:</strong> sincronizarea are nevoie de internet, fiindcă librăria se încarcă de pe serverele Google. Dacă deschizi fișierul direct de pe disc (adresă care începe cu <code>file://</code>), autentificarea poate fi blocată de browser — în acest caz publică fișierul pe o adresă web sau deschide-l printr-un server local. Restul aplicației merge normal în ambele cazuri.</p>
@@ -3590,10 +3645,12 @@ function buildHelpPageHtml() {
 <p><strong>Arhivare</strong> — butonul <strong>🗄</strong> scoate ceva din calea ta, fără să îl șteargă. Funcționează pe <strong>patru niveluri</strong>: capitol, proiect, sarcină și subsarcină.</p>
 <ul>
   <li>Elementele arhivate dispar din listă, dar rămân salvate. Arhivând un capitol sau un proiect, dispare cu tot ce conține.</li>
-  <li><strong>Comutatorul global</strong> — butonul <strong>🗄 Arhivate (N)</strong> din bara de sus arată sau ascunde tot ce e arhivat, pe toate nivelurile deodată. Apare doar dacă există ceva arhivat și îți spune câte elemente sunt.</li>
+  <li><strong>Comutatorul global</strong> — butonul <strong>🗄 Arhivate (N)</strong> din bara de sus (sau <kbd>Alt</kbd>+<kbd>H</kbd>) arată sau ascunde tot ce e arhivat, peste tot, pe toate nivelurile deodată. Apare doar dacă există ceva arhivat și îți spune câte elemente sunt.</li>
+  <li><strong>Comutatorul local</strong> — tasta <kbd>H</kbd> (fără Alt), cu mouse-ul deasupra unui capitol sau proiect, arată/ascunde doar arhivatele <em>din acela</em>, fără să afecteze restul listei. Util când vrei să vezi ce ai arhivat într-un singur proiect, fără să scoți la iveală arhivatele din tot restul. E disponibilă și din meniul contextual (click dreapta).</li>
   <li>Când sunt afișate, apar estompate; capitolele și proiectele primesc și eticheta „· arhivat".</li>
   <li>Butonul devine <strong>📤</strong> pe elementele arhivate — apasă-l ca să le readuci la viață.</li>
   <li>Arhivatele nu intră în Total/Făcute/Restante, nu apar în „Azi, mâine, restante &amp; fixate" și nu apar în diagrama Gantt.</li>
+  <li><strong>Ștergere</strong> — odată afișate (comutatorul global sau local), un capitol sau proiect arhivat se șterge definitiv fie cu <strong>✕</strong> din antetul lui, fie cu tasta <kbd>Delete</kbd> cu mouse-ul deasupra antetului, fie din meniul contextual (click dreapta → Șterge). Sarcinile și subsarcinile arhivate se șterg la fel ca oricare altele — <kbd>Delete</kbd> pe hover, ✕ de pe rând, sau din meniul contextual. Ștergerea poate fi anulată imediat din toast-ul de confirmare, sau oricând cu <kbd>Ctrl</kbd>+<kbd>Z</kbd>.</li>
 </ul>
 
 <h2 id="limbaj-natural">Adăugare cu limbaj natural</h2>
@@ -3680,7 +3737,7 @@ function buildHelpPageHtml() {
 <ul>
   <li><strong>Pe o sarcină</strong> — bifează, tag-uri, notă, culoare font, prioritate, termen, tip termen, reminder, recurență, fixare, adaugă subsarcină, extinde/restrânge subsarcini, adaugă sarcină nouă alături, duplică, convertește în proiect, arhivează, șterge.</li>
   <li><strong>Pe o subsarcină</strong> — la fel, mai puțin ce nu se aplică (nu poate avea propriile ei subsarcini sau deveni proiect); în schimb are „transformă în sarcină".</li>
-  <li><strong>Pe antetul unui capitol sau proiect</strong> — extinde/restrânge (un nivel sau tot, în cascadă), izolează (vezi doar acesta), restrânge butoanele din antet, mută/copiază în alt sheet, arhivează; proiectul are în plus „adaugă sarcină" și „convertește în sarcină".</li>
+  <li><strong>Pe antetul unui capitol sau proiect</strong> — extinde/restrânge (un nivel sau tot, în cascadă), izolează (vezi doar acesta), restrânge butoanele din antet, mută/copiază în alt sheet, arată/ascunde arhivatele din acesta, arhivează, șterge; proiectul are în plus „adaugă sarcină" și „convertește în sarcină".</li>
 </ul>
 <p>Meniul se închide cu <kbd>Escape</kbd>, cu un click în altă parte a paginii, sau automat după ce alegi o opțiune. Momentan funcționează doar pe desktop (click dreapta cu mouse-ul); pe telefon rămâi la butoanele și gesturile obișnuite.</p>
 
@@ -3723,6 +3780,7 @@ function buildHelpPageHtml() {
   <li><kbd>Shift</kbd>+<kbd>E</kbd> — la fel, dar în cascadă completă: pe un capitol, extinde/restrânge și toate proiectele lui și toate listele de subsarcini din interior; pe un proiect, la fel dar doar pentru el</li>
   <li><kbd>O</kbd> — treci mouse-ul peste orice sarcină sau subsarcină din proiect și apasă O ca să arăți sau să ascunzi opțiunile avansate (⚙️) pentru tot proiectul respectiv</li>
   <li><kbd>M</kbd> — pe o sarcină, capitol, sau proiect, deschide panoul de mutare/copiere. Pentru sarcini, alegi și proiectul de destinație (pe lângă sheet și capitol) — vezi secțiunea 2d</li>
+  <li><kbd>H</kbd> — arată/ascunde arhivatele <strong>doar din capitolul sau proiectul de sub mouse</strong>, fără să afecteze restul listei. Diferă de <kbd>Alt</kbd>+<kbd>H</kbd>, care e global — vezi secțiunea „Note și arhivare"</li>
 </ul>
 
 <h3>Structura foii</h3>
@@ -3731,6 +3789,7 @@ function buildHelpPageHtml() {
   <li><kbd>]</kbd> — la fel, dar invers: extinde întâi capitolele, apoi și proiectele. Face exact ce fac butoanele ⌄/⇊</li>
   <li><kbd>W</kbd> — ciclează filtrul de termen al listei, un pas la fiecare apăsare: <em>doar azi</em> → <em>azi + mâine</em> → <em>săptămâna asta</em> → <em>toate sarcinile</em> (fără filtru) → înapoi la <em>doar azi</em>. E același filtru ca cel din panoul de filtre (selectorul „Toate termenele"), doar că W îl schimbă rapid, fără mouse</li>
   <li><kbd>1</kbd>–<kbd>9</kbd> — comută rapid pe sheet-ul respectiv</li>
+  <li><kbd>L</kbd> — activează/dezactivează modul „☑️ Selectează sarcini", pentru editare în masă (literă simplă, fără Alt)</li>
 </ul>
 
 <h3>Comenzi generale (Alt+literă) — nu țin cont de mouse</h3>
@@ -3743,8 +3802,8 @@ function buildHelpPageHtml() {
   <li><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd> — arată/ascunde bara de statistici de la baza ecranului, la fel ca butonul „📊 Statistici jos"</li>
   <li><kbd>Alt</kbd>+<kbd>T</kbd> — deschide administrarea de tag-uri (🏷)</li>
   <li><kbd>Alt</kbd>+<kbd>D</kbd> — comută între mod luminos și mod întunecat</li>
-  <li><kbd>Alt</kbd>+<kbd>H</kbd> — arată/ascunde elementele arhivate, la fel ca butonul „🗄 Arhivate"</li>
-  <li><kbd>Alt</kbd>+<kbd>L</kbd> — activează/dezactivează modul „☑️ Selectează sarcini", pentru editare în masă</li>
+  <li><kbd>Alt</kbd>+<kbd>H</kbd> — arată/ascunde elementele arhivate, global, la fel ca butonul „🗄 Arhivate" (pentru comutatorul local, doar pe un capitol/proiect, vezi <kbd>H</kbd> mai sus)</li>
+  <li><kbd>Alt</kbd>+<kbd>Y</kbd> — deschide istoricul salvărilor sincronizate în cloud, la fel ca butonul „☁️ Istoric sincronizat" — vezi secțiunea 15</li>
   <li><kbd>Alt</kbd>+<kbd>R</kbd> — deschide raportul de revizuire săptămânală</li>
   <li><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> — <strong>resetează tot</strong>: golește toate filtrele active și extinde complet totul (capitole, proiecte, subsarcini), la fel ca butonul portocaliu „🔄 Resetează filtrele" din capul listei „☰ Opțiuni"</li>
   <li><kbd>Alt</kbd>+<kbd>B</kbd> — arată/ascunde vizualizarea pe carduri</li>
@@ -4015,6 +4074,8 @@ document.addEventListener('keydown', e => {
     if (clModal.style.display !== 'none') { clModal.style.display = 'none'; return; }
     const asModal = document.getElementById('autosave-modal');
     if (asModal.style.display !== 'none') { asModal.style.display = 'none'; return; }
+    const shModal = document.getElementById('sync-history-modal');
+    if (shModal.style.display !== 'none') { shModal.style.display = 'none'; return; }
     if (document.getElementById('private-unlock-modal').style.display !== 'none') { document.getElementById('private-unlock-modal').style.display = 'none'; return; }
     if (document.getElementById('context-menu').style.display !== 'none') { closeContextMenu(); return; }
     if (document.getElementById('filter-panel').classList.contains('open')) { closeFilterPanel(); return; }
@@ -4132,6 +4193,16 @@ document.addEventListener('keydown', e => {
   if (e.key.toLowerCase() === 'h' && e.altKey && !e.shiftKey) {
     e.preventDefault();
     document.getElementById('archived-btn').click();
+    return;
+  }
+  if (e.key.toLowerCase() === 'y' && e.altKey) {
+    e.preventDefault();
+    document.getElementById('sync-history-btn').click();
+    return;
+  }
+  if (e.key.toLowerCase() === 'h' && !e.altKey && !e.shiftKey) {
+    e.preventDefault();
+    toggleScopedArchived(getHoverContext());
     return;
   }
   if (e.key.toLowerCase() === 'z' && e.shiftKey) {
@@ -4596,33 +4667,64 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Delete' || e.key === 'Backspace') {
     if (isFormControl(e.target)) return;
     const info = getHoverInfo();
-    if (!info) return;
-    e.preventDefault();
-    const sheet = activeSheet();
-    const chapter = sheet.chapters.find(c => c.id === info.chapterId);
-    const project = chapter && chapter.projects.find(p => p.id === info.projectId);
-    if (!project) return;
-    if (info.subtaskId) {
-      const task = project.tasks.find(t => t.id === info.taskId);
-      if (!task || !task.subtasks) return;
-      const idx = task.subtasks.findIndex(s => s.id === info.subtaskId);
-      if (idx === -1) return;
-      const [removed] = task.subtasks.splice(idx, 1);
-      persist(); render();
-      showUndoToast('Subsarcină ștearsă: "'+escapeHtml(removed.text)+'"', () => {
-        task.subtasks.splice(idx, 0, removed);
+    if (info) {
+      e.preventDefault();
+      const sheet = activeSheet();
+      const chapter = sheet.chapters.find(c => c.id === info.chapterId);
+      const project = chapter && chapter.projects.find(p => p.id === info.projectId);
+      if (!project) return;
+      if (info.subtaskId) {
+        const task = project.tasks.find(t => t.id === info.taskId);
+        if (!task || !task.subtasks) return;
+        const idx = task.subtasks.findIndex(s => s.id === info.subtaskId);
+        if (idx === -1) return;
+        const [removed] = task.subtasks.splice(idx, 1);
         persist(); render();
-      });
-    } else {
-      const idx = project.tasks.findIndex(t => t.id === info.taskId);
-      if (idx === -1) return;
-      const [removed] = project.tasks.splice(idx, 1);
-      persist(); render();
-      showUndoToast('Sarcină ștearsă: "'+escapeHtml(removed.text)+'"', () => {
-        project.tasks.splice(idx, 0, removed);
+        showUndoToast('Subsarcină ștearsă: "'+escapeHtml(removed.text)+'"', () => {
+          task.subtasks.splice(idx, 0, removed);
+          persist(); render();
+        });
+      } else {
+        const idx = project.tasks.findIndex(t => t.id === info.taskId);
+        if (idx === -1) return;
+        const [removed] = project.tasks.splice(idx, 1);
         persist(); render();
-      });
+        showUndoToast('Sarcină ștearsă: "'+escapeHtml(removed.text)+'"', () => {
+          project.tasks.splice(idx, 0, removed);
+          persist(); render();
+        });
+      }
+      return;
     }
+    // Niciun task/subtask sub cursor — încearcă capitol/proiect. Util mai
+    // ales pentru elementele arhivate (aveau deja ✕ în antet, dar nu și
+    // Delete/meniul contextual).
+    const ctx = getHoverContext();
+    if (!ctx || (ctx.type !== 'chapter' && ctx.type !== 'project')) return;
+    e.preventDefault();
+    const sheet2 = activeSheet();
+    if (ctx.type === 'chapter') {
+      if (ctx.chapterId === '__pinned__') return;
+      const idx = sheet2.chapters.findIndex(c => c.id === ctx.chapterId);
+      if (idx === -1) return;
+      const [removed] = sheet2.chapters.splice(idx, 1);
+      persist(); render();
+      showUndoToast('Capitol șters: "'+escapeHtml(removed.name)+'"', () => {
+        sheet2.chapters.splice(idx, 0, removed);
+        persist(); render();
+      });
+      return;
+    }
+    const chapter2 = sheet2.chapters.find(c => c.id === ctx.chapterId);
+    if (!chapter2) return;
+    const pIdx = chapter2.projects.findIndex(p => p.id === ctx.projectId);
+    if (pIdx === -1) return;
+    const [removedP] = chapter2.projects.splice(pIdx, 1);
+    persist(); render();
+    showUndoToast('Proiect șters: "'+escapeHtml(removedP.name)+'"', () => {
+      chapter2.projects.splice(pIdx, 0, removedP);
+      persist(); render();
+    });
     return;
   }
   if (e.key.toLowerCase() === 'd' && !e.shiftKey && !e.altKey) {
@@ -4866,7 +4968,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
-let ui = { filterCapitol:'', filterProiect:'', filterDeadline:'', filterPriority:'', search:'', searchGlobal:false, mode:'list', openReminderTaskId:null, openDurationTaskId:null, recurrencePickerTaskId:null, sheetPickerId:null, editingTaskId:null, editingChapterId:null, editingProjectId:null, editingSubtaskId:null, colorPickerChapterId:null, expandLevel:2, chapterOpen:{}, projectOpen:{}, selectionMode:false, selectedTasks:[], openReevaluateId:null, scoreHistoryOpenId:null, openGoalEditId:null, subtasksOpen:{}, transferPopoverKey:null, transferSheetId:null, transferChapterId:null, transferProjectId:null, ganttTarget:null, ganttZoom:'week', ganttShowSubs:false, ganttAutoToday:false, ganttCritical:false, ganttScope:'project', ganttWorkdays:false, detailsPopoverId:null, filterAssignee:'', filterTags:[], filterTagMode:'any', tagFilterOpen:false, hoverRow:null, hoverHeader:null, keyboardFocusRow:null, detailsFocusField:null, showArchivedAll:false, showRowExtras:{}, smartGroupOpen:{}, calMonth:null, revWeek:null, toTaskPopoverKey:null, showBottomStats: localStorage.getItem('sbg-bottom-stats') !== '0', showSideStats: localStorage.getItem('sbg-side-stats') === '1', showSideToolbar: localStorage.getItem('sbg-side-toolbar') !== '0', showSideInfo: localStorage.getItem('sbg-side-info') === '1', filterFontColor: '', isolatedProjectId: null, isolatedChapterId: null, cardsDrillTaskId: null, cardsExpanded: {}, chapterIconsCollapsed: {}, projectIconsCollapsed: {}, workloadTab: 'tasks' };
+let ui = { filterCapitol:'', filterProiect:'', filterDeadline:'', filterPriority:'', search:'', searchGlobal:false, mode:'list', openReminderTaskId:null, openDurationTaskId:null, recurrencePickerTaskId:null, sheetPickerId:null, editingTaskId:null, editingChapterId:null, editingProjectId:null, editingSubtaskId:null, colorPickerChapterId:null, expandLevel:2, chapterOpen:{}, projectOpen:{}, selectionMode:false, selectedTasks:[], openReevaluateId:null, scoreHistoryOpenId:null, openGoalEditId:null, subtasksOpen:{}, transferPopoverKey:null, transferSheetId:null, transferChapterId:null, transferProjectId:null, ganttTarget:null, ganttZoom:'week', ganttShowSubs:false, ganttAutoToday:false, ganttCritical:false, ganttScope:'project', ganttWorkdays:false, detailsPopoverId:null, filterAssignee:'', filterTags:[], filterTagMode:'any', tagFilterOpen:false, hoverRow:null, hoverHeader:null, keyboardFocusRow:null, detailsFocusField:null, showArchivedAll:false, showArchivedScope:{}, showRowExtras:{}, smartGroupOpen:{}, calMonth:null, revWeek:null, toTaskPopoverKey:null, showBottomStats: localStorage.getItem('sbg-bottom-stats') !== '0', showSideStats: localStorage.getItem('sbg-side-stats') === '1', showSideToolbar: localStorage.getItem('sbg-side-toolbar') !== '0', showSideInfo: localStorage.getItem('sbg-side-info') === '1', filterFontColor: '', isolatedProjectId: null, isolatedChapterId: null, cardsDrillTaskId: null, cardsExpanded: {}, chapterIconsCollapsed: {}, projectIconsCollapsed: {}, workloadTab: 'tasks' };
 // Exactly one of these four can be "being typed into" at a time. Setting one
 // without clearing the other three used to be possible at several call
 // sites; if a stale id lingered (e.g. from a task rename that never quite
@@ -5056,6 +5158,8 @@ document.addEventListener('fb-sdk-failed', () => {
 function stopSync() {
   if (fbUnsub) { try { fbUnsub(); } catch(e){} fbUnsub = null; }
   clearTimeout(pushTimer);
+  syncHistoryCache = { loaded: false, lastAt: 0, dateKey: '', dayCount: 0 };
+  syncHistoryEntries = [];
 }
 
 function applyRemoteState(json) {
@@ -5085,6 +5189,7 @@ async function pushNow() {
       state: JSON.stringify(state), updatedAt: Date.now(), writer: SYNC_WRITER
     });
     lastSyncAt = Date.now(); syncState = 'on'; syncErr = '';
+    maybeSaveSyncHistorySnapshot();
   } catch (e) {
     syncState = 'error'; syncErr = String(e && e.message || e);
   }
@@ -5095,6 +5200,165 @@ function schedulePush() {
   clearTimeout(pushTimer);
   pushTimer = setTimeout(pushNow, 1500);
 }
+
+// ===================== ISTORIC SALVĂRI SINCRONIZATE =====================
+// Pe lângă documentul „live" (users/{uid}), care se suprascrie complet la
+// fiecare sincronizare, ținem și un istoric — o subcolecție separată
+// (users/{uid}/history), care NU e atinsă de suprascrierile de mai sus.
+// O intrare nouă se adaugă cel mult o dată la SYNC_HISTORY_COOLDOWN_MS și
+// cel mult SYNC_HISTORY_MAX_PER_DAY pe zi, ca istoricul să nu se umple la
+// fiecare literă scrisă. E comun pe toate dispozitivele (Firestore), nu
+// doar în acest browser.
+const SYNC_HISTORY_COOLDOWN_MS = 3 * 60 * 60 * 1000;
+const SYNC_HISTORY_MAX_PER_DAY = 5;
+let syncHistoryCache = { loaded: false, lastAt: 0, dateKey: '', dayCount: 0 };
+let syncHistoryEntries = [];
+let syncHistoryLoading = false;
+
+function syncHistoryCol() {
+  if (!fbUser || !fbDb) return null;
+  const F = window.__FB;
+  return F.collection(fbDb, 'users', fbUser.uid, 'history');
+}
+async function refreshSyncHistoryCache() {
+  const col = syncHistoryCol();
+  if (!col) return;
+  const F = window.__FB;
+  try {
+    const recentQ = F.query(col, F.orderBy('savedAt', 'desc'), F.limit(1));
+    const recentSnap = await F.getDocs(recentQ);
+    const dateKey = autosaveDateKey(new Date());
+    let lastAt = 0;
+    if (!recentSnap.empty) lastAt = recentSnap.docs[0].data().savedAt || 0;
+    const dayQ = F.query(col, F.where('dateKey', '==', dateKey));
+    const daySnap = await F.getDocs(dayQ);
+    syncHistoryCache = { loaded: true, lastAt: lastAt, dateKey: dateKey, dayCount: daySnap.size };
+  } catch (e) { /* rămâne cache-ul anterior, best-effort */ }
+}
+async function maybeSaveSyncHistorySnapshot() {
+  const col = syncHistoryCol();
+  if (!col) return;
+  const F = window.__FB;
+  if (!syncHistoryCache.loaded) await refreshSyncHistoryCache();
+  const now = Date.now();
+  const dateKey = autosaveDateKey(new Date(now));
+  if (dateKey !== syncHistoryCache.dateKey) { syncHistoryCache.dateKey = dateKey; syncHistoryCache.dayCount = 0; }
+  if (now - syncHistoryCache.lastAt < SYNC_HISTORY_COOLDOWN_MS) return;
+  if (syncHistoryCache.dayCount >= SYNC_HISTORY_MAX_PER_DAY) return;
+  try {
+    await F.addDoc(col, { state: JSON.stringify(state), savedAt: now, dateKey: dateKey, writer: SYNC_WRITER });
+    syncHistoryCache.lastAt = now;
+    syncHistoryCache.dayCount += 1;
+    if (document.getElementById('sync-history-modal').style.display !== 'none') loadSyncHistoryList();
+  } catch (e) { /* best-effort — nu blocăm sincronizarea live pentru asta */ }
+}
+async function loadSyncHistoryList() {
+  const col = syncHistoryCol();
+  const el = document.getElementById('sync-history-content');
+  if (!col) {
+    if (el) el.innerHTML = '<p class="cloud-note">Istoricul salvărilor sincronizate are nevoie de contul de cloud (☁️ Cloud) — conectează-te întâi acolo.</p>';
+    return;
+  }
+  const F = window.__FB;
+  syncHistoryLoading = true;
+  if (el) el.innerHTML = '<p class="cloud-msg">Se încarcă…</p>';
+  try {
+    const q = F.query(col, F.orderBy('savedAt', 'desc'), F.limit(200));
+    const snap = await F.getDocs(q);
+    syncHistoryEntries = snap.docs.map(d => Object.assign({ id: d.id }, d.data()));
+  } catch (e) {
+    syncHistoryLoading = false;
+    if (el) el.innerHTML = '<p class="cloud-msg cloud-bad">Nu am putut încărca istoricul.</p><p class="cloud-note">' + escapeHtml(String(e && e.message || e)) + '</p>';
+    return;
+  }
+  syncHistoryLoading = false;
+  renderSyncHistoryModal();
+}
+function syncHistoryGroupLabel(savedAt) {
+  const d = new Date(savedAt);
+  const dateKey = autosaveDateKey(d);
+  const today = autosaveDateKey(new Date());
+  const yesterday = autosaveDateKey(new Date(Date.now() - 86400000));
+  if (dateKey === today) return 'Astăzi';
+  if (dateKey === yesterday) return 'Ieri';
+  const daysAgo = Math.floor((new Date(today+'T00:00:00') - new Date(dateKey+'T00:00:00')) / 86400000);
+  if (daysAgo <= 7) return 'Săptămâna aceasta';
+  if (daysAgo <= 31) return 'Luna aceasta';
+  const months = ['ianuarie','februarie','martie','aprilie','mai','iunie','iulie','august','septembrie','octombrie','noiembrie','decembrie'];
+  return months[d.getMonth()] + ' ' + d.getFullYear();
+}
+function renderSyncHistoryModal() {
+  const el = document.getElementById('sync-history-content');
+  if (!el) return;
+  if (!fbUser) {
+    el.innerHTML = '<p class="cloud-note">Istoricul salvărilor sincronizate are nevoie de contul de cloud (☁️ Cloud) — conectează-te întâi acolo.</p>';
+    return;
+  }
+  if (!syncHistoryEntries.length) {
+    el.innerHTML = '<p class="autosave-empty">Încă nu există nicio salvare sincronizată în istoric. Se adaugă automat una nouă la fiecare sincronizare, cel mult o dată la 3 ore și cel mult 5 pe zi.</p>';
+    return;
+  }
+  const groups = [];
+  const byLabel = {};
+  syncHistoryEntries.forEach(entry => {
+    const label = syncHistoryGroupLabel(entry.savedAt);
+    if (!byLabel[label]) { byLabel[label] = []; groups.push(label); }
+    byLabel[label].push(entry);
+  });
+  el.innerHTML = groups.map(label => {
+    const items = byLabel[label].map(entry => {
+      const dt = new Date(entry.savedAt);
+      const time = fmtDate(entry.dateKey) + ' · ora ' + String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
+      return '<div class="autosave-entry"><div class="ae-meta"><span class="ae-date">' + time + '</span></div>'
+        + '<div class="ae-actions">'
+        + '<button type="button" data-action="synchist-restore" data-id="' + entry.id + '">↺ Restaurează</button>'
+        + '<button type="button" data-action="synchist-download" data-id="' + entry.id + '">⬇ Descarcă</button>'
+        + '<button type="button" class="icon-btn" data-action="synchist-delete" data-id="' + entry.id + '" title="Șterge din istoric">✕</button>'
+        + '</div></div>';
+    }).join('');
+    return '<div class="synchist-group"><h4>' + escapeHtml(label) + '</h4><div class="autosave-list">' + items + '</div></div>';
+  }).join('');
+}
+async function restoreSyncHistoryEntry(id) {
+  const entry = syncHistoryEntries.find(x => x.id === id);
+  if (!entry) return;
+  const dt = new Date(entry.savedAt);
+  const when = fmtDate(entry.dateKey) + ' ora ' + String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
+  if (!confirm('Restaurezi salvarea din ' + when + '?\n\nDatele curente vor fi înlocuite cu acea versiune. Restul istoricului (inclusiv salvările mai noi) rămâne neatins — poți restaura oricând altă versiune, inclusiv una făcută după aceasta.')) return;
+  try {
+    const parsed = JSON.parse(entry.state);
+    if (!parsed || !parsed.sheets) throw new Error('format invalid');
+    state = migrateColors(parsed);
+    lastSnapshot = JSON.stringify(state);
+    writeState(lastSnapshot);
+    undoStack = []; redoStack = [];
+    render(); updateUndoRedoButtons();
+    persist();
+    if (fbUser) schedulePush();
+    showToast('Salvare restaurată', when);
+  } catch (e) {
+    alert('Nu am putut restaura această salvare — pare coruptă.');
+  }
+}
+function downloadSyncHistoryEntry(id) {
+  const entry = syncHistoryEntries.find(x => x.id === id);
+  if (!entry) return;
+  const payload = { appVersion: 2, exportedAt: new Date(entry.savedAt).toISOString(), data: JSON.parse(entry.state) };
+  downloadBlob(JSON.stringify(payload, null, 2), 'application/json', 'Checklist_activitati_sync_' + entry.dateKey + '.json');
+}
+async function deleteSyncHistoryEntry(id) {
+  const col = syncHistoryCol();
+  if (!col) return;
+  const F = window.__FB;
+  try {
+    await F.deleteDoc(F.doc(col, id));
+    syncHistoryEntries = syncHistoryEntries.filter(x => x.id !== id);
+    renderSyncHistoryModal();
+  } catch (e) {
+    alert('Nu am putut șterge această salvare din istoric.');
+  }
+}
+// ===================== /ISTORIC SALVĂRI SINCRONIZATE =====================
 
 async function startSync() {
   const F = window.__FB;
@@ -5796,6 +6060,36 @@ function getHoverContext() {
   if (ui.hoverHeader) return ui.hoverHeader;
   if (ui.keyboardFocusRow) return ui.keyboardFocusRow;
   return null;
+}
+// Comutator LOCAL (spre deosebire de Alt+H, care e global): arată/ascunde
+// arhivatele doar în capitolul sau proiectul de sub mouse — nu peste tot.
+// Pe un capitol, țintește capitolul (arată/ascunde proiectele lui arhivate,
+// și — în cascadă, la nivelul de randare — sarcinile/subsarcinile lor). Pe
+// un proiect, o sarcină sau o subsarcină, țintește proiectul-părinte (arată/
+// ascunde sarcinile/subsarcinile lui arhivate). Nu poate „dezvălui" un
+// capitol/proiect care e el însuși arhivat și ascuns — pentru asta rămâne
+// nevoie de comutatorul global Alt+H.
+function toggleScopedArchived(ctx) {
+  if (!ctx) {
+    showToast('Treci cu mouse-ul peste un capitol, proiect, sarcină sau subsarcină', 'Apoi apasă H ca să arăți/ascunzi arhivatele din acel capitol/proiect.');
+    return;
+  }
+  const sheet = activeSheet();
+  let scopeId, scopeLabel;
+  if (ctx.type === 'chapter') {
+    if (ctx.chapterId === '__pinned__') { showToast('Nu se poate aplica', 'Secțiunea „Azi, mâine, restante" nu e un capitol real.'); return; }
+    const chapter = sheet.chapters.find(c => c.id === ctx.chapterId);
+    if (!chapter) return;
+    scopeId = chapter.id; scopeLabel = 'capitolul „' + chapter.name + '"';
+  } else {
+    const chapter = sheet.chapters.find(c => c.id === ctx.chapterId);
+    const project = chapter && chapter.projects.find(p => p.id === ctx.projectId);
+    if (!project) return;
+    scopeId = project.id; scopeLabel = 'proiectul „' + project.name + '"';
+  }
+  ui.showArchivedScope[scopeId] = !ui.showArchivedScope[scopeId];
+  render();
+  showToast(ui.showArchivedScope[scopeId] ? 'Arhivate arătate' : 'Arhivate ascunse', 'În ' + scopeLabel + '.');
 }
 // Echivalentul lui getHoverContext(), pentru modul „Vizualizare carduri" — acolo
 // nu există o ierarhie de <details> capitol/proiect, ci un grid plat de carduri
@@ -7907,7 +8201,7 @@ function renderChapterBlock(c, sheet, anyFilterActive) {
     c.projects.forEach(p => {
       if (ui.filterProiect && p.id !== ui.filterProiect) return;
       if (ui.isolatedProjectId && p.id !== ui.isolatedProjectId) return;
-      if (p.archived && !ui.showArchivedAll) return;
+      if (p.archived && !ui.showArchivedAll && !ui.showArchivedScope[c.id]) return;
       const visibleTasks = p.tasks.filter(taskMatchesFilters);
       if (anyFilterActive && visibleTasks.length === 0) return;
       chapterHasVisible = true;
@@ -7940,7 +8234,7 @@ function renderChapterBlock(c, sheet, anyFilterActive) {
                 + '</summary>';
       projHtml += '<div class="project-body">';
       const baseList = anyFilterActive ? visibleTasks : p.tasks;
-      const showArch = !!ui.showArchivedAll;
+      const showArch = !!ui.showArchivedAll || !!ui.showArchivedScope[p.id] || !!ui.showArchivedScope[c.id];
       const list = showArch ? baseList : baseList.filter(tk => !tk.archived);
       if (list.length === 0) projHtml += '<p class="empty-note">Nicio sarcină.</p>';
       list.forEach(tk => { projHtml += renderTaskRow(c.id, p.id, tk); });
@@ -8214,7 +8508,7 @@ function renderTaskRow(chapterId, projectId, tk, extra) {
   }
   html += '</div>';
   if (!isBlank && tk.subtasks && tk.subtasks.length > 0 && !extra.hideActions) {
-    const showArchSub = !!ui.showArchivedAll;
+    const showArchSub = !!ui.showArchivedAll || !!ui.showArchivedScope[projectId] || !!ui.showArchivedScope[chapterId];
     const visSubs = showArchSub ? tk.subtasks : tk.subtasks.filter(s => !s.archived);
     if (visSubs.length > 0) {
       const subtasksOpen = ui.subtasksOpen[tk.id] !== false;
