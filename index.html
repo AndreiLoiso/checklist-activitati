@@ -765,8 +765,65 @@
   .details-popover .dp-actions { display: flex; gap: 5px; }
   .details-popover .dp-actions button { width: auto; height: auto; border-radius: 7px; border: 1px solid var(--border-strong); font-size: 12px; padding: 6px 11px; }
   .tpl-select { font-size: 12.5px; padding: 6px 8px; border-radius: 7px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); }
+  .tpl-tasks-select { font-size: 11.5px; padding: 3px 7px; border-radius: 7px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); max-width: 150px; }
   .tpl-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
   .tpl-meta { font-size: 11.5px; color: var(--text-secondary); margin-top: 2px; }
+  /* ===== Modulul de șabloane (ecran plin) ===== */
+  .tpl-module-inner { max-width: 1100px; }
+  .tpl-tab { font-size: 12.5px; padding: 6px 12px; border-radius: 7px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); }
+  .tpl-tab.active { background: #2f6fed; border-color: #2f6fed; color: #fff; font-weight: 600; }
+  .tpl-toolbar { display: flex; gap: 8px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .tpl-toolbar input[type="text"], .tpl-toolbar select { font-size: 12.5px; padding: 6px 9px; border-radius: 7px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); }
+  .tpl-toolbar input[type="text"] { flex: 1; min-width: 160px; }
+  .tpl-toolbar-spacer { flex: 1 0 auto; }
+  #tpl-export-btn, #tpl-import-btn { font-size: 12px; padding: 6px 10px; border-radius: 7px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); white-space: nowrap; }
+  .tpl-sync-hint { font-size: 11px; color: var(--text-secondary); white-space: nowrap; align-self: center; }
+  .tpl-module-body { padding: 14px 16px; }
+  .tpl-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+  .tpl-card { background: var(--surface); border: 1px solid var(--border); border-top: 4px solid #2f6fed; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 6px; position: relative; }
+  .tpl-card-draft { border-top-color: var(--warning-text); }
+  .tpl-card-stable { border-top-color: #43a047; }
+  .tpl-status-toggle { font-weight: 600; }
+  .tpl-status-toggle.tpl-status-draft { background: var(--warning-bg); border-color: var(--warning-text); color: var(--warning-text); }
+  .tpl-status-toggle.tpl-status-stable { background: var(--done-bg); border-color: var(--border-strong); color: var(--text); }
+  .tpl-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .tpl-card-top strong { font-size: 13.5px; line-height: 1.3; }
+  .tpl-card-kind { font-size: 10.5px; padding: 2px 7px; border-radius: 10px; background: var(--bg); border: 1px solid var(--border-strong); color: var(--text-secondary); white-space: nowrap; }
+  .tpl-card-meta { font-size: 11.5px; color: var(--text-secondary); }
+  .tpl-card-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tpl-card-tags span { font-size: 10.5px; padding: 1px 7px; border-radius: 9px; background: var(--bg); border: 1px solid var(--border); color: var(--text-secondary); }
+  .tpl-card-actions { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+  .tpl-card-actions button { font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); }
+  .tpl-card-preview { font-size: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 8px; margin-top: 4px; max-height: 220px; overflow-y: auto; }
+  .tpl-card-preview ul { margin: 0; padding-left: 18px; }
+  .tpl-card-preview li { margin-bottom: 3px; }
+  .tpl-card-preview .tpl-preview-sub { list-style: circle; margin-left: 14px; color: var(--text-secondary); font-size: 11px; }
+  .tpl-apply-picker { background: var(--bg); border: 1px solid var(--border-strong); border-radius: 7px; padding: 8px; margin-top: 4px; display: flex; flex-direction: column; gap: 6px; }
+  .tpl-apply-picker select { font-size: 12px; padding: 5px 7px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); }
+  .tpl-apply-picker-row { display: flex; align-items: center; gap: 6px; }
+  .tpl-apply-picker-row .primary { flex: 1; }
+  .tpl-empty-hint { padding: 30px 10px; text-align: center; color: var(--text-secondary); font-size: 13px; }
+  .tpl-editor-import { border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; margin-bottom: 14px; background: var(--surface); }
+  .tpl-editor-import-list { display: flex; flex-direction: column; gap: 4px; margin: 8px 0; max-height: 160px; overflow-y: auto; }
+  .tpl-editor-import-list label { font-size: 12.5px; display: flex; align-items: center; gap: 6px; }
+  .tpl-editor-draft-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .tpl-editor-draft-head strong { flex: 1; font-size: 13px; }
+  .tpl-editor-rows { display: flex; flex-direction: column; gap: 5px; }
+  .tpl-editor-row { display: grid; grid-template-columns: 20px 2fr 1fr 56px auto; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 6px 8px; }
+  .tpl-editor-num { font-size: 11px; color: var(--text-secondary); text-align: right; }
+  .tpl-editor-row input.tpl-editor-text { min-width: 0; font-size: 12.5px; padding: 5px 7px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); }
+  .tpl-editor-row input.tpl-editor-tags { min-width: 0; font-size: 11.5px; padding: 5px 7px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); }
+  .tpl-editor-subcount { font-size: 10.5px; color: var(--text-secondary); white-space: nowrap; text-align: center; }
+  .tpl-editor-subcount.empty { visibility: hidden; }
+  .tpl-editor-row-btns { display: flex; gap: 4px; }
+  .tpl-editor-row-btns button { font-size: 11px; padding: 3px 7px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); }
+  .tpl-editor-row-btns button.active { border-color: var(--primary-text); font-weight: 700; }
+  .tpl-editor-section-title { margin: 10px 0 3px; font-size: 12px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--text-secondary); border-bottom: 1px solid var(--border); padding-bottom: 3px; }
+  .tpl-editor-section-title:first-child { margin-top: 0; }
+  .tpl-preview-section-title { margin: 8px 0 2px; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); }
+  .tpl-preview-list { margin: 0 0 4px 18px; padding: 0; }
+  .tpl-editor-generate { margin-top: 12px; }
+  .tpl-editor-generate button { font-size: 13px; padding: 8px 16px; }
   .bulk-sep { width: 1px; align-self: stretch; background: var(--border-strong); margin: 0 3px; }
   #bulk-move-bar input, #bulk-move-bar select { font-size: 12.5px; padding: 5px 7px; border-radius: 7px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); }
   #bulk-apply { font-size: 12.5px; padding: 6px 11px; }
@@ -965,7 +1022,7 @@
       <summary>🏷 Organizare</summary>
       <div class="opt-cat-buttons">
         <button id="tags-manage-btn" data-tip="(Alt+T) - Administrează tag-urile: redenumește, șterge, alege culori">🏷 Tag-uri</button>
-        <button id="templates-btn" data-tip="(Alt+M) - Șabloane de proiect, refolosibile">⎘ Șabloane</button>
+        <button id="templates-btn" data-tip="(Alt+M) - Modul Șabloane: bibliotecă reutilizabilă de proceduri (proiecte întregi sau seturi de sarcini)">⎘ Șabloane</button>
       </div>
     </details>
     <details class="opt-category" style="--cat-c1:#78909c;--cat-c2:#546e7a;">
@@ -1173,6 +1230,8 @@
   <input type="text" id="bulk-assignee" list="assignee-list" placeholder="Atribuit lui…" size="12">
   <input type="text" id="bulk-tag-add" list="tag-list" placeholder="+ tag…" size="10" data-tip="Adaugă acest tag la toate sarcinile selectate">
   <button type="button" id="bulk-apply">Aplică</button>
+  <span class="bulk-sep"></span>
+  <button type="button" id="bulk-save-template" data-tip="Salvează sarcinile selectate (cu subsarcinile lor) ca șablon reutilizabil — fără termen, fără important/urgent/bifat">💾 Șablon</button>
   <button type="button" id="bulk-move-cancel">Anulează selecția</button>
 </div>
 <div id="shortcuts-modal" class="shortcuts-modal" style="display:none;">
@@ -1242,7 +1301,7 @@
       <li><kbd>Alt</kbd>+<kbd>K</kbd> Deschide scurtăturile într-o fereastră separată</li>
       <li><kbd>Alt</kbd>+<kbd>J</kbd> Istoricul modificărilor, pe zile</li>
       <li><kbd>Alt</kbd>+<kbd>W</kbd> Încărcarea pe responsabil</li>
-      <li><kbd>Alt</kbd>+<kbd>M</kbd> Șabloane de proiect</li>
+      <li><kbd>Alt</kbd>+<kbd>M</kbd> Șabloane (bibliotecă reutilizabilă)</li>
       <li><kbd>Alt</kbd>+<kbd>C</kbd> Sincronizare cloud</li>
 
       <li><strong>— Navigare & sistem —</strong></li>
@@ -1268,10 +1327,36 @@
     <div id="cloud-content"></div>
   </div>
 </div>
-<div id="templates-modal" class="shortcuts-modal" style="display:none;">
-  <div class="shortcuts-modal-inner changelog-modal-inner">
-    <h3>Șabloane de proiect <button type="button" id="templates-close" class="icon-btn">✕</button></h3>
-    <div id="templates-content"></div>
+<div id="templates-modal" class="gantt-modal" style="display:none;">
+  <div class="gantt-inner tpl-module-inner">
+    <div class="gantt-top">
+      <h3>📋 Șabloane</h3>
+      <div class="gantt-controls">
+        <button type="button" id="tpl-tab-browse" class="tpl-tab active" data-tip="Răsfoiește șabloanele salvate">Răsfoiește</button>
+        <button type="button" id="tpl-tab-editor" class="tpl-tab" data-tip="Comasează șabloane existente, reordonează/șterge/adaugă sarcini, apoi generează un șablon nou">🧩 Editor</button>
+        <button type="button" id="templates-close" class="icon-btn">✕</button>
+      </div>
+    </div>
+    <div id="tpl-browse-toolbar" class="tpl-toolbar">
+      <input type="text" id="tpl-search" placeholder="Caută șablon după nume…">
+      <select id="tpl-tag-filter"><option value="">Toate tag-urile</option></select>
+      <select id="tpl-status-filter">
+        <option value="">Toate stările</option>
+        <option value="draft">🧩 Draft</option>
+        <option value="stable">✅ Stabil</option>
+      </select>
+      <select id="tpl-sort">
+        <option value="recent">Cele mai recente</option>
+        <option value="name">După nume (A-Z)</option>
+        <option value="usage">Cele mai folosite</option>
+      </select>
+      <span class="tpl-toolbar-spacer"></span>
+      <span id="tpl-sync-hint" class="tpl-sync-hint" data-tip="Șabloanele se sincronizează separat de restul datelor — vezi „☁️ Cloud" pentru detalii"></span>
+      <button type="button" id="tpl-export-btn" data-tip="Descarcă .json cu șabloanele afișate mai jos (respectă căutarea/filtrele active)">⬇ Exportă</button>
+      <button type="button" id="tpl-import-btn" data-tip="Importă șabloane dintr-un fișier .json (se adaugă la bibliotecă, nu înlocuiesc nimic)">⬆ Importă</button>
+      <input type="file" id="tpl-import-file" accept="application/json" style="display:none;">
+    </div>
+    <div id="templates-content" class="gantt-body tpl-module-body"></div>
   </div>
 </div>
 <div id="tags-manage-modal" class="shortcuts-modal" style="display:none;">
@@ -1663,7 +1748,6 @@ function seedData() {
   return {
     version: 2,
     activeSheetId: 'sheet-work', savedViews: [],
-    templates: [],
     tagColors: {},
     sheets: [
       { id: 'sheet-work', name: 'Work', pinnedPosition: 0, icon: '💼', color: '', type: 'tasks', viewMode: 'dashboard', chapters: [work, delegate, standby, finalizate, administrativ, diverse] },
@@ -1673,6 +1757,7 @@ function seedData() {
 }
 
 const STORAGE_KEY = 'sbg-checklist-v3';
+const TEMPLATES_STORAGE_KEY = 'sbg-templates-v1';
 const AUTOSAVE_KEY = 'sbg-daily-autosave-v1';
 const AUTOSAVE_HOUR = 18;
 const AUTOSAVE_MAX = 10;
@@ -1691,12 +1776,21 @@ function visibleSheets() { return state.sheets.filter(s => !s.private || private
 // ===================== /FOI PRIVATE =====================
 const THEME_KEY = 'sbg-checklist-theme';
 const VIEW_PREFS_KEY = 'sbg-checklist-view-prefs';
-const APP_VERSION = '6.8.0';
+const APP_VERSION = '6.9.0';
 document.getElementById('app-version').textContent = APP_VERSION;
 document.getElementById('h1-version').textContent = 'v' + APP_VERSION;
 document.title = 'Checklist activități v' + APP_VERSION;
 
 const CHANGELOG = [
+  { v:'6.9.0', items:[
+    'Nou: modulul „📋 Șabloane" — bibliotecă de proceduri reutilizabile, ecran plin, cu tab „Răsfoiește" (carduri, căutare, tag-uri, filtru de stare, sortare) și tab „🧩 Editor" (comasează 1+ șabloane existente într-unul nou, cu reordonare, blocuri și sarcini adăugate manual)',
+    'Nou: șablon și doar din sarcini selectate liber (nu doar proiect întreg) — „☑️ Selectează sarcini" → „💾 Șablon" din bara de selecție în bloc',
+    'Nou: blocuri (secțiuni) pentru șabloane mari, cu numerotare continuă a sarcinilor peste blocuri, atât în previzualizare cât și în editor',
+    'Nou: fiecare șablon are o stare — 🧩 Draft / ✅ Stabil (chenar portocaliu/verde) — și un contor de utilizare (de câte ori și când a fost aplicat ultima dată), cu filtru și sortare după acestea',
+    'Nou: picker-ul de aplicare (sheet → capitol → proiect) permite crearea unui capitol/proiect nou direct din el, ține minte ultima destinație folosită pentru fiecare șablon, cu buton „↺" de resetare la implicit',
+    'Nou: export/import `.json` dedicat șabloanelor, separat de backup-ul general al aplicației — exportă doar lista filtrată sau un singur șablon; import-ul adaugă la bibliotecă, fără să suprascrie nimic',
+    'Nou: sincronizare în cloud pentru șabloane, într-un document separat de restul datelor — o restaurare din „Istoric sincronizat" nu afectează niciodată biblioteca de șabloane. Adăugările se propagă automat între dispozitive; ștergerile nu se propagă (trebuie șterse manual pe fiecare dispozitiv)'
+  ]},
   { v:'6.8.0', items:[
     'Nou: istoric al salvărilor sincronizate în cloud — buton „☁️ Istoric sincronizat" (lângă „🕕 Autosave zilnic", sau Alt+Y). Diferit de autosave: e comun pe toate dispozitivele conectate la același cont de cloud, organizat pe grupuri (Astăzi, Ieri, Săptămâna aceasta, Luna aceasta, apoi lună câte lună). Se adaugă o salvare nouă automat la fiecare sincronizare reală, cel mult o dată la 3 ore și cel mult 5 pe zi',
     'Restaurarea unei salvări din istoric nu șterge nimic — rămân vizibile atât cele de dinainte, cât și cele de după, oricând poți trece la altă versiune. Fiecare salvare se poate și descărca individual (.json, reimportabil) sau șterge din istoric',
@@ -2494,26 +2588,298 @@ function exportGanttPng() {
   img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(out)));
 }
 
+// Un șablon e fie un „proiect întreg" (kind:'project', clonat cu ⧉ → Salvează ca
+// șablon), fie o selecție liberă de sarcini (kind:'tasks', salvată din bara de
+// selecție în bloc). Șabloanele mai vechi (înainte de această distincție) nu au
+// `kind` deloc — le tratăm implicit ca 'project', forma lor originală.
+function templateTasks(t) {
+  return t.kind === 'tasks' ? (t.tasks||[]) : ((t.project && t.project.tasks) || []);
+}
+function templateKindLabel(t) {
+  return t.kind === 'tasks' ? 'sarcini selectate' : 'proiect';
+}
+// ===================== ȘABLOANE: export/import .json dedicat =====================
+// Fișier separat de backup-ul complet al aplicației (care conține `state`) —
+// aici exportăm/importăm DOAR biblioteca de șabloane, ca să poată fi mutată
+// pe alt calculator sau împărtășită, independent de restul datelor.
+function slugifyForFilename(s) {
+  return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-zA-Z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,40) || 'sablon';
+}
+function exportTemplatesToFile(list, filename) {
+  if (!list.length) { alert('Nu există niciun șablon de exportat.'); return; }
+  const payload = { kind: 'sbg-templates-export', exportedAt: new Date().toISOString(), templates: list };
+  downloadBlob(JSON.stringify(payload, null, 2), 'application/json', filename);
+}
+// Acceptă mai multe forme de fișier, ca să poată citi și un export dintr-o
+// versiune viitoare/anterioară: { templates: [...] }, un array simplu, sau
+// chiar un singur șablon „gol" (fără array în jur).
+function extractTemplatesFromImport(parsed) {
+  if (Array.isArray(parsed)) return parsed;
+  if (parsed && Array.isArray(parsed.templates)) return parsed.templates;
+  if (parsed && parsed.kind && (parsed.tasks || parsed.project)) return [parsed];
+  return [];
+}
+function importTemplatesFromRaw(rawList) {
+  let imported = 0, skipped = 0;
+  rawList.forEach(raw => {
+    if (!raw || (raw.kind !== 'tasks' && raw.kind !== 'project')) { skipped++; return; }
+    if (raw.kind === 'tasks' && !Array.isArray(raw.tasks)) { skipped++; return; }
+    if (raw.kind === 'project' && !raw.project) { skipped++; return; }
+    // Clonăm cu id-uri noi (pentru șablon + sarcini/subsarcini/proiect) — evită
+    // coliziuni dacă același fișier e importat de mai multe ori, sau dacă
+    // șablonul a fost exportat chiar din biblioteca curentă.
+    const nt = {
+      id: genId('tpl'),
+      name: (raw.name || 'Șablon importat').trim() || 'Șablon importat',
+      savedAt: raw.savedAt || todayISO(),
+      kind: raw.kind,
+      status: (raw.status === 'draft' || raw.status === 'stable') ? raw.status : 'draft',
+      usageCount: typeof raw.usageCount === 'number' ? raw.usageCount : 0,
+      lastUsedAt: raw.lastUsedAt || null,
+      updatedAt: Date.now(),
+    };
+    if (raw.kind === 'tasks') nt.tasks = raw.tasks.map(cloneTaskFresh);
+    else nt.project = cloneProjectFresh(raw.project);
+    // Destinația memorată e specifică unei alte instalări (id-uri de sheet/
+    // capitol/proiect care aproape sigur nu există aici) — nu o păstrăm.
+    templates.push(nt);
+    imported++;
+  });
+  if (imported) persistTemplates();
+  return { imported, skipped };
+}
+// ===================== MODULUL DE ȘABLOANE (ecran plin) =====================
+// Reia tag-urile folosite pe sarcinile/subsarcinile din interiorul șabloanelor —
+// nu există un câmp separat de tag-uri „pe șablon"; filtrarea se face automat
+// pe baza a ce e deja pus pe sarcini, fără muncă suplimentară de etichetare.
+function allTemplateTags() {
+  const set = new Set();
+  (templates||[]).forEach(t => {
+    templateTasks(t).forEach(tk => {
+      (tk.tags||[]).forEach(tag => set.add(tag));
+      (tk.subtasks||[]).forEach(s => (s.tags||[]).forEach(tag => set.add(tag)));
+    });
+  });
+  return [...set].sort((a,b) => a.localeCompare(b, 'ro'));
+}
+function templateHasTag(t, tag) {
+  if (!tag) return true;
+  return templateTasks(t).some(tk => (tk.tags||[]).includes(tag) || (tk.subtasks||[]).some(s => (s.tags||[]).includes(tag)));
+}
+function filteredSortedTemplates() {
+  const q = (ui.templatesSearch||'').trim().toLowerCase();
+  let list = (templates||[]).filter(t => {
+    if (q && !t.name.toLowerCase().includes(q)) return false;
+    if (ui.templatesTagFilter && !templateHasTag(t, ui.templatesTagFilter)) return false;
+    if (ui.templatesStatusFilter && (t.status||'stable') !== ui.templatesStatusFilter) return false;
+    return true;
+  });
+  if (ui.templatesSort === 'name') list = list.slice().sort((a,b) => a.name.localeCompare(b.name, 'ro'));
+  else if (ui.templatesSort === 'usage') list = list.slice().sort((a,b) => (b.usageCount||0) - (a.usageCount||0));
+  else list = list.slice().sort((a,b) => (b.savedAt||'').localeCompare(a.savedAt||''));
+  return list;
+}
 function renderTemplates() {
-  const list = state.templates || [];
   const el = document.getElementById('templates-content');
   if (!el) return;
-  if (!list.length) {
-    el.innerHTML = '<p class="empty-note">Niciun șablon salvat încă. Îl salvezi din butonul ⧉ al unui proiect → „Salvează ca șablon".</p>';
+  const toolbar = document.getElementById('tpl-browse-toolbar');
+  document.getElementById('tpl-tab-browse').classList.toggle('active', ui.templatesTab === 'browse');
+  document.getElementById('tpl-tab-editor').classList.toggle('active', ui.templatesTab === 'editor');
+  toolbar.style.display = ui.templatesTab === 'browse' ? 'flex' : 'none';
+  if (ui.templatesTab === 'editor') { renderTemplatesEditor(); return; }
+  renderTemplatesBrowse();
+}
+function renderTemplatesBrowse() {
+  const el = document.getElementById('templates-content');
+  const tagSel = document.getElementById('tpl-tag-filter');
+  const tags = allTemplateTags();
+  tagSel.innerHTML = '<option value="">Toate tag-urile</option>' + tags.map(tag => '<option value="'+escapeHtml(tag)+'"'+(tag===ui.templatesTagFilter?' selected':'')+'>#'+escapeHtml(tag)+'</option>').join('');
+  document.getElementById('tpl-sort').value = ui.templatesSort;
+  document.getElementById('tpl-status-filter').value = ui.templatesStatusFilter;
+  const syncHint = document.getElementById('tpl-sync-hint');
+  if (syncHint) syncHint.textContent = fbUser ? '☁️ sincronizate' : '💻 doar local';
+  if (!(templates||[]).length) {
+    el.innerHTML = '<p class="tpl-empty-hint">Niciun șablon salvat încă.<br>Îl salvezi fie din butonul ⧉ al unui proiect → „Salvează ca șablon" (tot proiectul), fie selectând sarcini (bara de selecție în bloc) → „💾 Șablon" (doar sarcinile alese).</p>';
     return;
   }
-  el.innerHTML = list.map(t => {
-    const nTasks = (t.project.tasks||[]).length;
-    const nSubs = (t.project.tasks||[]).reduce((a,x)=>a+((x.subtasks||[]).length),0);
-    return '<div class="tpl-row"><div><strong>'+escapeHtml(t.name)+'</strong>'
-      + '<div class="tpl-meta">'+nTasks+' sarcini · '+nSubs+' subsarcini · salvat '+fmtDate(t.savedAt)+'</div></div>'
-      + '<button type="button" class="icon-btn ghost-danger" data-action="del-template" data-template="'+t.id+'" data-tip="Șterge șablonul">✕</button></div>';
+  const list = filteredSortedTemplates();
+  if (!list.length) { el.innerHTML = '<p class="tpl-empty-hint">Niciun șablon nu se potrivește cu căutarea/filtrul curent.</p>'; return; }
+  el.innerHTML = '<div class="tpl-cards-grid">' + list.map(renderTemplateCard).join('') + '</div>';
+}
+function renderTemplateCard(t) {
+  const taskList = templateTasks(t);
+  const nTasks = taskList.length;
+  const nSubs = taskList.reduce((a,x)=>a+((x.subtasks||[]).length),0);
+  const tagSet = new Set();
+  taskList.forEach(tk => { (tk.tags||[]).forEach(tag=>tagSet.add(tag)); (tk.subtasks||[]).forEach(s=>(s.tags||[]).forEach(tag=>tagSet.add(tag))); });
+  const status = t.status || 'stable';
+  const usageCount = t.usageCount || 0;
+  let html = '<div class="tpl-card tpl-card-'+status+'" data-template="'+t.id+'">';
+  html += '<div class="tpl-card-top"><strong>'+escapeHtml(t.name)+'</strong><span class="tpl-card-kind">'+templateKindLabel(t)+'</span></div>';
+  html += '<div class="tpl-card-meta">'+nTasks+' sarcini · '+nSubs+' subsarcini · salvat '+fmtDate(t.savedAt)
+    + ' · folosit '+usageCount+(usageCount===1?' dată':' ori')+(t.lastUsedAt ? ' (ultima: '+fmtDate(t.lastUsedAt)+')' : '')+'</div>';
+  if (tagSet.size) html += '<div class="tpl-card-tags">'+[...tagSet].map(tag=>'<span>#'+escapeHtml(tag)+'</span>').join('')+'</div>';
+  html += '<div class="tpl-card-actions">'
+    + '<button type="button" class="tpl-status-toggle tpl-status-'+status+'" data-action="tplcard-toggle-status" data-template="'+t.id+'" data-tip="'+(status==='draft'?'Marchează drept stabil':'Marchează drept draft')+'">'+(status==='draft'?'🧩 Draft':'✅ Stabil')+'</button>'
+    + '<button type="button" data-action="tplcard-preview" data-template="'+t.id+'">'+(ui.templatePreviewOpen[t.id]?'👁 Ascunde':'👁 Previzualizează')+'</button>'
+    + '<button type="button" data-action="tplcard-apply-toggle" data-template="'+t.id+'">➕ Aplică</button>'
+    + '<button type="button" data-action="tplcard-edit" data-template="'+t.id+'">✏️ Editează</button>'
+    + '<button type="button" data-action="tplcard-export" data-template="'+t.id+'" data-tip="Descarcă doar acest șablon ca .json">⬇</button>'
+    + '<button type="button" class="ghost-danger" data-action="del-template" data-template="'+t.id+'">🗑</button>'
+    + '</div>';
+  if (ui.templatePreviewOpen[t.id]) {
+    html += '<div class="tpl-card-preview">' + renderTemplateTaskListNumbered(taskList) + '</div>';
+  }
+  if (ui.templateApplyOpen === t.id) html += renderTemplateApplyPicker(t);
+  html += '</div>';
+  return html;
+}
+// Grupează o listă de sarcini de șablon în blocuri, pe baza câmpului
+// opțional `section` (setat pe prima sarcină a fiecărui bloc). Sarcinile
+// dinaintea primului marcaj de secțiune formează un bloc fără titlu.
+function groupTemplateTasksBySection(taskList) {
+  const groups = [];
+  (taskList||[]).forEach(tk => {
+    const startsNew = tk.section && tk.section.trim();
+    if (startsNew || !groups.length) groups.push({ title: startsNew ? tk.section.trim() : null, tasks: [] });
+    groups[groups.length-1].tasks.push(tk);
+  });
+  return groups;
+}
+// Randează lista de sarcini a unui șablon (previzualizare) cu numerotare
+// continuă și titluri de bloc, dacă există.
+function renderTemplateTaskListNumbered(taskList) {
+  const groups = groupTemplateTasksBySection(taskList);
+  let n = 1;
+  return groups.map(g => {
+    let h = g.title ? '<div class="tpl-preview-section-title">'+escapeHtml(g.title)+'</div>' : '';
+    h += '<ol class="tpl-preview-list" start="'+n+'">' + g.tasks.map(tk => {
+      n++;
+      let li = '<li>'+escapeHtml(tk.text||'(fără text)');
+      if ((tk.subtasks||[]).length) li += '<ul>' + tk.subtasks.map(s=>'<li class="tpl-preview-sub">'+escapeHtml(s.text||'(fără text)')+'</li>').join('') + '</ul>';
+      li += '</li>';
+      return li;
+    }).join('') + '</ol>';
+    return h;
   }).join('');
 }
+function renderTemplateApplyPicker(t) {
+  const sheetId = ui.templateApplySheetId || activeSheet().id;
+  const sheet = visibleSheets().find(s=>s.id===sheetId) || activeSheet();
+  const chapters = sheet.chapters.filter(c => !c.archived);
+  const isNewChapter = ui.templateApplyChapterId === '__new__';
+  const chapterId = isNewChapter ? '__new__' : (chapters.some(c=>c.id===ui.templateApplyChapterId) ? ui.templateApplyChapterId : (chapters[0] ? chapters[0].id : '__new__'));
+  let html = '<div class="tpl-apply-picker" data-template="'+t.id+'">';
+  html += '<select class="tpl-apply-sheet"><option value="">— sheet —</option>' + visibleSheets().map(s=>'<option value="'+s.id+'"'+(s.id===sheet.id?' selected':'')+'>'+escapeHtml(s.name)+'</option>').join('') + '</select>';
+  html += '<select class="tpl-apply-chapter">' + chapters.map(c=>'<option value="'+c.id+'"'+(c.id===chapterId?' selected':'')+'>'+escapeHtml(c.name)+'</option>').join('') + '<option value="__new__"'+(chapterId==='__new__'?' selected':'')+'>+ Capitol nou…</option></select>';
+  if (t.kind === 'tasks') {
+    const chapter = isNewChapter ? null : chapters.find(c=>c.id===chapterId);
+    const projects = chapter ? chapter.projects.filter(p => !p.archived) : [];
+    const projectId = (!isNewChapter && projects.some(p=>p.id===ui.templateApplyProjectId)) ? ui.templateApplyProjectId : (projects[0] ? projects[0].id : '__new__');
+    html += '<select class="tpl-apply-project">' + projects.map(p=>'<option value="'+p.id+'"'+(p.id===projectId?' selected':'')+'>'+escapeHtml(p.name)+'</option>').join('') + '<option value="__new__"'+(projectId==='__new__'?' selected':'')+'>+ Proiect nou…</option></select>';
+  }
+  html += '<div class="tpl-apply-picker-row">'
+    + '<button type="button" class="primary" data-action="tplcard-apply-confirm" data-template="'+t.id+'">Aplică aici</button>'
+    + '<button type="button" class="icon-btn" data-action="tplcard-apply-reset" data-template="'+t.id+'" data-tip="Resetează la implicit (primul capitol/proiect) — uită ultima destinație folosită pentru acest șablon">↺</button>'
+    + '</div>';
+  html += '</div>';
+  return html;
+}
+// ===================== Editor de șabloane: comasare/reordonare/generare =====================
+function renderTemplatesEditor() {
+  const el = document.getElementById('templates-content');
+  let html = '<div class="tpl-editor">';
+  html += '<div class="tpl-editor-import"><strong>Importă din șabloane existente în lista de lucru:</strong>';
+  if ((templates||[]).length) {
+    html += '<div class="tpl-editor-import-list">' + templates.map(t => {
+      const n = templateTasks(t).length;
+      return '<label><input type="checkbox" class="tpl-editor-import-cb" data-template="'+t.id+'"> '+escapeHtml(t.name)+' ('+n+' sarcini)</label>';
+    }).join('') + '</div>';
+    html += '<button type="button" id="tpl-editor-import-btn">+ Adaugă la lista de lucru</button>';
+  } else {
+    html += '<p class="tpl-empty-hint">Nu există încă niciun șablon din care să imporți.</p>';
+  }
+  html += '</div>';
+  html += '<div class="tpl-editor-draft">';
+  html += '<div class="tpl-editor-draft-head"><strong>'+ui.templateEditorDraft.length+(ui.templateEditorDraft.length===1?' sarcină în lucru':' sarcini în lucru')+'</strong>'
+    + '<button type="button" id="tpl-editor-add-task">+ Sarcină nouă</button>'
+    + '<button type="button" id="tpl-editor-clear">Golește lista</button></div>';
+  if (ui.templateEditorDraft.length) {
+    html += '<div class="tpl-editor-rows">' + renderTemplateEditorRows() + '</div>';
+    html += '<div class="tpl-editor-generate"><button type="button" class="primary" id="tpl-editor-generate-btn">✅ Generează șablon nou</button></div>';
+  } else {
+    html += '<p class="tpl-empty-hint">Lista de lucru e goală. Importă din șabloane existente mai sus, sau adaugă o sarcină nouă.</p>';
+  }
+  html += '</div></div>';
+  el.innerHTML = html;
+}
+function renderTemplateEditorRows() {
+  const draft = ui.templateEditorDraft;
+  const groups = [];
+  draft.forEach((tk, idx) => {
+    const startsNew = tk.section && tk.section.trim();
+    if (startsNew || !groups.length) groups.push({ title: startsNew ? tk.section.trim() : null, idxs: [] });
+    groups[groups.length-1].idxs.push(idx);
+  });
+  return groups.map(g => {
+    let h = g.title ? '<div class="tpl-editor-section-title">'+escapeHtml(g.title)+'</div>' : '';
+    h += g.idxs.map(idx => renderTemplateEditorRow(draft[idx], idx)).join('');
+    return h;
+  }).join('');
+}
+function renderTemplateEditorRow(tk, idx) {
+  const nSubs = (tk.subtasks||[]).length;
+  const hasSection = tk.section && tk.section.trim();
+  return '<div class="tpl-editor-row" data-idx="'+idx+'">'
+    + '<span class="tpl-editor-num">'+(idx+1)+'.</span>'
+    + '<input type="text" class="tpl-editor-text" data-idx="'+idx+'" value="'+escapeHtml(tk.text||'')+'" placeholder="Text sarcină…">'
+    + '<input type="text" class="tpl-editor-tags" data-idx="'+idx+'" value="'+escapeHtml((tk.tags||[]).join(', '))+'" placeholder="tag-uri, separate prin virgulă">'
+    + '<span class="tpl-editor-subcount'+(nSubs?'':' empty')+'">'+(nSubs ? nSubs+' subs.' : '—')+'</span>'
+    + '<div class="tpl-editor-row-btns">'
+    + '<button type="button" class="'+(hasSection?'active':'')+'" data-action="tpl-editor-section" data-idx="'+idx+'" data-tip="'+(hasSection?'Editează/elimină blocul':'Începe un bloc nou aici')+'">🔖</button>'
+    + '<button type="button" data-action="tpl-editor-up" data-idx="'+idx+'"'+(idx===0?' disabled':'')+'>▲</button>'
+    + '<button type="button" data-action="tpl-editor-down" data-idx="'+idx+'"'+(idx===ui.templateEditorDraft.length-1?' disabled':'')+'>▼</button>'
+    + '<button type="button" class="ghost-danger" data-action="tpl-editor-del" data-idx="'+idx+'">✕</button>'
+    + '</div>'
+    + '</div>';
+}
 document.getElementById('templates-btn').addEventListener('click', () => {
+  ui.templatesTab = 'browse';
   renderTemplates();
   document.getElementById('templates-modal').style.display = 'flex';
 });
+document.getElementById('tpl-tab-browse').addEventListener('click', () => { ui.templatesTab = 'browse'; renderTemplates(); });
+document.getElementById('tpl-tab-editor').addEventListener('click', () => { ui.templatesTab = 'editor'; renderTemplates(); });
+document.getElementById('tpl-search').addEventListener('input', e => { ui.templatesSearch = e.target.value; renderTemplatesBrowse(); });
+document.getElementById('tpl-tag-filter').addEventListener('change', e => { ui.templatesTagFilter = e.target.value; renderTemplatesBrowse(); });
+document.getElementById('tpl-status-filter').addEventListener('change', e => { ui.templatesStatusFilter = e.target.value; renderTemplatesBrowse(); });
+document.getElementById('tpl-export-btn').addEventListener('click', () => {
+  const list = filteredSortedTemplates();
+  exportTemplatesToFile(list, 'Checklist_activitati_sabloane_' + todayISO() + '.json');
+});
+document.getElementById('tpl-import-btn').addEventListener('click', () => document.getElementById('tpl-import-file').click());
+document.getElementById('tpl-import-file').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      const rawList = extractTemplatesFromImport(parsed);
+      if (!rawList.length) throw new Error('niciun șablon găsit în fișier');
+      const { imported, skipped } = importTemplatesFromRaw(rawList);
+      renderTemplatesBrowse();
+      if (imported) showToast(imported+(imported===1?' șablon importat':' șabloane importate')+(skipped?' ('+skipped+' ignorate, format invalid)':''), 'Adăugate la bibliotecă, ca „Draft" — nimic existent nu a fost înlocuit.');
+      else alert('Niciun șablon valid în fișier.');
+    } catch (err) {
+      alert('Fișierul nu pare a fi un export valid de șabloane.');
+    }
+    e.target.value = '';
+  };
+  reader.onerror = () => alert('Nu am putut citi fișierul.');
+  reader.readAsText(file);
+});
+document.getElementById('tpl-sort').addEventListener('change', e => { ui.templatesSort = e.target.value; renderTemplatesBrowse(); });
 function renderTagsManage() {
   const el = document.getElementById('tags-manage-content');
   const counts = tagUsageCounts();
@@ -2719,14 +3085,14 @@ const COMMAND_GROUPS = [
     { label: 'Deschide toate scurtăturile, într-o fereastră separată', short: 'fereastră scurtături', keys: 'Alt+K', run: () => dispatchShortcutKey('k', { altKey: true }) },
     { label: 'Istoricul modificărilor, pe zile', short: 'istoric zilnic', keys: 'Alt+J', run: () => dispatchShortcutKey('j', { altKey: true }) },
     { label: 'Încărcarea pe responsabil', short: 'încărcare', keys: 'Alt+W', run: () => dispatchShortcutKey('w', { altKey: true }) },
-    { label: 'Șabloane de proiect', short: 'șabloane', keys: 'Alt+M', run: () => dispatchShortcutKey('m', { altKey: true }) },
+    { label: 'Șabloane (bibliotecă reutilizabilă)', short: 'șabloane', keys: 'Alt+M', run: () => dispatchShortcutKey('m', { altKey: true }) },
     { label: 'Sincronizare cloud', short: 'cloud', keys: 'Alt+C', run: () => dispatchShortcutKey('c', { altKey: true }) },
     { label: 'Istoric salvări sincronizate (cloud)', short: 'istoric sync', keys: 'Alt+Y', run: () => dispatchShortcutKey('y', { altKey: true }) },
   ]},
   { category: 'Panouri', items: [
     { label: 'Arată/ascunde Sumar general', keys: 'Alt+G', run: () => dispatchShortcutKey('g', { altKey: true }) },
     { label: 'Administrare tag-uri', keys: 'Alt+T', run: () => dispatchShortcutKey('t', { altKey: true }) },
-    { label: 'Șabloane de proiect', keys: '', run: () => document.getElementById('templates-btn').click() },
+    { label: 'Șabloane (bibliotecă reutilizabilă)', keys: '', run: () => document.getElementById('templates-btn').click() },
     { label: 'Sincronizare cloud', keys: '', run: () => document.getElementById('cloud-btn').click() },
     { label: 'Istoric salvări sincronizate', keys: 'Alt+Y', run: () => document.getElementById('sync-history-btn').click() },
     { label: 'Arată/ascunde elemente arhivate (global)', keys: 'Alt+H', run: () => dispatchShortcutKey('h', { altKey: true }) },
@@ -3249,16 +3615,248 @@ document.getElementById('templates-close').addEventListener('click', () => {
 });
 document.getElementById('templates-modal').addEventListener('click', e => {
   if (e.target.id === 'templates-modal') { document.getElementById('templates-modal').style.display = 'none'; return; }
+
   const del = e.target.closest('[data-action="del-template"]');
-  if (!del) return;
-  const idx = (state.templates||[]).findIndex(t => t.id === del.dataset.template);
-  if (idx === -1) return;
-  const [removed] = state.templates.splice(idx, 1);
-  persist(); renderTemplates(); render();
-  showUndoToast('Șablon șters: "'+removed.name+'"', () => {
-    state.templates.splice(idx, 0, removed);
-    persist(); renderTemplates(); render();
-  });
+  if (del) {
+    const idx = (templates||[]).findIndex(t => t.id === del.dataset.template);
+    if (idx === -1) return;
+    const [removed] = templates.splice(idx, 1);
+    persistTemplates(); renderTemplates(); render();
+    showUndoToast('Șablon șters: "'+removed.name+'"', () => {
+      templates.splice(idx, 0, removed);
+      persistTemplates(); renderTemplates(); render();
+    });
+    return;
+  }
+
+  const statusBtn = e.target.closest('[data-action="tplcard-toggle-status"]');
+  if (statusBtn) {
+    const tpl = (templates||[]).find(t => t.id === statusBtn.dataset.template);
+    if (!tpl) return;
+    tpl.status = (tpl.status || 'stable') === 'draft' ? 'stable' : 'draft';
+    tpl.updatedAt = Date.now();
+    persistTemplates();
+    renderTemplatesBrowse();
+    return;
+  }
+
+  const prevBtn = e.target.closest('[data-action="tplcard-preview"]');
+  if (prevBtn) {
+    const id = prevBtn.dataset.template;
+    ui.templatePreviewOpen[id] = !ui.templatePreviewOpen[id];
+    renderTemplatesBrowse();
+    return;
+  }
+
+  const applyToggle = e.target.closest('[data-action="tplcard-apply-toggle"]');
+  if (applyToggle) {
+    const id = applyToggle.dataset.template;
+    if (ui.templateApplyOpen === id) { ui.templateApplyOpen = null; }
+    else {
+      ui.templateApplyOpen = id;
+      // Reia ultima destinație folosită la aplicarea ACESTUI șablon, dacă există
+      // (memorată pe șablon, nu global) — altfel implicit: primul sheet/capitol/proiect.
+      const tpl = (templates||[]).find(t => t.id === id);
+      if (tpl && tpl.lastAppliedSheetId) {
+        ui.templateApplySheetId = tpl.lastAppliedSheetId;
+        ui.templateApplyChapterId = tpl.lastAppliedChapterId || null;
+        ui.templateApplyProjectId = tpl.lastAppliedProjectId || null;
+      } else {
+        ui.templateApplySheetId = activeSheet().id;
+        ui.templateApplyChapterId = null;
+        ui.templateApplyProjectId = null;
+      }
+    }
+    renderTemplatesBrowse();
+    return;
+  }
+
+  const applyReset = e.target.closest('[data-action="tplcard-apply-reset"]');
+  if (applyReset) {
+    const tpl = (templates||[]).find(t => t.id === applyReset.dataset.template);
+    if (tpl) {
+      delete tpl.lastAppliedSheetId; delete tpl.lastAppliedChapterId; delete tpl.lastAppliedProjectId;
+      tpl.updatedAt = Date.now();
+      persistTemplates();
+    }
+    ui.templateApplySheetId = activeSheet().id;
+    ui.templateApplyChapterId = null;
+    ui.templateApplyProjectId = null;
+    renderTemplatesBrowse();
+    return;
+  }
+
+  const applyConfirm = e.target.closest('[data-action="tplcard-apply-confirm"]');
+  if (applyConfirm) {
+    const tpl = (templates||[]).find(t => t.id === applyConfirm.dataset.template);
+    if (!tpl) return;
+    const picker = applyConfirm.closest('.tpl-apply-picker');
+    const sheetSel = picker.querySelector('.tpl-apply-sheet');
+    const chapterSel = picker.querySelector('.tpl-apply-chapter');
+    const destSheet = state.sheets.find(s => s.id === sheetSel.value);
+    if (!destSheet) { alert('Alege un sheet.'); return; }
+    let destChapter;
+    let chapterIsNew = false;
+    if (chapterSel.value === '__new__') {
+      const chName = prompt('Nume pentru noul capitol:', '');
+      if (!chName || !chName.trim()) return;
+      destChapter = mkChapter(chName.trim(), nextColor(), []);
+      destSheet.chapters.push(destChapter);
+      chapterIsNew = true;
+    } else {
+      destChapter = destSheet.chapters.find(c => c.id === chapterSel.value);
+      if (!destChapter) { alert('Alege un capitol.'); return; }
+    }
+    let appliedProjectId = null;
+    if (tpl.kind === 'tasks') {
+      const projSel = picker.querySelector('.tpl-apply-project');
+      let destProject;
+      if (!projSel || projSel.value === '__new__' || chapterIsNew) {
+        const prName = prompt('Nume pentru noul proiect:', '');
+        if (!prName || !prName.trim()) return;
+        destProject = mkProject(prName.trim(), []);
+        destChapter.projects.push(destProject);
+      } else {
+        destProject = destChapter.projects.find(p => p.id === projSel.value);
+        if (!destProject) { alert('Alege un proiect țintă.'); return; }
+      }
+      appliedProjectId = destProject.id;
+      const added = (tpl.tasks||[]).map(cloneTaskFresh);
+      added.forEach(t => { delete t.section; destProject.tasks.push(t); });
+      persist();
+      showToast(added.length+(added.length===1?' sarcină adăugată':' sarcini adăugate')+' din șablonul "'+tpl.name+'"', 'În proiectul „'+destProject.name+'". Ctrl+Z anulează.');
+    } else {
+      const np = cloneProjectFresh(tpl.project);
+      np.name = tpl.name;
+      delete np.baseline;
+      (np.tasks||[]).forEach(t => { delete t.section; });
+      destChapter.projects.push(np);
+      persist();
+      showToast('Proiect creat din șablonul "'+tpl.name+'"', 'În capitolul „'+destChapter.name+'". Ctrl+Z anulează.');
+    }
+    // Reține destinația aleasă, ca la următoarea deschidere a picker-ului pentru
+    // ACEST șablon să pornească de aici, nu de la primul capitol/proiect.
+    tpl.lastAppliedSheetId = destSheet.id;
+    tpl.lastAppliedChapterId = destChapter.id;
+    tpl.lastAppliedProjectId = appliedProjectId;
+    tpl.usageCount = (tpl.usageCount||0) + 1;
+    tpl.lastUsedAt = todayISO();
+    tpl.updatedAt = Date.now();
+    persistTemplates();
+    ui.templateApplyOpen = null;
+    renderTemplatesBrowse(); render();
+    return;
+  }
+
+  const editBtn = e.target.closest('[data-action="tplcard-edit"]');
+  if (editBtn) {
+    const tpl = (templates||[]).find(t => t.id === editBtn.dataset.template);
+    if (!tpl) return;
+    ui.templateEditorDraft = templateTasks(tpl).map(cleanTaskForTemplate);
+    ui.templatesTab = 'editor';
+    renderTemplates();
+    return;
+  }
+
+  const exportBtn = e.target.closest('[data-action="tplcard-export"]');
+  if (exportBtn) {
+    const tpl = (templates||[]).find(t => t.id === exportBtn.dataset.template);
+    if (!tpl) return;
+    exportTemplatesToFile([tpl], 'Checklist_activitati_sablon_' + slugifyForFilename(tpl.name) + '_' + todayISO() + '.json');
+    return;
+  }
+
+  const secBtn = e.target.closest('[data-action="tpl-editor-section"]');
+  if (secBtn) {
+    const i = +secBtn.dataset.idx;
+    const tk = ui.templateEditorDraft[i];
+    if (!tk) return;
+    const val = prompt('Titlu bloc/secțiune (gol = elimină blocul):', tk.section || '');
+    if (val === null) return;
+    tk.section = val.trim();
+    renderTemplatesEditor();
+    return;
+  }
+
+  const upBtn = e.target.closest('[data-action="tpl-editor-up"]');
+  if (upBtn) {
+    const i = +upBtn.dataset.idx;
+    if (i > 0) { const [t] = ui.templateEditorDraft.splice(i,1); ui.templateEditorDraft.splice(i-1,0,t); renderTemplatesEditor(); }
+    return;
+  }
+  const downBtn = e.target.closest('[data-action="tpl-editor-down"]');
+  if (downBtn) {
+    const i = +downBtn.dataset.idx;
+    if (i < ui.templateEditorDraft.length - 1) { const [t] = ui.templateEditorDraft.splice(i,1); ui.templateEditorDraft.splice(i+1,0,t); renderTemplatesEditor(); }
+    return;
+  }
+  const delBtn = e.target.closest('[data-action="tpl-editor-del"]');
+  if (delBtn) {
+    ui.templateEditorDraft.splice(+delBtn.dataset.idx, 1);
+    renderTemplatesEditor();
+    return;
+  }
+
+  if (e.target.id === 'tpl-editor-add-task') {
+    ui.templateEditorDraft.push(cleanTaskForTemplate(mkTask('')));
+    renderTemplatesEditor();
+    return;
+  }
+  if (e.target.id === 'tpl-editor-clear') {
+    ui.templateEditorDraft = [];
+    renderTemplatesEditor();
+    return;
+  }
+  if (e.target.id === 'tpl-editor-import-btn') {
+    const checked = [...document.querySelectorAll('.tpl-editor-import-cb:checked')];
+    let n = 0;
+    checked.forEach(cb => {
+      const tpl = (templates||[]).find(t => t.id === cb.dataset.template);
+      if (!tpl) return;
+      templateTasks(tpl).forEach(tk => { ui.templateEditorDraft.push(cleanTaskForTemplate(tk)); n++; });
+    });
+    renderTemplatesEditor();
+    if (n) showToast(n+(n===1?' sarcină adăugată':' sarcini adăugate')+' în lista de lucru', '');
+    return;
+  }
+  if (e.target.id === 'tpl-editor-generate-btn') {
+    if (!ui.templateEditorDraft.length) { alert('Lista de lucru e goală — adaugă sau importă sarcini mai întâi.'); return; }
+    const name = prompt('Nume pentru noul șablon:', '');
+    if (!name || !name.trim()) return;
+    templates.push({ id: genId('tpl'), name: name.trim(), savedAt: todayISO(), kind: 'tasks', tasks: ui.templateEditorDraft.map(cleanTaskForTemplate), status: 'draft', usageCount: 0, lastUsedAt: null, updatedAt: Date.now() });
+    persistTemplates();
+    ui.templateEditorDraft = [];
+    ui.templatesTab = 'browse';
+    renderTemplates(); render();
+    showToast('Șablon nou generat: "'+name.trim()+'"', 'Șabloanele folosite la comasare rămân neschimbate.');
+    return;
+  }
+});
+document.getElementById('templates-modal').addEventListener('change', e => {
+  if (e.target.classList.contains('tpl-apply-sheet')) {
+    ui.templateApplySheetId = e.target.value; ui.templateApplyChapterId = null; ui.templateApplyProjectId = null;
+    renderTemplatesBrowse();
+    return;
+  }
+  if (e.target.classList.contains('tpl-apply-chapter')) {
+    ui.templateApplyChapterId = e.target.value; ui.templateApplyProjectId = null;
+    renderTemplatesBrowse();
+    return;
+  }
+  if (e.target.classList.contains('tpl-apply-project')) {
+    ui.templateApplyProjectId = e.target.value;
+    return;
+  }
+  if (e.target.classList.contains('tpl-editor-text')) {
+    const idx = +e.target.dataset.idx;
+    if (ui.templateEditorDraft[idx]) ui.templateEditorDraft[idx].text = e.target.value;
+    return;
+  }
+  if (e.target.classList.contains('tpl-editor-tags')) {
+    const idx = +e.target.dataset.idx;
+    if (ui.templateEditorDraft[idx]) ui.templateEditorDraft[idx].tags = e.target.value.split(',').map(s=>s.trim()).filter(Boolean);
+    return;
+  }
 });
 
 document.getElementById('changelog-btn').addEventListener('click', () => {
@@ -3609,14 +4207,30 @@ function buildHelpPageHtml() {
   <li>Filtrul <strong>„Orice culoare font"</strong> din panoul de filtre îți arată doar sarcinile cu o anumită culoare (sau fără culoare) — inclusiv sarcinile ale căror subsarcini au acea culoare, chiar dacă sarcina în sine n-o are.</li>
 </ul>
 <p><strong>🔍 Izolare proiect</strong> — vrei să lucrezi pe un singur proiect, fără ca restul listei să te distragă? Butonul 🔍 din antetul oricărui proiect (sau <kbd>Z</kbd> pe hover) ascunde temporar tot restul — celelalte proiecte și capitole — lăsând vizibil doar proiectul respectiv. Apare un banner sus, cu numele proiectului și un buton „Ieși"; revii la vedere normală cu același buton/scurtătură, cu <kbd>Escape</kbd>, sau din banner. Nu șterge sau arhivează nimic — e doar un filtru vizual temporar, care nu se salvează la reîncărcarea paginii.</p>
-<p><strong>Șabloane de proiect</strong> — pentru proceduri care se repetă (ofertare, avizare, recepție):</p>
-<ul>
-  <li><strong>Salvezi</strong>: butonul ⧉ al unui proiect → „⎘ Salvează ca șablon". Se copiază toate sarcinile și subsarcinile, cu date, priorități și responsabili.</li>
-  <li><strong>Folosești</strong>: în orice capitol, lângă „+ Proiect" apare un selector <em>„Din șablon…"</em> — alegi șablonul și proiectul se creează instantaneu.</li>
-  <li><strong>Administrezi</strong>: butonul <em>„⎘ Șabloane"</em> din bara de sus listează toate șabloanele salvate, cu numărul de sarcini și data salvării, și îți permite să le ștergi (cu posibilitate de anulare).</li>
-  <li>Fiecare instanțiere e complet independentă — modifici copia fără să atingi șablonul.</li>
-</ul>
+<p><strong>Șabloane</strong> — pentru proceduri care se repetă (ofertare, avizare, recepție), salvate și organizate într-o bibliotecă dedicată. Vezi secțiunea <a href="#sabloane">„📋 Șabloane"</a> mai jos, cu tot ce poate face modulul.</p>
 <p><strong>Editare în masă</strong> — activezi „☑️ Selectează sarcini", bifezi mai multe, iar în bara de jos, pe lângă mutare, ai acum și câmpuri pentru <em>termen</em>, <em>prioritate</em> și <em>responsabil</em>. Apeși „Aplică" și se setează pentru tot lotul dintr-o dată. Poți completa doar unul dintre câmpuri — celelalte rămân neschimbate.</p>
+
+<h2 id="sabloane">17b. 📋 Șabloane</h2>
+<p>Biblioteca de proceduri reutilizabile — proiecte întregi sau doar un set de sarcini, salvate o dată și instanțiate oricând, în orice capitol. Se deschide cu butonul <em>„⎘ Șabloane"</em> din <em>🏷 Organizare</em> sau cu <kbd>Alt</kbd>+<kbd>M</kbd>: un modul separat, pe tot ecranul, cu două tab-uri.</p>
+<p><strong>Ce salvezi ca șablon</strong> — două căi, după cât de mare e procedura:</p>
+<ul>
+  <li><strong>Un proiect întreg</strong>: butonul ⧉ din antetul proiectului → „⎘ Salvează ca șablon". Copiază toate sarcinile și subsarcinile lui, cu tag-uri, notă, durată estimată și responsabili.</li>
+  <li><strong>Doar câteva sarcini</strong>: activezi „☑️ Selectează sarcini", bifezi ce vrei (indiferent din ce proiecte), apoi „💾 Șablon" din bara de selecție în bloc.</li>
+  <li>La salvare se elimină automat: termenul, și stările „important"/„urgent"/„bifat" — un șablon pornește mereu curat, ca o listă de pornire, nu ca o copie a stării curente.</li>
+</ul>
+<p><strong>Tab „Răsfoiește"</strong> — o grilă de carduri, unul per șablon, cu căutare după nume, filtru de tag (derivat automat din tag-urile sarcinilor dinăuntru), filtru „🧩 Draft / ✅ Stabil" și sortare (recente / după nume / cele mai folosite). Fiecare card arată tipul (proiect sau sarcini selectate), numărul de sarcini/subsarcini, tag-urile și de câte ori a fost folosit, plus acțiuni:</p>
+<ul>
+  <li><strong>🧩 Draft / ✅ Stabil</strong> — marchezi un șablon ca „încă în lucru" sau „gata de folosit"; chenarul cardului se colorează în consecință (portocaliu/verde), ca să le deosebești rapid dintr-o privire.</li>
+  <li><strong>👁 Previzualizează</strong> — vezi conținutul (sarcini, subsarcini, tag-uri), inclusiv grupat pe blocuri și numerotat, dacă șablonul le are.</li>
+  <li><strong>➕ Aplică</strong> — alegi sheet → capitol → proiect (cu opțiunea de a crea un capitol sau proiect nou chiar din picker) și apeși „Aplică aici". Ține minte ultima destinație folosită pentru acel șablon și ți-o oferă implicit data viitoare — butonul „↺" de lângă o uită și revine la implicit (primul capitol/proiect).</li>
+  <li><strong>✏️ Editează</strong> — trece șablonul în tab-ul Editor, ca punct de plecare pentru unul nou (originalul rămâne neatins).</li>
+  <li><strong>⬇</strong> — exportă doar acel șablon ca fișier <code>.json</code>.</li>
+  <li><strong>🗑</strong> — șterge șablonul din bibliotecă.</li>
+</ul>
+<p>Aplicarea unui șablon creează mereu o copie independentă — modifici instanța fără să atingi șablonul sursă, iar contorul de utilizare al acestuia crește cu unu.</p>
+<p><strong>Tab „🧩 Editor"</strong> — pentru șabloane mari sau pentru a combina mai multe proceduri într-una singură: bifezi 1 sau mai multe șabloane existente, „+ Adaugă la lista de lucru" le aduce sarcinile într-o listă temporară, pe care o reordonezi (▲▼), editezi (text, tag-uri), ștergi sau completezi cu sarcini noi. Butonul 🔖 de pe orice rând începe (sau elimină) un <strong>bloc</strong> — util la proceduri lungi, împărțite pe etape; sarcinile se numerotează continuu (1, 2, 3…) peste blocuri, atât în previzualizare cât și în editor. „✅ Generează șablon nou" salvează rezultatul ca șablon separat — șabloanele sursă rămân neschimbate.</p>
+<p><strong>Import/export dedicat</strong> — separat de „Backup date (.json)" al întregii aplicații: „⬇ Exportă" din bara de sus descarcă lista de șabloane afișată în acel moment (respectă căutarea/filtrele active); „⬆ Importă" adaugă șabloane dintr-un fișier <code>.json</code> la bibliotecă, cu id-uri noi, fără să suprascrie sau să șteargă vreun șablon existent. Util pentru a muta șabloane între calculatoare fără cont cloud, sau pentru a le trimite unui coleg.</p>
+<p><strong>Sincronizare cloud</strong> — dacă ești conectat(ă) la cont (vezi „☁️ Cloud"), șabloanele se sincronizează automat, separat de restul datelor — indicatorul „☁️ sincronizate" / „💻 doar local" din bara de sus arată starea curentă. Un șablon adăugat pe un dispozitiv apare și pe celelalte; o ștergere însă <strong>nu</strong> se propagă automat — dacă vrei ca un șablon să dispară de pe toate dispozitivele, șterge-l manual de pe fiecare.</p>
 
 <h2 id="reordonare-optiuni">Reordonare și opțiuni avansate</h2>
 <p>Ca rândurile să rămână citibile, majoritatea butoanelor de pe sarcini și subsarcini sunt <strong>ascunse implicit</strong>. Vizibile rămân doar: câmpul de dată, <strong>↳</strong> (subsarcină nouă), <strong>✕</strong> (șterge) și <strong>+</strong> (sarcină nouă).</p>
@@ -3891,7 +4505,11 @@ function buildHelpPageHtml() {
   <li><a href="#gantt">Dependențe între proiecte</a></li>
   <li><a href="#responsabil">Editare în masă</a></li>
   <li><a href="#responsabil">Link pe sarcină</a></li>
-  <li><a href="#responsabil">Șabloane de proiect</a></li>
+  <li><a href="#sabloane">Șabloane, modul (răsfoiește, editor, aplicare)</a></li>
+  <li><a href="#sabloane">Șabloane, draft/stabil și contor de utilizare</a></li>
+  <li><a href="#sabloane">Șabloane, blocuri și numerotare</a></li>
+  <li><a href="#sabloane">Șabloane, export/import .json</a></li>
+  <li><a href="#sabloane">Șabloane, sincronizare cloud</a></li>
   <li><a href="#note-arhiva">Arhivare sarcini/subsarcini</a></li>
   <li><a href="#conversie">Conversie proiect ↔ sarcină</a></li>
   <li><a href="#reordonare-optiuni">Opțiuni avansate (ascundere)</a></li>
@@ -3932,6 +4550,12 @@ document.getElementById('help-btn').addEventListener('click', () => {
   win.document.close();
 });
 let state = null;
+// Șabloanele trăiesc într-o stocare separată de `state` — NU se sincronizează
+// prin documentul principal, NU sunt incluse în backup-ul JSON complet, și NU
+// sunt afectate de restaurarea unei salvări din istoricul sincronizat (care
+// suprascrie doar `state`). Sincronizare cloud dedicată urmează într-o etapă
+// viitoare; deocamdată biblioteca de șabloane e doar locală (localStorage).
+let templates = [];
 
 function applyTheme(mode) {
   document.body.classList.toggle('dark', mode === 'dark');
@@ -4002,6 +4626,7 @@ document.getElementById('bulk-apply').addEventListener('click', () => {
   persist(); render();
   showToast(n + (n===1?' sarcină actualizată':' sarcini actualizate'), 'Ctrl+Z anulează.');
 });
+document.getElementById('bulk-save-template').addEventListener('click', executeSaveSelectionAsTemplate);
 document.getElementById('bulk-move-cancel').addEventListener('click', () => {
   ui.selectedTasks = [];
   render();
@@ -4968,7 +5593,10 @@ document.addEventListener('keydown', e => {
   }
 });
 
-let ui = { filterCapitol:'', filterProiect:'', filterDeadline:'', filterPriority:'', search:'', searchGlobal:false, mode:'list', openReminderTaskId:null, openDurationTaskId:null, recurrencePickerTaskId:null, sheetPickerId:null, editingTaskId:null, editingChapterId:null, editingProjectId:null, editingSubtaskId:null, colorPickerChapterId:null, expandLevel:2, chapterOpen:{}, projectOpen:{}, selectionMode:false, selectedTasks:[], openReevaluateId:null, scoreHistoryOpenId:null, openGoalEditId:null, subtasksOpen:{}, transferPopoverKey:null, transferSheetId:null, transferChapterId:null, transferProjectId:null, ganttTarget:null, ganttZoom:'week', ganttShowSubs:false, ganttAutoToday:false, ganttCritical:false, ganttScope:'project', ganttWorkdays:false, detailsPopoverId:null, filterAssignee:'', filterTags:[], filterTagMode:'any', tagFilterOpen:false, hoverRow:null, hoverHeader:null, keyboardFocusRow:null, detailsFocusField:null, showArchivedAll:false, showArchivedScope:{}, showRowExtras:{}, smartGroupOpen:{}, calMonth:null, revWeek:null, toTaskPopoverKey:null, showBottomStats: localStorage.getItem('sbg-bottom-stats') !== '0', showSideStats: localStorage.getItem('sbg-side-stats') === '1', showSideToolbar: localStorage.getItem('sbg-side-toolbar') !== '0', showSideInfo: localStorage.getItem('sbg-side-info') === '1', filterFontColor: '', isolatedProjectId: null, isolatedChapterId: null, cardsDrillTaskId: null, cardsExpanded: {}, chapterIconsCollapsed: {}, projectIconsCollapsed: {}, workloadTab: 'tasks' };
+let ui = { filterCapitol:'', filterProiect:'', filterDeadline:'', filterPriority:'', search:'', searchGlobal:false, mode:'list', openReminderTaskId:null, openDurationTaskId:null, recurrencePickerTaskId:null, sheetPickerId:null, editingTaskId:null, editingChapterId:null, editingProjectId:null, editingSubtaskId:null, colorPickerChapterId:null, expandLevel:2, chapterOpen:{}, projectOpen:{}, selectionMode:false, selectedTasks:[], openReevaluateId:null, scoreHistoryOpenId:null, openGoalEditId:null, subtasksOpen:{}, transferPopoverKey:null, transferSheetId:null, transferChapterId:null, transferProjectId:null, ganttTarget:null, ganttZoom:'week', ganttShowSubs:false, ganttAutoToday:false, ganttCritical:false, ganttScope:'project', ganttWorkdays:false, detailsPopoverId:null, filterAssignee:'', filterTags:[], filterTagMode:'any', tagFilterOpen:false, hoverRow:null, hoverHeader:null, keyboardFocusRow:null, detailsFocusField:null, showArchivedAll:false, showArchivedScope:{}, showRowExtras:{}, smartGroupOpen:{}, calMonth:null, revWeek:null, toTaskPopoverKey:null, showBottomStats: localStorage.getItem('sbg-bottom-stats') !== '0', showSideStats: localStorage.getItem('sbg-side-stats') === '1', showSideToolbar: localStorage.getItem('sbg-side-toolbar') !== '0', showSideInfo: localStorage.getItem('sbg-side-info') === '1', filterFontColor: '', isolatedProjectId: null, isolatedChapterId: null, cardsDrillTaskId: null, cardsExpanded: {}, chapterIconsCollapsed: {}, projectIconsCollapsed: {}, workloadTab: 'tasks',
+  templatesTab: 'browse', templatesSearch: '', templatesTagFilter: '', templatesSort: 'recent', templatesStatusFilter: '',
+  templatePreviewOpen: {}, templateApplyOpen: null, templateApplySheetId: null, templateApplyChapterId: null, templateApplyProjectId: null,
+  templateEditorDraft: [], templateEditorImportSel: {} };
 // Exactly one of these four can be "being typed into" at a time. Setting one
 // without clearing the other three used to be possible at several call
 // sites; if a stale id lingered (e.g. from a task rename that never quite
@@ -5074,10 +5702,59 @@ function migrateColors(st) {
   return st;
 }
 
+// ===================== ȘABLOANE: stocare separată =====================
+function loadTemplates() {
+  const raw = localStorage.getItem(TEMPLATES_STORAGE_KEY);
+  if (raw) {
+    try { const parsed = JSON.parse(raw); templates = Array.isArray(parsed) ? parsed : []; }
+    catch(e) { templates = []; }
+  } else {
+    templates = [];
+  }
+  if (normalizeTemplates()) persistTemplates();
+}
+// Șabloanele create înainte de pasul 5 (draft/stabil + contor de folosire) nu
+// au aceste câmpuri — le tratăm ca „stabile", cu 0 utilizări cunoscute, fără
+// să le rescriem starea dacă o au deja setată explicit.
+function normalizeTemplates() {
+  let changed = false;
+  (templates||[]).forEach(t => {
+    if (t.status !== 'draft' && t.status !== 'stable') { t.status = 'stable'; changed = true; }
+    if (typeof t.usageCount !== 'number') { t.usageCount = 0; changed = true; }
+    if (t.lastUsedAt === undefined) { t.lastUsedAt = null; changed = true; }
+    // updatedAt: folosit doar pentru sincronizarea cloud (pasul 7) — decide
+    // care versiune „câștigă" când același șablon (id) există și local și
+    // în cloud. Un șablon fără el (dinainte de pasul 7) primește un
+    // timestamp „acum", ca punct de plecare.
+    if (typeof t.updatedAt !== 'number') { t.updatedAt = Date.now(); changed = true; }
+  });
+  return changed;
+}
+function persistTemplates() {
+  try { localStorage.setItem(TEMPLATES_STORAGE_KEY, JSON.stringify(templates)); }
+  catch(e) { /* stocare plină — șabloanele existente rămân doar în memorie pentru sesiunea curentă */ }
+  if (typeof scheduleTemplatesPush === 'function') scheduleTemplatesPush();
+}
+// Versiunile anterioare (≤6.8.0) țineau șabloanele în state.templates. La prima
+// încărcare după actualizare, le mutăm o singură dată în stocarea nouă și le
+// scoatem din state — dacă noua stocare are deja date (ex. au fost deja
+// migrate), NU le suprascriem, doar curățăm reziduul din state.
+function migrateTemplatesFromState() {
+  if (!state || !state.templates) return;
+  if (!templates.length && Array.isArray(state.templates) && state.templates.length) {
+    templates = state.templates;
+    normalizeTemplates();
+    persistTemplates();
+  }
+  delete state.templates;
+}
+// ===================== /ȘABLOANE: stocare separată =====================
+
 function load() {
+  loadTemplates();
   const raw = localStorage.getItem(STORAGE_KEY);
   if (raw) {
-    try { state = JSON.parse(raw); if (!state.sheets) throw new Error('bad shape'); state = migrateColors(state); persist(); }
+    try { state = JSON.parse(raw); if (!state.sheets) throw new Error('bad shape'); state = migrateColors(state); migrateTemplatesFromState(); persist(); }
     catch(e) { state = seedData(); }
   } else {
     state = seedData();
@@ -5141,7 +5818,7 @@ document.addEventListener('fb-sdk-ready', () => {
     syncState = 'ready';
     F.onAuthStateChanged(fbAuth, u => {
       fbUser = u;
-      if (u) startSync(); else { stopSync(); syncState = 'ready'; }
+      if (u) { startSync(); startTemplatesSync(); } else { stopSync(); stopTemplatesSync(); syncState = 'ready'; }
       updateCloudBtn(); renderCloudModal();
     });
   } catch (e) {
@@ -5200,6 +5877,112 @@ function schedulePush() {
   clearTimeout(pushTimer);
   pushTimer = setTimeout(pushNow, 1500);
 }
+
+// ===================== ȘABLOANE: sincronizare cloud (document separat) =====================
+// Document PROPRIU în Firestore — users/{uid}/templates/main — total separat de
+// documentul principal (users/{uid}, care ține `state`). E chiar motivul pentru
+// care șabloanele au fost scoase din `state` încă de la pasul 1: ca restaurarea
+// unei salvări din „Istoric sincronizat" (care înlocuiește complet `state`) să
+// nu atingă niciodată biblioteca de șabloane.
+//
+// Strategia de îmbinare (merge) e diferită de cea a stării principale: acolo,
+// la conectare, utilizatorul alege explicit „ia din cloud" sau „trimite ce am
+// local" (o singură direcție, tot-sau-nimic). Aici se face automat, pe fiecare
+// șablon în parte (după `id`):
+//   - un șablon care există doar într-o parte (local sau cloud) se adaugă și
+//     în cealaltă — nu se pierde niciodată;
+//   - un șablon care există în ambele părți păstrează varianta cu `updatedAt`
+//     mai recent (fiecare mutație a unui șablon îi actualizează acest câmp).
+// LIMITARE ASUMATĂ: ștergerea unui șablon NU se propagă automat către alte
+// dispozitive — dacă ștergi un șablon aici, el poate reapărea la următoarea
+// sincronizare dacă alt dispozitiv încă îl are (pentru că merge-ul de mai sus
+// nu elimină niciodată, doar adaugă/actualizează). E un compromis deliberat,
+// în aceeași logică „nu pierde niciodată date" ca separarea de `state` — o
+// ștergere sincronizată corect (cu „tombstones") ar fi mult mai complexă și a
+// rămas în afara scopului acestui pas.
+let tplPushTimer = null, tplApplyingRemote = false, tplSyncUnsub = null;
+
+function templatesDocRef() {
+  if (!fbUser || !fbDb) return null;
+  const F = window.__FB;
+  return F.doc(fbDb, 'users', fbUser.uid, 'templates', 'main');
+}
+async function pushTemplatesNow() {
+  const ref = templatesDocRef();
+  if (!ref || tplApplyingRemote) return;
+  const F = window.__FB;
+  try {
+    await F.setDoc(ref, { templates: JSON.stringify(templates), updatedAt: Date.now(), writer: SYNC_WRITER });
+  } catch (e) {
+    // Nespus utilizatorului direct — starea principală (checklist-ul) are
+    // propriul indicator de eroare de sincronizare; șabloanele rămân oricum
+    // salvate local, indiferent ce se întâmplă cu cloud-ul.
+  }
+}
+function scheduleTemplatesPush() {
+  if (!fbUser || tplApplyingRemote) return;
+  clearTimeout(tplPushTimer);
+  tplPushTimer = setTimeout(pushTemplatesNow, 1500);
+}
+function mergeRemoteTemplates(remoteList) {
+  if (!Array.isArray(remoteList)) return false;
+  let changed = false;
+  const byId = new Map((templates||[]).map(t => [t.id, t]));
+  remoteList.forEach(rt => {
+    if (!rt || !rt.id) return;
+    const lt = byId.get(rt.id);
+    if (!lt) {
+      templates.push(rt);
+      byId.set(rt.id, rt);
+      changed = true;
+    } else if ((rt.updatedAt||0) > (lt.updatedAt||0)) {
+      const idx = templates.indexOf(lt);
+      if (idx > -1) { templates[idx] = rt; byId.set(rt.id, rt); changed = true; }
+    }
+  });
+  return changed;
+}
+async function startTemplatesSync() {
+  const F = window.__FB;
+  const ref = templatesDocRef();
+  if (!F || !ref) return;
+  try {
+    const snap = await F.getDoc(ref);
+    if (!snap.exists() || !snap.data().templates) {
+      await pushTemplatesNow();
+    } else {
+      let remoteList = [];
+      try { remoteList = JSON.parse(snap.data().templates); } catch(e) { remoteList = []; }
+      tplApplyingRemote = true;
+      const changed = mergeRemoteTemplates(remoteList);
+      normalizeTemplates();
+      tplApplyingRemote = false;
+      if (changed) { persistTemplates(); renderTemplatesBrowse(); }
+      await pushTemplatesNow(); // reconciliază — trimite în cloud și șabloanele doar-locale
+    }
+    if (tplSyncUnsub) { try { tplSyncUnsub(); } catch(e){} tplSyncUnsub = null; }
+    tplSyncUnsub = F.onSnapshot(ref, s => {
+      if (!s.exists()) return;
+      const d = s.data();
+      if (!d.templates || d.writer === SYNC_WRITER) return;
+      let remoteList = [];
+      try { remoteList = JSON.parse(d.templates); } catch(e) { return; }
+      tplApplyingRemote = true;
+      const changed = mergeRemoteTemplates(remoteList);
+      tplApplyingRemote = false;
+      if (changed) {
+        persistTemplates();
+        renderTemplatesBrowse();
+        showToast('Șabloane actualizate din cloud', 'Adăugate/actualizate de pe alt dispozitiv.');
+      }
+    }, () => { /* eroare de sincronizare a șabloanelor — șabloanele rămân salvate local */ });
+  } catch (e) { /* vezi nota de mai sus: nu blocăm restul aplicației pentru asta */ }
+}
+function stopTemplatesSync() {
+  if (tplSyncUnsub) { try { tplSyncUnsub(); } catch(e){} tplSyncUnsub = null; }
+  clearTimeout(tplPushTimer);
+}
+// ===================== /ȘABLOANE: sincronizare cloud =====================
 
 // ===================== ISTORIC SALVĂRI SINCRONIZATE =====================
 // Pe lângă documentul „live" (users/{uid}), care se suprascrie complet la
@@ -5436,7 +6219,8 @@ function renderCloudModal() {
     + (syncState === 'error' ? '<p class="cloud-err">' + escapeHtml(syncErr) + '</p>' : '')
     + '<div class="cloud-actions"><button type="button" class="primary" id="cloud-pushnow">Sincronizează acum</button>'
     + '<button type="button" id="cloud-signout">Deconectează-te</button></div>'
-    + '<p class="cloud-note">Modificările se salvează automat, la câteva secunde după fiecare schimbare.</p>';
+    + '<p class="cloud-note">Modificările se salvează automat, la câteva secunde după fiecare schimbare.</p>'
+    + '<p class="cloud-note">📋 Șabloanele se sincronizează separat, automat — se adaugă între dispozitive, dar o ștergere nu se propagă automat (rămân salvate pe celelalte dispozitive care le au deja).</p>';
 }
 
 document.getElementById('install-btn').addEventListener('click', async () => {
@@ -5473,10 +6257,11 @@ document.getElementById('cloud-modal').addEventListener('click', async e => {
   }
   if (e.target.id === 'cloud-signout') {
     stopSync();
+    stopTemplatesSync();
     try { await F.signOut(fbAuth); } catch (err) {}
     return;
   }
-  if (e.target.id === 'cloud-pushnow') { await pushNow(); return; }
+  if (e.target.id === 'cloud-pushnow') { await pushNow(); await pushTemplatesNow(); return; }
 });
 
 const MAX_HISTORY = 5;
@@ -5924,6 +6709,32 @@ function updateBulkMoveBar() {
   sheetSel.onchange = refreshChapterOptions;
   document.getElementById('bulk-move-chapter').onchange = refreshProjectOptions;
   refreshChapterOptions();
+}
+
+// Construiește un șablon din sarcinile selectate în bara de acțiuni în bloc —
+// pot fi din proiecte/capitole diferite. Fiecare sarcină (cu subsarcinile ei)
+// e curățată la fel ca la șablonul de proiect întreg (fără termen, fără
+// important/urgent/bifat), dar rezultatul e o listă liberă (kind:'tasks'),
+// nu un proiect — se aplică ulterior într-un proiect existent, prin selectorul
+// „Din șablon…" din antetul acelui proiect.
+function executeSaveSelectionAsTemplate() {
+  if (!ui.selectedTasks.length) return;
+  const n = ui.selectedTasks.length;
+  const name = prompt('Nume pentru șablon ('+n+(n===1?' sarcină selectată':' sarcini selectate')+'):', '');
+  if (!name || !name.trim()) return;
+  const collected = [];
+  ui.selectedTasks.forEach(sel => {
+    const srcSheet = state.sheets.find(s=>s.id===sel.sheetId);
+    const srcChapter = srcSheet && srcSheet.chapters.find(c=>c.id===sel.chapterId);
+    const srcProject = srcChapter && srcChapter.projects.find(p=>p.id===sel.projectId);
+    const task = srcProject && srcProject.tasks.find(t=>t.id===sel.taskId);
+    if (task) collected.push(cleanTaskForTemplate(task));
+  });
+  if (!collected.length) { alert('Nicio sarcină din selecție nu a mai putut fi găsită.'); return; }
+  templates.push({ id: genId('tpl'), name: name.trim(), savedAt: todayISO(), kind: 'tasks', tasks: collected, status: 'draft', usageCount: 0, lastUsedAt: null, updatedAt: Date.now() });
+  persistTemplates();
+  render();
+  showToast('Șablon salvat: "'+name.trim()+'"', collected.length+(collected.length===1?' sarcină':' sarcini')+' · îl aplici din „Din șablon…" în antetul oricărui proiect, sau din „⎘ Șabloane".');
 }
 
 function executeBulkMove() {
@@ -7099,6 +7910,47 @@ function cloneChapterFresh(c) {
   return nc;
 }
 
+// ===================== ȘABLOANE: curățare la salvare =====================
+// Când o sarcină/subsarcină intră într-un șablon, se elimină tot ce e legat
+// de un moment anume în timp (termene, mementouri, dependențe către alte
+// id-uri care oricum nu mai există după clonare) și se resetează stările
+// tranzitorii (bifat, arhivat, important/urgent). Rămân: text, notă, tag-uri,
+// responsabil, link, durată/timp estimat — conținutul „de fond" al pasului.
+function cleanSubtaskForTemplate(sub) {
+  const ns = JSON.parse(JSON.stringify(sub));
+  ns.id = genId('st');
+  ns.done = false;
+  ns.deadline = ''; ns.startDate = '';
+  ns.important = false; ns.urgent = false;
+  ns.recurrence = null;
+  ns.reminderAt = ''; ns.reminderMsg = ''; ns.reminderFired = false;
+  ns.archived = false; ns.pinned = false;
+  if (ns.dependsOn) ns.dependsOn = [];
+  return ns;
+}
+function cleanTaskForTemplate(tk) {
+  const nt = JSON.parse(JSON.stringify(tk));
+  nt.id = genId('t');
+  nt.done = false;
+  nt.deadline = ''; nt.startDate = '';
+  nt.important = false; nt.urgent = false; nt.priority = false; nt.asap = false;
+  nt.recurrence = null;
+  nt.reminderAt = ''; nt.reminderMsg = ''; nt.reminderFired = false;
+  nt.createdDate = null; nt.doneDate = null;
+  nt.archived = false; nt.smartDismissed = false; nt.pinned = false;
+  nt.dependsOn = [];
+  nt.subtasks = (tk.subtasks || []).map(cleanSubtaskForTemplate);
+  return nt;
+}
+function cleanProjectForTemplate(p) {
+  const np = JSON.parse(JSON.stringify(p));
+  np.id = genId('p');
+  np.tasks = (p.tasks || []).map(cleanTaskForTemplate);
+  delete np.baseline;
+  return np;
+}
+// ===================== /ȘABLOANE: curățare la salvare =====================
+
 function renderTransferPopover(kind, chapterId, projectId, taskId, subtaskId) {
   const key = kind === 'chapter' ? 'chapter:'+chapterId : (kind === 'project' ? 'project:'+projectId : (kind === 'subtask' ? 'subtask:'+subtaskId : 'task:'+taskId));
   const isOpen = ui.transferPopoverKey === key;
@@ -8218,6 +9070,7 @@ function renderChapterBlock(c, sheet, anyFilterActive) {
                     : '<span class="project-name" data-action="edit-project-name" data-chapter="'+c.id+'" data-project="'+p.id+'" data-tip="Dublu-click pentru redenumire">'+escapeHtml(p.name)+'</span>')
                 + '<span class="dur-badge" data-tip="Durată estimată totală a proiectului">⏱ '+fmtDuration(projectEstMinutes(p))+'</span>'
                 + '<button type="button" class="mini-expand-btn" draggable="false" data-action="quick-add-task" data-chapter="'+c.id+'" data-project="'+p.id+'" data-tip="(a) - Adaugă o sarcină nouă în acest proiect">+ Sarcină</button>'
+                + (function(){ var tTpls=(templates||[]).filter(function(t){return t.kind==='tasks';}); return tTpls.length ? '<select class="tpl-tasks-select" data-chapter="'+c.id+'" data-project="'+p.id+'" data-tip="Adaugă în acest proiect sarcinile dintr-un șablon"><option value="">Din șablon…</option>'+tTpls.map(function(t){return '<option value="'+t.id+'">'+escapeHtml(t.name)+' ('+(t.tasks||[]).length+')</option>';}).join('')+'</select>' : ''; })()
                 + '<button type="button" class="mini-expand-btn hdr-toggle'+(iconsCollapsed(ui.projectIconsCollapsed, p.id)?'':' active')+'" draggable="false" data-action="toggle-header-icons" data-kind="project" data-project="'+p.id+'" data-tip="(Shift+Z pe hover) - '+(iconsCollapsed(ui.projectIconsCollapsed, p.id)?'Arată butoanele din antet':'Restrânge butoanele din antet')+'">🎛️</button>'
                 + '<span class="always-visible-hdr-btn">'+renderTransferPopover('project', c.id, p.id)+'</span>'
                 + '<button type="button" class="mini-expand-btn always-visible-hdr-btn" draggable="false" data-action="move-project-up" data-chapter="'+c.id+'" data-project="'+p.id+'" data-tip="Mută proiectul mai sus"'+(isFirst?' disabled':'')+'>▲</button>'
@@ -8243,7 +9096,7 @@ function renderChapterBlock(c, sheet, anyFilterActive) {
     if (anyFilterActive && !chapterHasVisible) return '';
     if (!anyFilterActive) {
       projHtml += '<div class="add-inline add-project-inline"><input type="text" class="new-project-input" data-chapter="'+c.id+'" placeholder="Proiect nou…"><button data-action="add-project" data-chapter="'+c.id+'">+ Proiect</button>'
-                + ((state.templates||[]).length ? '<select class="tpl-select" data-chapter="'+c.id+'"><option value="">Din șablon…</option>'+state.templates.map(function(t){return '<option value="'+t.id+'">'+escapeHtml(t.name)+'</option>';}).join('')+'</select>' : '')
+                + (function(){ var pTpls=(templates||[]).filter(function(t){return (t.kind||'project')==='project';}); return pTpls.length ? '<select class="tpl-select" data-chapter="'+c.id+'" data-tip="Creează un proiect nou dintr-un șablon de proiect"><option value="">Din șablon…</option>'+pTpls.map(function(t){return '<option value="'+t.id+'">'+escapeHtml(t.name)+'</option>';}).join('')+'</select>' : ''; })()
                 + '</div>';
     }
     const chapIsOpen = anyFilterActive || ui.chapterOpen[c.id] === true;
@@ -9094,22 +9947,21 @@ app.addEventListener('click', e => {
     if (!project) return;
     const name = prompt('Nume pentru șablon:', project.name);
     if (!name || !name.trim()) return;
-    if (!state.templates) state.templates = [];
-    state.templates.push({ id: genId('tpl'), name: name.trim(), savedAt: todayISO(), project: cloneProjectFresh(project) });
+    templates.push({ id: genId('tpl'), name: name.trim(), savedAt: todayISO(), kind: 'project', project: cleanProjectForTemplate(project), status: 'draft', usageCount: 0, lastUsedAt: null, updatedAt: Date.now() });
     ui.transferPopoverKey = null;
-    persist(); render();
+    persistTemplates(); render();
     showToast('Șablon salvat: "'+name.trim()+'"', 'Îl găsești la "Din șablon…" în orice capitol.');
     return;
   }
   if (action === 'del-template') {
     e.preventDefault();
-    const idx = (state.templates||[]).findIndex(t => t.id === btn.dataset.template);
+    const idx = (templates||[]).findIndex(t => t.id === btn.dataset.template);
     if (idx === -1) return;
-    const [removed] = state.templates.splice(idx, 1);
-    persist(); renderTemplates();
+    const [removed] = templates.splice(idx, 1);
+    persistTemplates(); renderTemplates();
     showUndoToast('Șablon șters: "'+removed.name+'"', () => {
-      state.templates.splice(idx, 0, removed);
-      persist(); renderTemplates(); render();
+      templates.splice(idx, 0, removed);
+      persistTemplates(); renderTemplates(); render();
     });
     return;
   }
@@ -9815,16 +10667,37 @@ app.addEventListener('change', e => {
   }
   if (el.name === 'tag-filter-mode') { ui.filterTagMode = el.value; render(); return; }
   if (el.classList.contains('tpl-select')) {
-    const tpl = (state.templates||[]).find(t => t.id === el.value);
+    const tpl = (templates||[]).find(t => t.id === el.value);
     if (!tpl) return;
     const chapter = sheet.chapters.find(c => c.id === el.dataset.chapter);
     if (!chapter) return;
     const np = cloneProjectFresh(tpl.project);
     np.name = tpl.name;
     delete np.baseline;
+    (np.tasks||[]).forEach(t => { delete t.section; });
     chapter.projects.push(np);
+    tpl.usageCount = (tpl.usageCount||0) + 1;
+    tpl.lastUsedAt = todayISO();
+    tpl.updatedAt = Date.now();
+    persistTemplates();
     persist(); render();
     showToast('Proiect creat din șablonul "'+tpl.name+'"', 'Ctrl+Z anulează.');
+    return;
+  }
+  if (el.classList.contains('tpl-tasks-select')) {
+    const tpl = (templates||[]).find(t => t.id === el.value);
+    if (!tpl) return;
+    const chapter = sheet.chapters.find(c => c.id === el.dataset.chapter);
+    const project = chapter && chapter.projects.find(p => p.id === el.dataset.project);
+    if (!project) return;
+    const added = (tpl.tasks||[]).map(cloneTaskFresh);
+    added.forEach(t => { delete t.section; project.tasks.push(t); });
+    tpl.usageCount = (tpl.usageCount||0) + 1;
+    tpl.lastUsedAt = todayISO();
+    tpl.updatedAt = Date.now();
+    persistTemplates();
+    persist(); render();
+    showToast(added.length+(added.length===1?' sarcină adăugată':' sarcini adăugate')+' din șablonul "'+tpl.name+'"', 'În proiectul „'+project.name+'". Ctrl+Z anulează.');
     return;
   }
   if (el.id === 'history-date') { renderHistory(); return; }
