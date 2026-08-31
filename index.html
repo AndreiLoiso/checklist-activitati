@@ -894,7 +894,10 @@
   .fc-minimap-viewport { fill: color-mix(in srgb, var(--fc-accent) 20%, transparent); stroke: var(--fc-accent); stroke-width: 2; }
   .fc-minimap-node { fill: var(--text-secondary); opacity: .55; }
   .fc-minimap-node.fc-minimap-node-done { fill: var(--fc-accent); opacity: .8; }
-  .fc-legend { position: absolute; left: 18px; bottom: 18px; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 8px; box-shadow: 0 4px 18px rgba(0,0,0,.22); padding: 9px 13px; font-size: 11.5px; z-index: 30; display: flex; flex-direction: column; gap: 5px; max-width: 230px; color: var(--text-secondary); }
+  .fc-legend { position: absolute; left: 18px; bottom: 18px; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 8px; box-shadow: 0 4px 18px rgba(0,0,0,.22); padding: 9px 13px; font-size: 11.5px; z-index: 30; display: flex; flex-direction: column; gap: 5px; max-width: 230px; max-height: 40vh; overflow-y: auto; color: var(--text-secondary); }
+  .fc-legend-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-weight: 700; color: var(--text); position: sticky; top: -9px; background: var(--surface); margin: -9px -13px 2px; padding: 8px 13px 5px; border-bottom: 1px solid var(--border); }
+  .fc-legend-close { border: none; background: none; color: var(--text-secondary); cursor: pointer; font-size: 13px; line-height: 1; padding: 2px 4px; border-radius: 4px; }
+  .fc-legend-close:hover { background: var(--hover-bg, rgba(128,128,128,.15)); color: var(--text); }
   .fc-legend-item { display: flex; align-items: center; gap: 7px; }
   .fc-legend-swatch { width: 12px; height: 12px; border-radius: 3px; flex: none; }
   .fc-legend-shape { flex: none; width: 14px; height: 14px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; }
@@ -2042,12 +2045,15 @@ function visibleSheets() { return state.sheets.filter(s => !s.private || private
 // ===================== /FOI PRIVATE =====================
 const THEME_KEY = 'sbg-checklist-theme';
 const VIEW_PREFS_KEY = 'sbg-checklist-view-prefs';
-const APP_VERSION = '7.1.0';
+const APP_VERSION = '7.1.1';
 document.getElementById('app-version').textContent = APP_VERSION;
 document.getElementById('h1-version').textContent = 'v' + APP_VERSION;
 document.title = 'Checklist activități v' + APP_VERSION;
 
 const CHANGELOG = [
+  { v:'7.1.1', items:[
+    'Reparat: legenda schemei logice (🏷️) putea ajunge să acopere o mare parte din ecran atunci când benzile erau după „Responsabil/echipă" pe proiecte cu mulți responsabili diferiți (ex. șablonul „Ofertare SEAP"). Acum are înălțime limitată, cu scroll intern, plus un antet fix „Legendă (N)" cu buton „✕" chiar pe panou — pe lângă iconița 🏷️ din bara de sus și scurtătura L, care rămân neschimbate'
+  ]},
   { v:'7.1.0', items:[
     'Nou: șablon precompletat „Ofertare SEAP — standard (52 activități)" — apare automat în „📋 Șabloane" la prima deschidere după actualizare, fără import manual. Vine din workflow-ul real de ofertare pe SEAP (faze, responsabili, note, dependențe), gata de folosit din „Din șablon…" la orice capitol',
     'Reparat: la clonarea unui proiect (aplicare „Din șablon…", import de șabloane) sarcinile primeau id-uri noi, dar câmpul „depinde de" tot mai indica id-urile vechi — legăturile de dependență (deci și drumul critic, săgețile din schema logică) se rupeau silențios. Acum id-urile sunt remapate corect la clonare, pentru orice proiect/șablon cu dependențe reale între sarcini'
@@ -9545,7 +9551,14 @@ function fcRenderLegend(project, layout, layoutMode, nodes) {
   }
   if (!items.length) { el.style.display = 'none'; return; }
   el.style.display = '';
-  el.innerHTML = items.join('');
+  // Antet fix (sticky) cu buton „✕" — mereu vizibil, chiar dacă legenda a devenit
+  // lungă (ex. multe benzi „Responsabil/echipă") și scrolează intern (max-height
+  // în CSS), ca să nu mai poată acoperi nedefinit restul ecranului nici măcar cât
+  // stă deschisă. Discoverabil direct pe panou, nu doar prin iconița 🏷️ din bara
+  // de sus sau scurtătura L.
+  const head = '<div class="fc-legend-head"><span>Legendă'+(items.length>1?' ('+items.length+')':'')+'</span>'
+    + '<button type="button" class="fc-legend-close" data-action="fc-toggle-legend" data-tip="Ascunde legenda (L)">✕</button></div>';
+  el.innerHTML = head + items.join('');
 }
 // Pasul 8: pas de 10%, rotunjit ca să nu acumuleze erori de virgulă mobilă (0.1+0.1+0.1...).
 function fcZoomBy(delta) {
