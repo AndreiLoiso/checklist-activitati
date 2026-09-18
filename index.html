@@ -166,6 +166,15 @@
   .sheet-picker-popover .icon-choice { width: 26px; height: 26px; border-radius: 6px; border: 2px solid transparent; font-size: 15px; padding: 0; background: transparent; }
   .sheet-picker-popover .icon-choice:hover { background: var(--hover-bg); }
   .sheet-picker-popover .icon-choice.selected { border-color: var(--text); background: var(--hover-bg); }
+  #standalone-search-wrap { display: flex; align-items: center; gap: 8px; margin: 4px 0 10px; }
+  #standalone-search-wrap #f-search { flex: 0 1 320px; min-width: 140px; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); font-size: 14px; }
+  #standalone-search-wrap .fp-checkbox-row { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+  .icon-popover { flex-wrap: wrap; width: auto; max-width: 220px; gap: 4px; }
+  .icon-popover .icon-choice { width: 26px; height: 26px; border-radius: 6px; border: 2px solid transparent; font-size: 15px; padding: 0; background: transparent; }
+  .icon-popover .icon-choice:hover { background: var(--hover-bg); }
+  .icon-popover .icon-choice.selected { border-color: var(--text); background: var(--hover-bg); }
+  .icon-popover .icon-color-row { flex-basis: 100%; display: flex; flex-direction: column; gap: 4px; margin-top: 4px; padding-top: 6px; border-top: 1px solid var(--border); }
+  .icon-popover .icon-color-row label { font-size: 11px; color: var(--text-secondary); }
   .tab.active { background: var(--surface); font-weight: 600; border-color: var(--border-strong); }
   .tab .del-tab { font-size: 12px; color: var(--text-muted); padding: 2px 5px; border-radius: 5px; }
   .tab .del-tab:hover { background: var(--danger-bg); color: var(--danger-text); }
@@ -533,6 +542,7 @@
   button#archived-btn.archived-active { background: var(--primary-bg); color: var(--primary-text); border-color: var(--primary-bg); }
   .task-row.is-archived .task-text, .subtask-row.is-archived .subtask-text { font-style: italic; }
   .icon-btn.archived-active { color: #8d6e63; }
+  .task-row.is-hidden-manual, .subtask-row.is-hidden-manual { outline: 1px dashed var(--border-strong); outline-offset: -1px; }
   .mini-expand-btn.archived-active { background: var(--hover-bg); opacity: 1; }
   details.project.drag-over-proj { outline: 2px dashed #2f6fed; outline-offset: -2px; }
   .details-popover .dp-note { width: 100%; box-sizing: border-box; font-family: inherit; font-size: 12.5px; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); resize: vertical; min-height: 70px; }
@@ -1004,6 +1014,11 @@
   .tpl-card { background: var(--surface); border: 1px solid var(--border); border-top: 4px solid #2f6fed; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 6px; position: relative; }
   .tpl-card-draft { border-top-color: var(--warning-text); }
   .tpl-card-stable { border-top-color: #43a047; }
+  .tpl-card-archived { opacity: .6; border-top-color: var(--border-strong); }
+  .tpl-card-folder { font-size: 10.5px; padding: 2px 7px; border-radius: 10px; background: var(--bg); border: 1px dashed var(--border-strong); color: var(--text-secondary); cursor: pointer; white-space: nowrap; }
+  .tpl-card-folder:hover { border-style: solid; color: var(--text); }
+  .tpl-folder-group { margin-bottom: 14px; }
+  .tpl-folder-group-h { font-size: 12px; font-weight: 700; color: var(--text-secondary); padding: 4px 2px; margin-bottom: 6px; border-bottom: 1px solid var(--border); }
   .tpl-status-toggle { font-weight: 600; }
   .tpl-status-toggle.tpl-status-draft { background: var(--warning-bg); border-color: var(--warning-text); color: var(--warning-text); }
   .tpl-status-toggle.tpl-status-stable { background: var(--done-bg); border-color: var(--border-strong); color: var(--text); }
@@ -1200,6 +1215,11 @@
   <h1><svg class="app-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#2f6fed"/><path d="M17 33 L27 43 L48 20" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>Checklist activități <span id="h1-version" class="h1-version"></span></h1>
   <p class="subtitle" id="subtitle-text">Se salvează automat în acest browser.</p>
 
+  <div id="standalone-search-wrap">
+    <input type="text" id="f-search" placeholder="🔍 Caută în sarcini… (Alt+F)">
+    <label class="fp-checkbox-row"><input type="checkbox" id="f-search-global"> Peste tot</label>
+  </div>
+
   <div id="side-toolbar-panel">
     <button type="button" id="side-toolbar-toggle" data-tip="(Alt+Q) - Arată/ascunde panoul de opțiuni">☰ Opțiuni</button>
     <div class="toolbar toolbar-compact" id="side-toolbar-content">
@@ -1324,16 +1344,12 @@
             <option value="5">Albastru</option>
             <option value="6">Mov</option>
             <option value="7">Roz</option>
+            <option value="8">Magenta</option>
           </select>
         </details>
         <details class="fp-group">
           <summary>Tag-uri</summary>
           <div id="tag-filter-wrap"></div>
-        </details>
-        <details class="fp-group">
-          <summary>Căutare text</summary>
-          <input type="text" id="f-search" placeholder="Caută în sarcini…">
-          <label class="fp-checkbox-row"><input type="checkbox" id="f-search-global"> Caută peste tot (toate sheet-urile)</label>
         </details>
         <details class="fp-group">
           <summary>★ Vizualizări salvate</summary>
@@ -1453,7 +1469,8 @@
   <input type="text" id="bulk-tag-add" list="tag-list" placeholder="+ tag…" size="10" data-tip="Adaugă acest tag la toate sarcinile selectate">
   <button type="button" id="bulk-apply">Aplică</button>
   <span class="bulk-sep"></span>
-  <button type="button" id="bulk-save-template" data-tip="Salvează sarcinile selectate (cu subsarcinile lor) ca șablon reutilizabil — fără termen, fără important/urgent/bifat">💾 Șablon</button>
+  <button type="button" id="bulk-save-template" data-tip="Salvează elementele selectate ca șablon reutilizabil — fără termen, fără important/urgent/bifat">💾 Șablon</button>
+  <button type="button" id="bulk-delete-go" class="ghost-danger" data-tip="(Delete, fără nimic sub mouse) - Șterge toate elementele selectate">🗑 Șterge</button>
   <button type="button" id="bulk-move-cancel">Anulează selecția</button>
 </div>
 <div id="shortcuts-modal" class="shortcuts-modal" style="display:none;">
@@ -1485,6 +1502,9 @@
       <li><kbd>Delete</kbd> Șterge (sarcină/subsarcină; și capitol/proiect, dacă hovers pe antetul lor — util mai ales pentru cele arhivate)</li>
       <li><kbd>V</kbd> Convertește (subsarcină→sarcină; sarcină→proiect)</li>
       <li><kbd>Shift</kbd>+<kbd>V</kbd> Sarcina → subsarcina celei de deasupra</li>
+      <li><kbd>0</kbd> Pune termenul pe azi</li>
+      <li><kbd>K</kbd> Alege iconița (și, opțional, culoarea de font asociată acelei iconițe)</li>
+      <li><kbd>Shift</kbd>+<kbd>H</kbd> Ascunde/arată manual (chiar dacă nu e bifată — separat de arhivare)</li>
 
       <li><strong>— Capitol & Proiect (pe hover) —</strong></li>
       <li><kbd>Z</kbd> Izolează — vezi doar acesta, ascunde restul</li>
@@ -1494,12 +1514,15 @@
       <li><kbd>O</kbd> Opțiuni avansate pe sarcinile din proiect</li>
       <li><kbd>M</kbd> Mută/copiază sarcină/subsarcină/capitol/proiect (în alt proiect/capitol/sheet — o subsarcină mutată fără sarcina-părinte devine sarcină)</li>
       <li><kbd>H</kbd> Arată/ascunde arhivatele <em>din acest</em> capitol/proiect (spre deosebire de Alt+H, care e global)</li>
+      <li><kbd>G</kbd> Arată/ascunde sarcinile bifate <em>din acest</em> capitol/proiect</li>
 
       <li><strong>— Structura foii —</strong></li>
       <li><kbd>[</kbd> Restrânge un nivel, apoi tot (în modul carduri: restrânge toate cardurile)</li>
       <li><kbd>]</kbd> Extinde un nivel, apoi tot (în modul carduri: extinde toate cardurile)</li>
       <li><kbd>W</kbd> Ciclează filtrul de termen</li>
       <li><kbd>L</kbd> Activează/dezactivează modul „Selectează sarcini"</li>
+      <li><kbd>Ctrl</kbd>+<kbd>A</kbd> — în modul selecție, peste un proiect: selectează/deselectează toate sarcinile și subsarcinile lui</li>
+      <li><kbd>Delete</kbd> — în modul selecție, fără mouse-ul pe nimic anume: șterge toate elementele bifate (la fel ca 🗑 Șterge din bara de jos)</li>
       <li><kbd>1</kbd>–<kbd>9</kbd> Comută pe sheet-ul respectiv</li>
 
       <li><strong>— Comenzi generale (Alt+literă) —</strong></li>
@@ -1512,6 +1535,8 @@
       <li><kbd>Alt</kbd>+<kbd>T</kbd> Administrare tag-uri</li>
       <li><kbd>Alt</kbd>+<kbd>D</kbd> Comută mod luminos/întunecat</li>
       <li><kbd>Alt</kbd>+<kbd>H</kbd> Arată/ascunde elementele arhivate (global, pe tot ce ai)</li>
+      <li><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd> Arată/ascunde elementele ascunse manual (global)</li>
+      <li><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> Activează/dezactivează data automată (azi) pe sarcinile/subsarcinile noi</li>
       <li><kbd>Alt</kbd>+<kbd>Y</kbd> Istoric salvări sincronizate (cloud) — pe zile/săptămâni/luni, cu restaurare</li>
       <li><kbd>Alt</kbd>+<kbd>R</kbd> Raport de revizuire săptămânală</li>
       <li><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> Resetează toate filtrele, extinde tot</li>
@@ -1567,11 +1592,13 @@
         <option value="draft">🧩 Draft</option>
         <option value="stable">✅ Stabil</option>
       </select>
+      <select id="tpl-folder-filter"><option value="">Toate folderele</option></select>
       <select id="tpl-sort">
         <option value="recent">Cele mai recente</option>
         <option value="name">După nume (A-Z)</option>
         <option value="usage">Cele mai folosite</option>
       </select>
+      <button type="button" id="tpl-show-archived-btn" data-tip="Arată/ascunde șabloanele arhivate">📦 Arhivate</button>
       <span class="tpl-toolbar-spacer"></span>
       <span id="tpl-sync-hint" class="tpl-sync-hint" data-tip="Șabloanele se sincronizează separat de restul datelor — vezi „☁️ Cloud" pentru detalii"></span>
       <button type="button" id="tpl-export-btn" data-tip="Descarcă .json cu șabloanele afișate mai jos (respectă căutarea/filtrele active)">⬇ Exportă</button>
@@ -1887,6 +1914,7 @@ function mkTask(text, opts) {
     createdDate: opts.createdDate !== undefined ? opts.createdDate : null,
     doneDate: opts.doneDate !== undefined ? opts.doneDate : null,
     archived: !!opts.archived, smartDismissed: !!opts.smartDismissed,
+    icon: opts.icon || '', hidden: !!opts.hidden,
     subtasks: opts.subtasks || [],
     // Fundația schemei logice extinse (Pasul 1 din planul „Schemă logică / hartă de proces"):
     // flowType distinge o sarcină normală de un nod de Decizie (romb, ramuri Da/Nu) sau
@@ -1904,7 +1932,7 @@ function mkTask(text, opts) {
 }
 function mkSubtask(text, opts) {
   opts = opts || {};
-  return { id: genId('st'), text: text, done: false, note: opts.note || '', archived: false, deadline: opts.deadline || '', dateMode: opts.dateMode || 'fixed', startDate: opts.startDate || '', duration: opts.duration || 1, estMinutes: opts.estMinutes !== undefined ? opts.estMinutes : 30, dependsOn: opts.dependsOn || [], milestone: false, assignee: opts.assignee !== undefined ? opts.assignee : 'Andrei Loiso', link: opts.link || '', recurEvery: opts.recurEvery || 1, tags: opts.tags || [], important: false, urgent: false, recurrence: null, pinned: false, reminderAt: '', reminderMsg: '', reminderFired: false };
+  return { id: genId('st'), text: text, done: false, note: opts.note || '', archived: false, deadline: opts.deadline || '', dateMode: opts.dateMode || 'fixed', startDate: opts.startDate || '', duration: opts.duration || 1, estMinutes: opts.estMinutes !== undefined ? opts.estMinutes : 30, dependsOn: opts.dependsOn || [], milestone: false, assignee: opts.assignee !== undefined ? opts.assignee : 'Andrei Loiso', link: opts.link || '', recurEvery: opts.recurEvery || 1, tags: opts.tags || [], important: false, urgent: false, recurrence: null, pinned: false, reminderAt: '', reminderMsg: '', reminderFired: false, icon: opts.icon || '', hidden: !!opts.hidden };
 }
 function mkProject(name, tasks) { return { id: genId('p'), name: name, archived: false, tasks: tasks || [] }; }
 function mkChapter(name, color, projects) { return { id: genId('c'), name: name, color: color, archived: false, projects: projects || [] }; }
@@ -2027,6 +2055,48 @@ function seedData() {
 
 const STORAGE_KEY = 'sbg-checklist-v3';
 const TEMPLATES_STORAGE_KEY = 'sbg-templates-v1';
+// „Morminte" (tombstones) pentru șabloane șterse — un id de șablon ajuns aici
+// nu mai e re-adăugat niciodată automat, nici de îmbinarea (merge) cu cloud-ul,
+// nici de reînsămânțarea șablonului embedat SEAP. Fără asta, ștergerea unui
+// șablon nu se propaga niciodată — merge-ul cloud doar adaugă/actualizează, nu
+// elimină niciodată (vezi nota din secțiunea de sincronizare mai jos) — deci
+// șablonul revenea de pe alt dispozitiv/sesiune, ceea ce arăta ca „ștergerile
+// nu se sincronizează". Se sincronizează în cloud alături de șabloane (nu se
+// pierd la reinstalare/schimbare de dispozitiv, atât timp cât ești autentificat).
+const TEMPLATES_TOMBSTONES_KEY = 'sbg-templates-deleted-v1';
+let deletedTemplateIds = {};
+function loadTemplateTombstones() {
+  try {
+    const raw = localStorage.getItem(TEMPLATES_TOMBSTONES_KEY);
+    deletedTemplateIds = raw ? (JSON.parse(raw) || {}) : {};
+  } catch(e) { deletedTemplateIds = {}; }
+}
+function persistTemplateTombstones() {
+  try { localStorage.setItem(TEMPLATES_TOMBSTONES_KEY, JSON.stringify(deletedTemplateIds)); } catch(e) {}
+}
+function tombstoneTemplate(id) {
+  deletedTemplateIds[id] = Date.now();
+  persistTemplateTombstones();
+}
+function untombstoneTemplate(id) {
+  if (deletedTemplateIds[id] !== undefined) { delete deletedTemplateIds[id]; persistTemplateTombstones(); }
+}
+// Punct unic de ștergere — folosit de orice buton „🗑" de pe un card de
+// șablon, oriunde ar apărea el în aplicație — ca să nu existe două cópii ale
+// logicii care ar putea diverge (una care ține cont de tombstone, alta nu).
+function removeTemplateById(id) {
+  const idx = (templates||[]).findIndex(t => t.id === id);
+  if (idx === -1) return null;
+  const [removed] = templates.splice(idx, 1);
+  tombstoneTemplate(id);
+  persistTemplates();
+  return { removed, idx };
+}
+function restoreRemovedTemplate(removed, idx) {
+  untombstoneTemplate(removed.id);
+  templates.splice(Math.min(idx, templates.length), 0, removed);
+  persistTemplates();
+}
 const AUTOSAVE_KEY = 'sbg-daily-autosave-v1';
 const AUTOSAVE_HOUR = 18;
 const AUTOSAVE_MAX = 10;
@@ -2045,12 +2115,44 @@ function visibleSheets() { return state.sheets.filter(s => !s.private || private
 // ===================== /FOI PRIVATE =====================
 const THEME_KEY = 'sbg-checklist-theme';
 const VIEW_PREFS_KEY = 'sbg-checklist-view-prefs';
-const APP_VERSION = '7.1.1';
+const APP_VERSION = '8.0.0';
 document.getElementById('app-version').textContent = APP_VERSION;
 document.getElementById('h1-version').textContent = 'v' + APP_VERSION;
 document.title = 'Checklist activități v' + APP_VERSION;
 
 const CHANGELOG = [
+  { v:'8.0.0', items:[
+    'Nou: scurtătura 0 pune termenul sarcinii/subsarcinii de sub mouse pe azi, fără să mai deschizi calendarul',
+    'Nou: când bifezi o sarcină ca finalizată, toate subsarcinile ei se bifează automat și se restrâng automat — nu mai trebuie bifate una câte una',
+    'Nou: comutator G — arată/ascunde sarcinile deja bifate, doar din capitolul/proiectul de sub mouse (independent de arhivare)',
+    'Nou: ascundere manuală (Shift+H, cu buton 🙈 dedicat) — poți ascunde orice sarcină/subsarcină chiar dacă nu e bifată; Alt+Shift+H arată/ascunde global tot ce e ascuns manual',
+    'Nou: sarcinile și subsarcinile noi primesc automat data de azi ca termen — comutator Alt+Shift+D activează/dezactivează acest comportament (implicit: activ)',
+    'Nou: iconițe opționale pe sarcini/subsarcini (K, buton 🏷️ dedicat) — un set curat de 10 iconițe (🎯⭐🔥💡⚠️🏆💰❤️🧩📌), afișate direct lângă text',
+    'Nou: culoare de font automată în funcție de iconița aleasă (implicit: 🎯 → Magenta, culoare nouă adăugată în paleta de culori de font) — configurabilă din popover-ul iconiței (buton ∅ + paletă), cu prioritate sub culoarea manuală (Shift+I) dar peste cea automată de termen; ambele palete rămân contrastive în modul întunecat',
+    'Nou: câmp de căutare separat, mereu vizibil sus, scos din panoul de filtre (Alt+F îl focalizează direct, ca înainte)',
+    'App: bump major la 8.0.0'
+  ]},
+  { v:'7.3.2', items:[
+    'Reparat: textul din „☁️ Cloud" încă spunea că ștergerea unui șablon nu se sincronizează — rămăsese din versiunea 7.3.0, dinainte de reparația din 7.3.1. Șabloanele se sincronizau deja automat, la câteva secunde după fiecare schimbare (adăugare, editare, mutare în folder, arhivare, ștergere), exact ca restul aplicației — doar mesajul explicativ era învechit'
+  ]},
+  { v:'7.3.1', items:[
+    'Reparat: un șablon șters (inclusiv șablonul precompletat „Ofertare SEAP") putea reapărea la deschiderea unei versiuni noi a aplicației sau la sincronizarea cu alt dispozitiv — ștergerea nu se propaga niciodată mai departe, doar adăugările/actualizările. Acum fiecare ștergere lasă un „mormânt" (id reținut) care blochează definitiv reapariția acelui șablon, atât local cât și prin sincronizarea cloud; anularea (Ctrl+Z / butonul din notificare) scoate șablonul din nou din acest „mormânt", ca să rămână recuperabil normal',
+    'Mutarea unui șablon într-un folder sau (dez)arhivarea lui se sincronizau deja corect (fiecare modificare are timestamp propriu, câștigă mereu cea mai recentă) — nicio schimbare necesară acolo, doar ștergerea avea problema de mai sus'
+  ]},
+  { v:'7.3.0', items:[
+    'Nou: culoare automată de font pe baza termenului — roșu dacă e azi sau restant, portocaliu dacă e mâine, mov dacă e oricând altcândva în restul săptămânii curente. Neplanificat, săptămâna viitoare sau mai departe rămâne alb (fără culoare). O culoare manuală (Shift+I) are mereu prioritate față de cea automată; o sarcină bifată nu se colorează automat',
+    'Reparat: butoanele din antetul capitolelor/proiectelor (🎛️/Shift+Z) se restrângeau automat la orice alt click din acel antet — extindere, redenumire, mutare etc. — obligând reafișarea lor din nou de fiecare dată. Acum starea extins/restrâns rămâne exact cum a fost lăsată, până la un nou click pe 🎛️ sau Shift+Z',
+    'Nou: șabloanele pot fi arhivate (📦, cu buton „Arhivate" în bara de sus care le arată/ascunde) și grupate în foldere (etichetă „📁" pe fiecare card, click pentru a alege/crea un folder) — cu filtru dedicat de folder și grupare vizuală automată în „Răsfoiește" când nu e ales un anume folder'
+  ]},
+  { v:'7.2.0', items:[
+    'Nou: subsarcinile au acum și ele buton „+" (adaugă imediat după aceasta), la fel ca sarcinile — nu mai e nevoie să adaugi la finalul listei și apoi să reordonezi manual',
+    'Nou: în modul „☑️ Selectează sarcini", pot fi bifate acum și subsarcini individuale, nu doar sarcini. Antetul fiecărui proiect capătă o casetă ⬜/☑️ dedicată care selectează sau deselectează dintr-o dată toate sarcinile și subsarcinile vizibile din acel proiect (sau, din tastatură, Ctrl+A pe hover peste proiect)',
+    'Nou: „🗑 Șterge" în bara de selecție în bloc — elimină tot ce e bifat (sarcini și/sau subsarcini, eventual din proiecte diferite) dintr-o singură acțiune, cu anulare Ctrl+Z. Până acum selecția putea fi doar mutată sau salvată ca șablon. Scurtătura Delete face același lucru cât timp mouse-ul nu e peste o sarcină/subsarcină anume',
+    'Mutarea și salvarea ca șablon ale unei subsarcini selectate individual o transformă în sarcină de sine stătătoare la destinație — la fel cum se comportă deja transferul „⧉" al unei singure subsarcini'
+  ]},
+  { v:'7.1.2', items:[
+    'Reparat: Ctrl+Z / Ctrl+Shift+Z (undo/redo) modificau corect datele chiar și cu schema logică deschisă, dar diagrama vizibilă rămânea „înghețată" pe desenul vechi până la următoarea acțiune manuală în ea. Acum diagrama se redesenează imediat cu datele corecte, păstrând vizualizarea curentă (proiect/capitol/rutină); dacă undo/redo elimină chiar proiectul sau capitolul afișat, fereastra se închide automat în loc să rămână goală'
+  ]},
   { v:'7.1.1', items:[
     'Reparat: legenda schemei logice (🏷️) putea ajunge să acopere o mare parte din ecran atunci când benzile erau după „Responsabil/echipă" pe proiecte cu mulți responsabili diferiți (ex. șablonul „Ofertare SEAP"). Acum are înălțime limitată, cu scroll intern, plus un antet fix „Legendă (N)" cu buton „✕" chiar pe panou — pe lângă iconița 🏷️ din bara de sus și scurtătura L, care rămân neschimbate'
   ]},
@@ -2970,12 +3072,22 @@ function templateHasTag(t, tag) {
   if (!tag) return true;
   return templateTasks(t).some(tk => (tk.tags||[]).includes(tag) || (tk.subtasks||[]).some(s => (s.tags||[]).includes(tag)));
 }
+// Foldere pentru organizarea șabloanelor — câmp liber `folder` pe șablon
+// (gol/lipsă = „Fără folder"), fără o listă separată de foldere de întreținut.
+function allTemplateFolders() {
+  const set = new Set();
+  (templates||[]).forEach(t => { if (t.folder && t.folder.trim()) set.add(t.folder.trim()); });
+  return [...set].sort((a,b) => a.localeCompare(b, 'ro'));
+}
 function filteredSortedTemplates() {
   const q = (ui.templatesSearch||'').trim().toLowerCase();
   let list = (templates||[]).filter(t => {
+    if (!ui.templatesShowArchived && t.archived) return false;
     if (q && !t.name.toLowerCase().includes(q)) return false;
     if (ui.templatesTagFilter && !templateHasTag(t, ui.templatesTagFilter)) return false;
     if (ui.templatesStatusFilter && (t.status||'stable') !== ui.templatesStatusFilter) return false;
+    if (ui.templatesFolderFilter === '__none__' && t.folder && t.folder.trim()) return false;
+    if (ui.templatesFolderFilter && ui.templatesFolderFilter !== '__none__' && (t.folder||'').trim() !== ui.templatesFolderFilter) return false;
     return true;
   });
   if (ui.templatesSort === 'name') list = list.slice().sort((a,b) => a.name.localeCompare(b.name, 'ro'));
@@ -3000,6 +3112,14 @@ function renderTemplatesBrowse() {
   tagSel.innerHTML = '<option value="">Toate tag-urile</option>' + tags.map(tag => '<option value="'+escapeHtml(tag)+'"'+(tag===ui.templatesTagFilter?' selected':'')+'>#'+escapeHtml(tag)+'</option>').join('');
   document.getElementById('tpl-sort').value = ui.templatesSort;
   document.getElementById('tpl-status-filter').value = ui.templatesStatusFilter;
+  const folderSel = document.getElementById('tpl-folder-filter');
+  const folders = allTemplateFolders();
+  folderSel.innerHTML = '<option value="">Toate folderele</option>'
+    + '<option value="__none__"'+(ui.templatesFolderFilter==='__none__'?' selected':'')+'>Fără folder</option>'
+    + folders.map(f => '<option value="'+escapeHtml(f)+'"'+(f===ui.templatesFolderFilter?' selected':'')+'>📁 '+escapeHtml(f)+'</option>').join('');
+  folderSel.value = ui.templatesFolderFilter;
+  const archBtn = document.getElementById('tpl-show-archived-btn');
+  if (archBtn) archBtn.classList.toggle('extras-active', ui.templatesShowArchived);
   const syncHint = document.getElementById('tpl-sync-hint');
   if (syncHint) syncHint.textContent = fbUser ? '☁️ sincronizate' : '💻 doar local';
   if (!(templates||[]).length) {
@@ -3008,7 +3128,29 @@ function renderTemplatesBrowse() {
   }
   const list = filteredSortedTemplates();
   if (!list.length) { el.innerHTML = '<p class="tpl-empty-hint">Niciun șablon nu se potrivește cu căutarea/filtrul curent.</p>'; return; }
-  el.innerHTML = '<div class="tpl-cards-grid">' + list.map(renderTemplateCard).join('') + '</div>';
+  // Fără un folder anume selectat în filtru, grupăm vizual pe foldere (plus un
+  // grup „Fără folder"), ca să se vadă organizarea dintr-o privire. Cu un
+  // folder anume ales, filtrul deja a redus lista la acel folder — grilă simplă.
+  if (ui.templatesFolderFilter) {
+    el.innerHTML = '<div class="tpl-cards-grid">' + list.map(renderTemplateCard).join('') + '</div>';
+    return;
+  }
+  const groups = new Map();
+  list.forEach(t => {
+    const key = (t.folder && t.folder.trim()) ? t.folder.trim() : '';
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(t);
+  });
+  const orderedKeys = [...groups.keys()].sort((a,b) => {
+    if (a === '' ) return 1; if (b === '') return -1;
+    return a.localeCompare(b, 'ro');
+  });
+  el.innerHTML = orderedKeys.map(key => {
+    const items = groups.get(key);
+    const label = key ? '📁 '+escapeHtml(key) : 'Fără folder';
+    return '<div class="tpl-folder-group"><div class="tpl-folder-group-h">'+label+' ('+items.length+')</div>'
+      + '<div class="tpl-cards-grid">' + items.map(renderTemplateCard).join('') + '</div></div>';
+  }).join('');
 }
 function renderTemplateCard(t) {
   const taskList = templateTasks(t);
@@ -3018,10 +3160,12 @@ function renderTemplateCard(t) {
   taskList.forEach(tk => { (tk.tags||[]).forEach(tag=>tagSet.add(tag)); (tk.subtasks||[]).forEach(s=>(s.tags||[]).forEach(tag=>tagSet.add(tag))); });
   const status = t.status || 'stable';
   const usageCount = t.usageCount || 0;
-  let html = '<div class="tpl-card tpl-card-'+status+'" data-template="'+t.id+'">';
+  const folder = (t.folder||'').trim();
+  let html = '<div class="tpl-card tpl-card-'+status+(t.archived?' tpl-card-archived':'')+'" data-template="'+t.id+'">';
   html += '<div class="tpl-card-top"><strong>'+escapeHtml(t.name)+'</strong><span class="tpl-card-kind">'+templateKindLabel(t)+'</span></div>';
   html += '<div class="tpl-card-meta">'+nTasks+' sarcini · '+nSubs+' subsarcini · salvat '+fmtDate(t.savedAt)
-    + ' · folosit '+usageCount+(usageCount===1?' dată':' ori')+(t.lastUsedAt ? ' (ultima: '+fmtDate(t.lastUsedAt)+')' : '')+'</div>';
+    + ' · folosit '+usageCount+(usageCount===1?' dată':' ori')+(t.lastUsedAt ? ' (ultima: '+fmtDate(t.lastUsedAt)+')' : '')+(t.archived?' · 📦 arhivat':'')+'</div>';
+  html += '<div><span class="tpl-card-folder" data-action="tplcard-set-folder" data-template="'+t.id+'" data-tip="Click pentru a muta șablonul într-un alt folder">'+(folder?'📁 '+escapeHtml(folder):'📁 Fără folder')+'</span></div>';
   if (tagSet.size) html += '<div class="tpl-card-tags">'+[...tagSet].map(tag=>'<span>#'+escapeHtml(tag)+'</span>').join('')+'</div>';
   html += '<div class="tpl-card-actions">'
     + '<button type="button" class="tpl-status-toggle tpl-status-'+status+'" data-action="tplcard-toggle-status" data-template="'+t.id+'" data-tip="'+(status==='draft'?'Marchează drept stabil':'Marchează drept draft')+'">'+(status==='draft'?'🧩 Draft':'✅ Stabil')+'</button>'
@@ -3029,6 +3173,7 @@ function renderTemplateCard(t) {
     + '<button type="button" data-action="tplcard-apply-toggle" data-template="'+t.id+'">➕ Aplică</button>'
     + '<button type="button" data-action="tplcard-edit" data-template="'+t.id+'">✏️ Editează</button>'
     + '<button type="button" data-action="tplcard-export" data-template="'+t.id+'" data-tip="Descarcă doar acest șablon ca .json">⬇</button>'
+    + '<button type="button" data-action="tplcard-toggle-archive" data-template="'+t.id+'" data-tip="'+(t.archived?'Scoate din arhivă':'Arhivează (îl ascunde din listă implicit)')+'">'+(t.archived?'📤 Dezarhivează':'🗄 Arhivează')+'</button>'
     + '<button type="button" class="ghost-danger" data-action="del-template" data-template="'+t.id+'">🗑</button>'
     + '</div>';
   if (ui.templatePreviewOpen[t.id]) {
@@ -3157,6 +3302,8 @@ document.getElementById('tpl-tab-editor').addEventListener('click', () => { ui.t
 document.getElementById('tpl-search').addEventListener('input', e => { ui.templatesSearch = e.target.value; renderTemplatesBrowse(); });
 document.getElementById('tpl-tag-filter').addEventListener('change', e => { ui.templatesTagFilter = e.target.value; renderTemplatesBrowse(); });
 document.getElementById('tpl-status-filter').addEventListener('change', e => { ui.templatesStatusFilter = e.target.value; renderTemplatesBrowse(); });
+document.getElementById('tpl-folder-filter').addEventListener('change', e => { ui.templatesFolderFilter = e.target.value; renderTemplatesBrowse(); });
+document.getElementById('tpl-show-archived-btn').addEventListener('click', () => { ui.templatesShowArchived = !ui.templatesShowArchived; renderTemplatesBrowse(); });
 document.getElementById('tpl-export-btn').addEventListener('click', () => {
   const list = filteredSortedTemplates();
   exportTemplatesToFile(list, 'Checklist_activitati_sabloane_' + todayISO() + '.json');
@@ -3272,10 +3419,12 @@ const CONTEXT_MENU_ITEMS = {
     { label: 'Responsabil', icon: '👤', key: 'r', shiftKey: true, kbd: 'Shift+R' },
     { sep: true },
     { label: 'Termen', icon: '📅', key: 'd', kbd: 'D' },
+    { label: 'Termen = azi', icon: '📆', key: '0', kbd: '0' },
     { label: 'Tip termen (fix/estimare)', icon: '🔄', key: 'd', shiftKey: true, kbd: 'Shift+D' },
     { label: 'Reminder', icon: '🔔', key: 'r', kbd: 'R' },
     { label: 'Recurență', icon: '🔁', key: 'c', kbd: 'C' },
     { label: 'Fixează sus', icon: '📌', key: 'p', kbd: 'P' },
+    { label: 'Iconiță', icon: '🏷️', key: 'k', kbd: 'K' },
     { sep: true },
     { label: 'Adaugă subsarcină', icon: '➕', key: 's', kbd: 'S' },
     { label: 'Extinde/restrânge subsarcini', icon: '↕️', key: 'e', kbd: 'E' },
@@ -3286,6 +3435,7 @@ const CONTEXT_MENU_ITEMS = {
     { label: 'Mută/copiază în alt proiect', icon: '⧉', key: 'm', kbd: 'M' },
     { sep: true },
     { label: 'Arhivează', icon: '🗄', key: 'a', shiftKey: true, kbd: 'Shift+A' },
+    { label: 'Ascunde manual', icon: '🙈', key: 'h', shiftKey: true, kbd: 'Shift+H' },
     { label: 'Șterge', icon: '🗑', key: 'Delete', kbd: 'Del', danger: true },
   ],
   subtask: [
@@ -3297,15 +3447,18 @@ const CONTEXT_MENU_ITEMS = {
     { label: 'Responsabil', icon: '👤', key: 'r', shiftKey: true, kbd: 'Shift+R' },
     { sep: true },
     { label: 'Termen', icon: '📅', key: 'd', kbd: 'D' },
+    { label: 'Termen = azi', icon: '📆', key: '0', kbd: '0' },
     { label: 'Tip termen (fix/estimare)', icon: '🔄', key: 'd', shiftKey: true, kbd: 'Shift+D' },
     { label: 'Reminder', icon: '🔔', key: 'r', kbd: 'R' },
     { label: 'Recurență', icon: '🔁', key: 'c', kbd: 'C' },
     { label: 'Fixează sus', icon: '📌', key: 'p', kbd: 'P' },
+    { label: 'Iconiță', icon: '🏷️', key: 'k', kbd: 'K' },
     { sep: true },
     { label: 'Duplică', icon: '⎘', key: 'u', kbd: 'U' },
     { label: 'Transformă în sarcină', icon: '⬆️', key: 'v', kbd: 'V' },
     { sep: true },
     { label: 'Arhivează', icon: '🗄', key: 'a', shiftKey: true, kbd: 'Shift+A' },
+    { label: 'Ascunde manual', icon: '🙈', key: 'h', shiftKey: true, kbd: 'Shift+H' },
     { label: 'Șterge', icon: '🗑', key: 'Delete', kbd: 'Del', danger: true },
   ],
   project: [
@@ -3320,6 +3473,7 @@ const CONTEXT_MENU_ITEMS = {
     { label: 'Convertește în sarcină', icon: '📋', key: 'v', kbd: 'V' },
     { sep: true },
     { label: 'Arată/ascunde arhivatele din acesta', icon: '🗃️', key: 'h', kbd: 'H' },
+    { label: 'Arată/ascunde sarcinile bifate din acesta', icon: '☑️', key: 'g', kbd: 'G' },
     { label: 'Arhivează', icon: '🗄', key: 'a', shiftKey: true, kbd: 'Shift+A' },
     { label: 'Șterge', icon: '🗑', key: 'Delete', kbd: 'Del', danger: true },
   ],
@@ -3333,6 +3487,7 @@ const CONTEXT_MENU_ITEMS = {
     { label: 'Mută/copiază în alt sheet', icon: '📤', key: 'm', kbd: 'M' },
     { sep: true },
     { label: 'Arată/ascunde arhivatele din acesta', icon: '🗃️', key: 'h', kbd: 'H' },
+    { label: 'Arată/ascunde sarcinile bifate din acesta', icon: '☑️', key: 'g', kbd: 'G' },
     { label: 'Arhivează', icon: '🗄', key: 'a', shiftKey: true, kbd: 'Shift+A' },
     { label: 'Șterge', icon: '🗑', key: 'Delete', kbd: 'Del', danger: true },
   ],
@@ -3380,6 +3535,8 @@ const COMMAND_GROUPS = [
     { label: 'Deschide/închide panoul de filtre', short: 'panou filtre', keys: 'Alt+Shift+F', run: () => dispatchShortcutKey('f', { altKey: true, shiftKey: true }) },
     { label: 'Arată/ascunde vizualizarea pe carduri', short: 'vizualizare carduri', keys: 'Alt+B', run: () => dispatchShortcutKey('b', { altKey: true }) },
     { label: 'Activează/dezactivează modul „Selectează sarcini"', short: 'selectează sarcini', keys: 'L', run: () => dispatchShortcutKey('l') },
+    { label: 'Selectează/deselectează tot dintr-un proiect (peste care e mouse-ul) — necesită modul selecție', short: 'selectează tot', keys: 'Ctrl+A', run: () => dispatchShortcutKey('a', { ctrlKey: true }) },
+    { label: 'Șterge toate elementele selectate, fără mouse-ul pe nimic anume — necesită modul selecție', short: 'șterge selecția', keys: 'Delete', run: () => dispatchShortcutKey('Delete') },
     { label: 'Comută mod luminos/întunecat', short: 'mod luminos', keys: 'Alt+D', run: () => dispatchShortcutKey('d', { altKey: true }) },
     { label: 'Vizualizare calendar lunar', short: 'calendar', keys: 'Alt+E', run: () => dispatchShortcutKey('e', { altKey: true }) },
     { label: 'Tipărește', short: 'tipărește', keys: 'Alt+P', run: () => dispatchShortcutKey('p', { altKey: true }) },
@@ -3392,6 +3549,7 @@ const COMMAND_GROUPS = [
     { label: 'Șabloane (bibliotecă reutilizabilă)', short: 'șabloane', keys: 'Alt+M', run: () => dispatchShortcutKey('m', { altKey: true }) },
     { label: 'Sincronizare cloud', short: 'cloud', keys: 'Alt+C', run: () => dispatchShortcutKey('c', { altKey: true }) },
     { label: 'Istoric salvări sincronizate (cloud)', short: 'istoric sync', keys: 'Alt+Y', run: () => dispatchShortcutKey('y', { altKey: true }) },
+    { label: 'Activează/dezactivează data automată (azi) pe sarcinile/subsarcinile noi', short: 'dată automată sarcini noi', keys: 'Alt+Shift+D', run: () => dispatchShortcutKey('d', { altKey: true, shiftKey: true }) },
   ]},
   { category: 'Panouri', items: [
     { label: 'Arată/ascunde Sumar general', keys: 'Alt+G', run: () => dispatchShortcutKey('g', { altKey: true }) },
@@ -3400,6 +3558,7 @@ const COMMAND_GROUPS = [
     { label: 'Sincronizare cloud', keys: '', run: () => document.getElementById('cloud-btn').click() },
     { label: 'Istoric salvări sincronizate', keys: 'Alt+Y', run: () => document.getElementById('sync-history-btn').click() },
     { label: 'Arată/ascunde elemente arhivate (global)', keys: 'Alt+H', run: () => dispatchShortcutKey('h', { altKey: true }) },
+    { label: 'Arată/ascunde elementele ascunse manual (global)', keys: 'Alt+Shift+H', run: () => dispatchShortcutKey('h', { altKey: true, shiftKey: true }) },
     { label: 'Raport de revizuire săptămânală', keys: 'Alt+R', run: () => dispatchShortcutKey('r', { altKey: true }) },
     { label: 'Manual de utilizare', keys: '', run: () => document.getElementById('help-btn').click() },
   ]},
@@ -3431,6 +3590,10 @@ const COMMAND_GROUPS = [
     { label: 'Transformă sarcina în subsarcina celei de deasupra', short: 'subsarcina de deasupra', keys: 'Shift+V', run: () => dispatchShortcutKey('v', { shiftKey: true }) },
     { label: 'Mută/copiază capitol/proiect în alt sheet', short: 'mută sheet', keys: 'M', run: () => dispatchShortcutKey('m') },
     { label: 'Arată/ascunde arhivatele din capitolul/proiectul de sub mouse', short: 'arhivate (local)', keys: 'H', run: () => dispatchShortcutKey('h') },
+    { label: 'Pune termenul sarcinii/subsarcinii de sub mouse pe azi', short: 'termen = azi', keys: '0', run: () => dispatchShortcutKey('0') },
+    { label: 'Arată/ascunde sarcinile bifate din capitolul/proiectul de sub mouse', short: 'bifate (local)', keys: 'G', run: () => dispatchShortcutKey('g') },
+    { label: 'Ascunde/arată manual sarcina/subsarcina de sub mouse (chiar dacă nu e bifată)', short: 'ascunde manual', keys: 'Shift+H', run: () => dispatchShortcutKey('h', { shiftKey: true }) },
+    { label: 'Alege iconița sarcinii/subsarcinii de sub mouse', short: 'iconiță', keys: 'K', run: () => dispatchShortcutKey('k') },
   ]},
   { category: 'Navigare', items: [
     { label: 'Mută sarcina/subsarcina de sub mouse mai sus', short: 'mută sus', keys: '↑', run: () => dispatchShortcutKey('ArrowUp') },
@@ -3961,13 +4124,12 @@ document.getElementById('templates-modal').addEventListener('click', e => {
 
   const del = e.target.closest('[data-action="del-template"]');
   if (del) {
-    const idx = (templates||[]).findIndex(t => t.id === del.dataset.template);
-    if (idx === -1) return;
-    const [removed] = templates.splice(idx, 1);
-    persistTemplates(); renderTemplates(); render();
-    showUndoToast('Șablon șters: "'+removed.name+'"', () => {
-      templates.splice(idx, 0, removed);
-      persistTemplates(); renderTemplates(); render();
+    const result = removeTemplateById(del.dataset.template);
+    if (!result) return;
+    renderTemplates(); render();
+    showUndoToast('Șablon șters: "'+result.removed.name+'"', () => {
+      restoreRemovedTemplate(result.removed, result.idx);
+      renderTemplates(); render();
     });
     return;
   }
@@ -3977,6 +4139,32 @@ document.getElementById('templates-modal').addEventListener('click', e => {
     const tpl = (templates||[]).find(t => t.id === statusBtn.dataset.template);
     if (!tpl) return;
     tpl.status = (tpl.status || 'stable') === 'draft' ? 'stable' : 'draft';
+    tpl.updatedAt = Date.now();
+    persistTemplates();
+    renderTemplatesBrowse();
+    return;
+  }
+
+  const archiveBtn = e.target.closest('[data-action="tplcard-toggle-archive"]');
+  if (archiveBtn) {
+    const tpl = (templates||[]).find(t => t.id === archiveBtn.dataset.template);
+    if (!tpl) return;
+    tpl.archived = !tpl.archived;
+    tpl.updatedAt = Date.now();
+    persistTemplates();
+    renderTemplatesBrowse();
+    return;
+  }
+
+  const folderBtn = e.target.closest('[data-action="tplcard-set-folder"]');
+  if (folderBtn) {
+    const tpl = (templates||[]).find(t => t.id === folderBtn.dataset.template);
+    if (!tpl) return;
+    const existing = allTemplateFolders();
+    const hint = existing.length ? ' (foldere existente: '+existing.join(', ')+')' : '';
+    const val = prompt('Folder pentru acest șablon — nume nou sau existent, gol pentru „Fără folder"'+hint+':', tpl.folder || '');
+    if (val === null) return;
+    tpl.folder = val.trim();
     tpl.updatedAt = Date.now();
     persistTemplates();
     renderTemplatesBrowse();
@@ -4350,7 +4538,7 @@ function buildHelpPageHtml() {
   <li><strong>▲ ▼ (reordonare) și ⧉ (mută/copiază)</strong> sunt mereu vizibile pe antetul unui capitol sau proiect, chiar dacă restul butoanelor din antet sunt restrânse (🎛️) — nu trebuie să le arăți întâi, ca să reordonezi sau să muți ceva.</li>
   <li><strong>Dublu-click</strong> pe numele unui capitol, proiect sau pe textul unei sarcini/subsarcini → intri în modul de redenumire. Enter sau click în afară salvează, Esc anulează.</li>
   <li>Butonul "+ Capitol nou" (sub listă) și "+ Proiect" (în fiecare capitol) adaugă elemente noi.</li>
-  <li>Butonul "+" de pe fiecare sarcină adaugă o sarcină nouă imediat după ea. Butonul "↳" adaugă o subsarcină.</li>
+  <li>Butonul "+" de pe fiecare sarcină adaugă o sarcină nouă imediat după ea; butonul "+" de pe fiecare subsarcină adaugă, la fel, o subsarcină nouă imediat după ea (nu doar la finalul listei). Butonul "↳" de pe sarcină adaugă o subsarcină nouă la finalul listei ei.</li>
   <li>Butonul <code>⎘</code> duplică sarcina imediat sub ea, cu tot cu subsarcini — copia pornește nebifată, ca punct de plecare curat.</li>
   <li>O sarcină cu cel puțin o subsarcină are un buton ⌃/⌄ care extinde sau restrânge lista de subsarcini. Restrâns, apare o linie scurtă cu numărul de subsarcini și câte sunt făcute — clic pe ea extinde la loc.</li>
   <li>Fiecare capitol are propria culoare — click pe cerculețul colorat din antet pentru a o schimba.</li>
@@ -4551,7 +4739,7 @@ function buildHelpPageHtml() {
 </ul>
 <p><strong>🔍 Izolare proiect</strong> — vrei să lucrezi pe un singur proiect, fără ca restul listei să te distragă? Butonul 🔍 din antetul oricărui proiect (sau <kbd>Z</kbd> pe hover) ascunde temporar tot restul — celelalte proiecte și capitole — lăsând vizibil doar proiectul respectiv. Apare un banner sus, cu numele proiectului și un buton „Ieși"; revii la vedere normală cu același buton/scurtătură, cu <kbd>Escape</kbd>, sau din banner. Nu șterge sau arhivează nimic — e doar un filtru vizual temporar, care nu se salvează la reîncărcarea paginii.</p>
 <p><strong>Șabloane</strong> — pentru proceduri care se repetă (ofertare, avizare, recepție), salvate și organizate într-o bibliotecă dedicată. Vezi secțiunea <a href="#sabloane">„📋 Șabloane"</a> mai jos, cu tot ce poate face modulul.</p>
-<p><strong>Editare în masă</strong> — activezi „☑️ Selectează sarcini", bifezi mai multe, iar în bara de jos, pe lângă mutare, ai acum și câmpuri pentru <em>termen</em>, <em>prioritate</em> și <em>responsabil</em>. Apeși „Aplică" și se setează pentru tot lotul dintr-o dată. Poți completa doar unul dintre câmpuri — celelalte rămân neschimbate.</p>
+<p><strong>Editare în masă</strong> — activezi „☑️ Selectează sarcini", bifezi mai multe (sarcini ȘI subsarcini, independent — bifa unei sarcini nu îi bifează automat subsarcinile), iar în bara de jos ai: mutare într-un alt proiect, câmpuri pentru <em>termen</em>, <em>prioritate</em> și <em>responsabil</em> („Aplică" le setează pentru tot lotul dintr-o dată — poți completa doar unul dintre câmpuri, celelalte rămân neschimbate), „💾 Șablon" (salvează selecția ca șablon reutilizabil — o subsarcină selectată individual devine, în șablon, o sarcină de sine stătătoare) și „🗑 Șterge" (elimină tot ce e bifat, cu anulare Ctrl+Z). Antetul fiecărui proiect capătă, cât ești în acest mod, o casetă ⬜/☑️ dedicată — un click selectează sau deselectează dintr-o dată toate sarcinile și subsarcinile vizibile din acel proiect (la fel, din tastatură, cu <kbd>Ctrl</kbd>+<kbd>A</kbd> pe hover peste proiect); <kbd>Delete</kbd> fără mouse-ul pe nimic anume șterge direct toată selecția.</p>
 
 <h2 id="sabloane">17b. 📋 Șabloane</h2>
 <p>Biblioteca de proceduri reutilizabile — proiecte întregi sau doar un set de sarcini, salvate o dată și instanțiate oricând, în orice capitol. Se deschide cu butonul <em>„⎘ Șabloane"</em> din <em>🏷 Organizare</em> sau cu <kbd>Alt</kbd>+<kbd>M</kbd>: un modul separat, pe tot ecranul, cu două tab-uri.</p>
@@ -4576,7 +4764,7 @@ function buildHelpPageHtml() {
 <p><strong>Sincronizare cloud</strong> — dacă ești conectat(ă) la cont (vezi „☁️ Cloud"), șabloanele se sincronizează automat, separat de restul datelor — indicatorul „☁️ sincronizate" / „💻 doar local" din bara de sus arată starea curentă. Un șablon adăugat pe un dispozitiv apare și pe celelalte; o ștergere însă <strong>nu</strong> se propagă automat — dacă vrei ca un șablon să dispară de pe toate dispozitivele, șterge-l manual de pe fiecare.</p>
 
 <h2 id="reordonare-optiuni">Reordonare și opțiuni avansate</h2>
-<p>Ca rândurile să rămână citibile, majoritatea butoanelor de pe sarcini și subsarcini sunt <strong>ascunse implicit</strong>. Vizibile rămân doar: câmpul de dată, <strong>↳</strong> (subsarcină nouă), <strong>✕</strong> (șterge) și <strong>+</strong> (sarcină nouă).</p>
+<p>Ca rândurile să rămână citibile, majoritatea butoanelor de pe sarcini și subsarcini sunt <strong>ascunse implicit</strong>. Vizibile rămân doar: câmpul de dată, <strong>✕</strong> (șterge) și <strong>+</strong> (adaugă imediat după — sarcină nouă pe rândul unei sarcini, subsarcină nouă pe rândul unei subsarcini); pe sarcini, mai rămâne și <strong>↳</strong> (subsarcină nouă, la finalul listei).</p>
 <ul>
   <li><strong>Comutatorul</strong> — iconița <strong>⚙️</strong> din antetul fiecărui proiect arată sau ascunde restul butoanelor, doar pentru sarcinile și subsarcinile acelui proiect. Fiecare proiect are propriul comutator, independent de celelalte; butonul rămâne evidențiat cât timp opțiunile sunt vizibile.</li>
   <li><strong>Ce e în grupul ascuns</strong> — fixare 📌, prioritate, recurență 🔁, reminder 🔔, detalii ⋯ (notă, responsabil, link), reordonare ▲▼, transformare în proiect 📂 (sarcini) sau în sarcină ⬆️ (subsarcini), arhivare 🗄, duplicare ⎘ și extinderea subsarcinilor.</li>
@@ -5017,10 +5205,8 @@ document.getElementById('bulk-apply').addEventListener('click', () => {
   if (!dl && !pr && !asg && !tagAdd) { alert('Alege cel puțin un câmp de aplicat (termen, prioritate, responsabil sau tag).'); return; }
   let n = 0;
   ui.selectedTasks.forEach(sel => {
-    const sh = state.sheets.find(s => s.id === sel.sheetId);
-    const ch = sh && sh.chapters.find(c => c.id === sel.chapterId);
-    const pj = ch && ch.projects.find(p => p.id === sel.projectId);
-    const tk = pj && pj.tasks.find(t => t.id === sel.taskId);
+    const r = resolveSelectionEntry(sel);
+    const tk = r && r.target;
     if (!tk) return;
     if (dl) { tk.deadline = dl; if (!tk.startDate) tk.startDate = dl; }
     if (pr) applyStateToTask(tk, pr);
@@ -5036,9 +5222,10 @@ document.getElementById('bulk-apply').addEventListener('click', () => {
   document.getElementById('bulk-assignee').value = '';
   document.getElementById('bulk-tag-add').value = '';
   persist(); render();
-  showToast(n + (n===1?' sarcină actualizată':' sarcini actualizate'), 'Ctrl+Z anulează.');
+  showToast(n + (n===1?' element actualizat':' elemente actualizate'), 'Ctrl+Z anulează.');
 });
 document.getElementById('bulk-save-template').addEventListener('click', executeSaveSelectionAsTemplate);
+document.getElementById('bulk-delete-go').addEventListener('click', executeBulkDelete);
 document.getElementById('bulk-move-cancel').addEventListener('click', () => {
   ui.selectedTasks = [];
   render();
@@ -5146,14 +5333,23 @@ document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && !isTypingContext(e.target)) {
     if (e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); undo(); return; }
     if ((e.key.toLowerCase() === 'z' && e.shiftKey) || e.key.toLowerCase() === 'y') { e.preventDefault(); redo(); return; }
+    if (e.key.toLowerCase() === 'a' && ui.selectionMode) {
+      const ctxSel = getHoverContext();
+      if (!ctxSel || !ctxSel.projectId) {
+        showToast('Treci cu mouse-ul peste un proiect', 'Apoi apasă Ctrl+A ca să-i selectezi (sau deselectezi) toate sarcinile și subsarcinile.');
+        return;
+      }
+      e.preventDefault();
+      toggleSelectAllProject(ctxSel.chapterId, ctxSel.projectId);
+      render();
+      updateBulkMoveBar();
+      return;
+    }
   }
   if (e.ctrlKey || e.metaKey) return;
   if (isTypingContext(e.target)) return;
   if (e.key.toLowerCase() === 'f' && e.altKey && !e.shiftKey) {
     e.preventDefault();
-    openFilterPanel();
-    const searchDetails = document.getElementById('f-search').closest('details');
-    if (searchDetails) searchDetails.open = true;
     document.getElementById('f-search').focus();
     return;
   }
@@ -5245,6 +5441,54 @@ document.addEventListener('keydown', e => {
   if (e.key.toLowerCase() === 'h' && !e.altKey && !e.shiftKey) {
     e.preventDefault();
     toggleScopedArchived(getHoverContext());
+    return;
+  }
+  if (e.key.toLowerCase() === 'h' && e.shiftKey && !e.altKey) {
+    e.preventDefault();
+    const info = getHoverInfo();
+    if (!info) {
+      showToast('Treci cu mouse-ul peste o sarcină', 'Apoi apasă Shift+H ca s-o ascunzi/arăți manual.');
+      return;
+    }
+    const sheet = activeSheet();
+    const target = resolveTarget(sheet, { chapter: info.chapterId, project: info.projectId, task: info.taskId, subtask: info.subtaskId });
+    if (!target) return;
+    target.hidden = !target.hidden;
+    persist(); render();
+    showToast(target.hidden ? 'Ascunsă manual' : 'Arătată din nou', target.hidden ? 'Alt+Shift+H arată/ascunde tot ce e ascuns manual.' : '');
+    return;
+  }
+  if (e.key.toLowerCase() === 'h' && e.altKey && e.shiftKey) {
+    e.preventDefault();
+    ui.showHiddenAll = !ui.showHiddenAll;
+    render();
+    showToast(ui.showHiddenAll ? 'Elementele ascunse manual: arătate' : 'Elementele ascunse manual: ascunse', '');
+    return;
+  }
+  if (e.key.toLowerCase() === 'g' && !e.altKey && !e.shiftKey) {
+    e.preventDefault();
+    toggleScopedHideDone(getHoverContext());
+    return;
+  }
+  if (e.key.toLowerCase() === 'k' && !e.altKey && !e.shiftKey && !e.ctrlKey) {
+    e.preventDefault();
+    const info = getHoverInfo();
+    if (!info) {
+      showToast('Treci cu mouse-ul peste o sarcină', 'Apoi apasă K ca să-i alegi o iconiță.');
+      return;
+    }
+    ensureRowExtrasOpen(info.projectId);
+    const key = info.subtaskId || info.taskId;
+    ui.iconPickerTaskId = ui.iconPickerTaskId === key ? null : key;
+    render();
+    return;
+  }
+  if (e.key.toLowerCase() === 'd' && e.altKey && e.shiftKey) {
+    e.preventDefault();
+    if (!state.settings) state.settings = {};
+    state.settings.autoDateNewItems = state.settings.autoDateNewItems === false ? true : false;
+    persist();
+    showToast(state.settings.autoDateNewItems ? 'Dată automată pe sarcini noi: activă' : 'Dată automată pe sarcini noi: dezactivată', '');
     return;
   }
   if (e.key.toLowerCase() === 'z' && e.shiftKey) {
@@ -5339,7 +5583,7 @@ document.addEventListener('keydown', e => {
     if (input) { input.focus(); input.setSelectionRange(input.value.length, input.value.length); }
     return;
   }
-  if (e.key.toLowerCase() === 'a' && !e.shiftKey) {
+  if (e.key.toLowerCase() === 'a' && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
     e.preventDefault();
     const info = getHoverInfo();
     if (!info) {
@@ -5349,7 +5593,7 @@ document.addEventListener('keydown', e => {
         const chapter = sheet.chapters.find(c => c.id === ctx.chapterId);
         const project = chapter && chapter.projects.find(p => p.id === ctx.projectId);
         if (!project) return;
-        const nt = mkTask('', { createdDate: todayISO() });
+        const nt = mkTask('', { createdDate: todayISO(), deadline: autoDateDefault() });
         project.tasks.push(nt);
         setEditingTarget('task', nt.id);
         ui.projectOpen[project.id] = true;
@@ -5368,12 +5612,12 @@ document.addEventListener('keydown', e => {
       if (!task) return;
       if (!task.subtasks) task.subtasks = [];
       const idx = task.subtasks.findIndex(s => s.id === info.subtaskId);
-      const ns = mkSubtask('');
+      const ns = mkSubtask('', { deadline: autoDateDefault() });
       task.subtasks.splice(idx === -1 ? task.subtasks.length : idx + 1, 0, ns);
       setEditingTarget('subtask', ns.id);
     } else {
       const idx = project.tasks.findIndex(t => t.id === info.taskId);
-      const nt = mkTask('', { createdDate: todayISO() });
+      const nt = mkTask('', { createdDate: todayISO(), deadline: autoDateDefault() });
       project.tasks.splice(idx === -1 ? project.tasks.length : idx + 1, 0, nt);
       setEditingTarget('task', nt.id);
     }
@@ -5585,6 +5829,7 @@ document.addEventListener('keydown', e => {
         }));
       }
     }
+    if (target.done && !info.subtaskId) cascadeTaskDoneToSubtasks(target);
     persist(); render();
     return;
   }
@@ -5742,7 +5987,16 @@ document.addEventListener('keydown', e => {
     // ales pentru elementele arhivate (aveau deja ✕ în antet, dar nu și
     // Delete/meniul contextual).
     const ctx = getHoverContext();
-    if (!ctx || (ctx.type !== 'chapter' && ctx.type !== 'project')) return;
+    if (!ctx || (ctx.type !== 'chapter' && ctx.type !== 'project')) {
+      // Nici capitol/proiect sub cursor — dacă suntem în modul selecție și
+      // există elemente bifate, Delete le șterge pe toate dintr-o dată
+      // (echivalentul tastaturii pentru butonul „🗑 Șterge" din bara de jos).
+      if (ui.selectionMode && ui.selectedTasks.length) {
+        e.preventDefault();
+        executeBulkDelete();
+      }
+      return;
+    }
     e.preventDefault();
     const sheet2 = activeSheet();
     if (ctx.type === 'chapter') {
@@ -5803,6 +6057,22 @@ document.addEventListener('keydown', e => {
     const order = ['fixed', 'estim-day', 'estim-week'];
     const cur = order.indexOf(target.dateMode || 'fixed');
     target.dateMode = order[(cur + 1) % order.length];
+    persist(); render();
+    return;
+  }
+  if (e.key === '0' && !e.shiftKey && !e.altKey && !e.ctrlKey) {
+    e.preventDefault();
+    const info = getHoverInfo();
+    if (!info) {
+      showToast('Treci cu mouse-ul peste o sarcină', 'Apoi apasă 0 ca să-i pui termenul pe azi.');
+      return;
+    }
+    const sheet = activeSheet();
+    const target = resolveTarget(sheet, { chapter: info.chapterId, project: info.projectId, task: info.taskId, subtask: info.subtaskId });
+    if (!target) return;
+    ensureRowExtrasOpen(info.projectId);
+    target.deadline = todayISO();
+    target.smartDismissed = false;
     persist(); render();
     return;
   }
@@ -5906,7 +6176,7 @@ document.addEventListener('keydown', e => {
     const task = project && project.tasks.find(t => t.id === info.taskId);
     if (!task) return;
     if (!task.subtasks) task.subtasks = [];
-    const ns = mkSubtask('');
+    const ns = mkSubtask('', { deadline: autoDateDefault() });
     task.subtasks.push(ns);
     ui.subtasksOpen[task.id] = true;
     setEditingTarget('subtask', ns.id);
@@ -6010,8 +6280,9 @@ document.addEventListener('keydown', e => {
   }
 });
 
-let ui = { filterCapitol:'', filterProiect:'', filterDeadline:'', filterPriority:'', search:'', searchGlobal:false, mode:'list', openReminderTaskId:null, openDurationTaskId:null, recurrencePickerTaskId:null, sheetPickerId:null, editingTaskId:null, editingChapterId:null, editingProjectId:null, editingSubtaskId:null, colorPickerChapterId:null, expandLevel:2, chapterOpen:{}, projectOpen:{}, selectionMode:false, selectedTasks:[], openReevaluateId:null, scoreHistoryOpenId:null, openGoalEditId:null, subtasksOpen:{}, transferPopoverKey:null, transferSheetId:null, transferChapterId:null, transferProjectId:null, ganttTarget:null, ganttZoom:'week', ganttShowSubs:false, ganttAutoToday:false, ganttCritical:false, ganttScope:'project', ganttWorkdays:false, detailsPopoverId:null, filterAssignee:'', filterTags:[], filterTagMode:'any', tagFilterOpen:false, hoverRow:null, hoverHeader:null, keyboardFocusRow:null, detailsFocusField:null, showArchivedAll:false, showArchivedScope:{}, showRowExtras:{}, smartGroupOpen:{}, calMonth:null, revWeek:null, toTaskPopoverKey:null, showBottomStats: localStorage.getItem('sbg-bottom-stats') !== '0', showSideStats: localStorage.getItem('sbg-side-stats') === '1', showSideToolbar: localStorage.getItem('sbg-side-toolbar') !== '0', showSideInfo: localStorage.getItem('sbg-side-info') === '1', filterFontColor: '', isolatedProjectId: null, isolatedChapterId: null, cardsDrillTaskId: null, cardsExpanded: {}, chapterIconsCollapsed: {}, projectIconsCollapsed: {}, workloadTab: 'tasks',
+let ui = { filterCapitol:'', filterProiect:'', filterDeadline:'', filterPriority:'', search:'', searchGlobal:false, mode:'list', openReminderTaskId:null, openDurationTaskId:null, recurrencePickerTaskId:null, sheetPickerId:null, editingTaskId:null, editingChapterId:null, editingProjectId:null, editingSubtaskId:null, colorPickerChapterId:null, expandLevel:2, chapterOpen:{}, projectOpen:{}, selectionMode:false, selectedTasks:[], openReevaluateId:null, scoreHistoryOpenId:null, openGoalEditId:null, subtasksOpen:{}, transferPopoverKey:null, transferSheetId:null, transferChapterId:null, transferProjectId:null, ganttTarget:null, ganttZoom:'week', ganttShowSubs:false, ganttAutoToday:false, ganttCritical:false, ganttScope:'project', ganttWorkdays:false, detailsPopoverId:null, filterAssignee:'', filterTags:[], filterTagMode:'any', tagFilterOpen:false, hoverRow:null, hoverHeader:null, keyboardFocusRow:null, detailsFocusField:null, showArchivedAll:false, showArchivedScope:{}, hideDoneScope:{}, showHiddenAll:false, iconPickerTaskId:null, showRowExtras:{}, smartGroupOpen:{}, calMonth:null, revWeek:null, toTaskPopoverKey:null, showBottomStats: localStorage.getItem('sbg-bottom-stats') !== '0', showSideStats: localStorage.getItem('sbg-side-stats') === '1', showSideToolbar: localStorage.getItem('sbg-side-toolbar') !== '0', showSideInfo: localStorage.getItem('sbg-side-info') === '1', filterFontColor: '', isolatedProjectId: null, isolatedChapterId: null, cardsDrillTaskId: null, cardsExpanded: {}, chapterIconsCollapsed: {}, projectIconsCollapsed: {}, workloadTab: 'tasks',
   templatesTab: 'browse', templatesSearch: '', templatesTagFilter: '', templatesSort: 'recent', templatesStatusFilter: '',
+  templatesFolderFilter: '', templatesShowArchived: false,
   templatePreviewOpen: {}, templateApplyOpen: null, templateApplySheetId: null, templateApplyChapterId: null, templateApplyProjectId: null,
   templateEditorDraft: [], templateEditorImportSel: {}, fcExpanded: {} };
 // Exactly one of these four can be "being typed into" at a time. Setting one
@@ -6042,6 +6313,9 @@ function migrateColors(st) {
   if (!st.templates) st.templates = [];
   if (!st.savedViews) st.savedViews = [];
   if (!st.tagColors) st.tagColors = {};
+  if (!st.settings) st.settings = {};
+  if (st.settings.autoDateNewItems === undefined) st.settings.autoDateNewItems = true;
+  if (!st.settings.iconColors) st.settings.iconColors = { '🎯': 8 };
   st.savedViews.forEach(v => {
     if (v.f && v.f.filterTag !== undefined) {
       if (v.f.filterTag && !(v.f.filterTags && v.f.filterTags.length)) v.f.filterTags = [v.f.filterTag];
@@ -6079,6 +6353,8 @@ function migrateColors(st) {
         if (tk.dependsOn === undefined) tk.dependsOn = [];
         if (tk.archived === undefined) tk.archived = false;
         if (tk.smartDismissed === undefined) tk.smartDismissed = false;
+        if (tk.icon === undefined) tk.icon = '';
+        if (tk.hidden === undefined) tk.hidden = false;
         if (tk.note === undefined) tk.note = '';
         if (tk.milestone === undefined) tk.milestone = false;
         if (tk.assignee === undefined) tk.assignee = '';
@@ -6110,6 +6386,8 @@ function migrateColors(st) {
           if (sub.reminderAt === undefined) sub.reminderAt = '';
           if (sub.reminderMsg === undefined) sub.reminderMsg = '';
           if (sub.reminderFired === undefined) sub.reminderFired = false;
+          if (sub.icon === undefined) sub.icon = '';
+          if (sub.hidden === undefined) sub.hidden = false;
         });
         if (tk.important === undefined || tk.urgent === undefined) {
           tk.important = !!tk.important;
@@ -6177,14 +6455,21 @@ function migrateTemplatesFromState() {
 // real de ofertare pe SEAP.
 const SEAP_TEMPLATE_SEEDED_KEY = 'seap-template-seeded-v1';
 const EMBEDDED_SEAP_TEMPLATE = {"name": "Ofertare SEAP — standard (52 activități)", "kind": "project", "status": "stable", "usageCount": 0, "lastUsedAt": null, "project": {"id": "p105-mth6dcq8yfff", "name": "Workflow ofertare SEAP", "archived": false, "tasks": [{"id": "t2-mth6dcq83t7b", "text": "1. Cautare proiecte in SEAP – descarcare documentatie – identificare", "done": false, "deadline": "2027-01-01", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 1 · Ref. Excel: 1", "startDate": "2027-01-01", "duration": 1, "estMinutes": 30, "dependsOn": [], "milestone": false, "assignee": "Andreea Balan", "link": "", "recurEvery": 1, "tags": ["0. Identificare si decizie"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st1-mth6dcq80xyr", "text": "🎯 Lista proiecte candidate", "done": false, "note": "", "archived": false, "deadline": "2027-01-01", "dateMode": "fixed", "startDate": "2027-01-01", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andreea Balan", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t4-mth6dcq8mwi2", "text": "2. Transmitere mail prezentare proiect", "done": false, "deadline": "2027-01-02", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 2 · Ref. Excel: 2", "startDate": "2027-01-01", "duration": 1, "estMinutes": 60, "dependsOn": ["t2-mth6dcq83t7b"], "milestone": false, "assignee": "Andreea Balan", "link": "", "recurEvery": 1, "tags": ["0. Identificare si decizie"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st3-mth6dcq8eff2", "text": "🎯 Mail prezentare proiect", "done": false, "note": "", "archived": false, "deadline": "2027-01-02", "dateMode": "fixed", "startDate": "2027-01-02", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andreea Balan", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t6-mth6dcq8gc4h", "text": "3. Decizie participare (MP decide, transmite catre AB)", "done": false, "deadline": "2027-01-03", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 3 — clarificat: MP transmite decizia catre AB · Ref. Excel: 3", "startDate": "2027-01-02", "duration": 1, "estMinutes": 60, "dependsOn": ["t4-mth6dcq8mwi2"], "milestone": false, "assignee": "Mihai Patrascu", "link": "", "recurEvery": 1, "tags": ["0. Identificare si decizie"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st5-mth6dcq8z1a3", "text": "🎯 Decizie participare", "done": false, "note": "", "archived": false, "deadline": "2027-01-03", "dateMode": "fixed", "startDate": "2027-01-03", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Mihai Patrascu", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t8-mth6dcq8v2lu", "text": "4. Follow up proiect", "done": false, "deadline": "2027-01-03", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 4.1 · Ref. Excel: 4.1", "startDate": "2027-01-02", "duration": 1, "estMinutes": 120, "dependsOn": ["t6-mth6dcq8gc4h"], "milestone": false, "assignee": "Andreea Balan", "link": "", "recurEvery": 1, "tags": ["0. Identificare si decizie"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st7-mth6dcq8a91a", "text": "🎯 Status actualizat", "done": false, "note": "", "archived": false, "deadline": "2027-01-03", "dateMode": "fixed", "startDate": "2027-01-03", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andreea Balan", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t10-mth6dcq8c6b1", "text": "5. Confirmare participare", "done": false, "deadline": "2027-01-04", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 4.2 · Ref. Excel: 4.2", "startDate": "2027-01-03", "duration": 1, "estMinutes": 60, "dependsOn": ["t8-mth6dcq8v2lu"], "milestone": false, "assignee": "Mihai Patrascu", "link": "", "recurEvery": 1, "tags": ["0. Identificare si decizie"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st9-mth6dcq89ht1", "text": "🎯 Confirmare participare", "done": false, "note": "", "archived": false, "deadline": "2027-01-04", "dateMode": "fixed", "startDate": "2027-01-04", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Mihai Patrascu", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t12-mth6dcq88vyj", "text": "6. Transmitere mail descriptiv proiect + lista corespondenta documente (prop. financiar, tehnic, achizitii, SSM, calitate, mediu, trafic)", "done": false, "deadline": "2027-01-04", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 5 · Ref. Excel: 5", "startDate": "2027-01-04", "duration": 1, "estMinutes": 180, "dependsOn": ["t10-mth6dcq8c6b1"], "milestone": false, "assignee": "Andreea Balan", "link": "", "recurEvery": 1, "tags": ["1. Organizare si pornire"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st11-mth6dcq8kabp", "text": "🎯 Mail descriptiv + lista corespondenta", "done": false, "note": "", "archived": false, "deadline": "2027-01-04", "dateMode": "fixed", "startDate": "2027-01-04", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andreea Balan", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t14-mth6dcq8p1ag", "text": "7. Incepere propunere tehnica", "done": false, "deadline": "2027-01-04", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 5.1 · Ref. Excel: 5.1", "startDate": "2027-01-04", "duration": 1, "estMinutes": 240, "dependsOn": ["t12-mth6dcq88vyj"], "milestone": false, "assignee": "Cristina Bolovaneanu", "link": "", "recurEvery": 1, "tags": ["1. Organizare si pornire"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st13-mth6dcq8sn2s", "text": "🎯 Draft propunere tehnica", "done": false, "note": "", "archived": false, "deadline": "2027-01-04", "dateMode": "fixed", "startDate": "2027-01-04", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Cristina Bolovaneanu", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t16-mth6dcq8numu", "text": "8. Studiu preliminar documentatie proiect + sedinta organizare (kick-off)", "done": false, "deadline": "2027-01-05", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 6 · Ref. Excel: 6", "startDate": "2027-01-04", "duration": 1, "estMinutes": 480, "dependsOn": ["t12-mth6dcq88vyj"], "milestone": false, "assignee": "Toată echipa", "link": "", "recurEvery": 1, "tags": ["1. Organizare si pornire"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st15-mth6dcq8yzkk", "text": "🎯 Minuta kick-off", "done": false, "note": "", "archived": false, "deadline": "2027-01-05", "dateMode": "fixed", "startDate": "2027-01-05", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Toată echipa", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t18-mth6dcq8t1gm", "text": "9. Creare numar STRATEK", "done": false, "deadline": "2027-01-05", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 4.3 · Ref. Excel: 4.3", "startDate": "2027-01-05", "duration": 1, "estMinutes": 60, "dependsOn": ["t12-mth6dcq88vyj"], "milestone": false, "assignee": "Andreea Balan", "link": "", "recurEvery": 1, "tags": ["1. Organizare si pornire"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st17-mth6dcq8bmr4", "text": "🎯 Numar STRATEK alocat", "done": false, "note": "", "archived": false, "deadline": "2027-01-05", "dateMode": "fixed", "startDate": "2027-01-05", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andreea Balan", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t20-mth6dcq8v6ne", "text": "10. Pregatire clarificari initiale", "done": false, "deadline": "2027-01-05", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 8 — solicitari tip: Iuliana / CML · Ref. Excel: 8", "startDate": "2027-01-05", "duration": 1, "estMinutes": 360, "dependsOn": ["t16-mth6dcq8numu"], "milestone": false, "assignee": "Toată echipa", "link": "", "recurEvery": 1, "tags": ["1. Organizare si pornire"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st19-mth6dcq8u0r4", "text": "🎯 Lista clarificari initiale", "done": false, "note": "", "archived": false, "deadline": "2027-01-05", "dateMode": "fixed", "startDate": "2027-01-05", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Toată echipa", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t22-mth6dcq8a8ox", "text": "11. Verificare disponibilitate LDC (avem / nu avem)", "done": false, "deadline": "2027-01-05", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 9 · Ref. Excel: 9", "startDate": "2027-01-05", "duration": 1, "estMinutes": 30, "dependsOn": ["t20-mth6dcq8v6ne"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["2. Lista de cantitati (LDC)"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st21-mth6dcq8uvjb", "text": "🎯 Decizie ramura de proces", "done": false, "note": "", "archived": false, "deadline": "2027-01-05", "dateMode": "fixed", "startDate": "2027-01-05", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t24-mth6dcq8oirh", "text": "12. Solicitare ISAM – Intersoft (daca avem LDC)", "done": false, "deadline": "2027-01-06", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 9.1.1 · Ref. Excel: 9.1.1", "startDate": "2027-01-06", "duration": 1, "estMinutes": 120, "dependsOn": ["t22-mth6dcq8a8ox"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["2. Lista de cantitati (LDC)"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st23-mth6dcq8af4i", "text": "🎯 Cerere ISAM transmisa", "done": false, "note": "", "archived": false, "deadline": "2027-01-06", "dateMode": "fixed", "startDate": "2027-01-06", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t26-mth6dcq8ycir", "text": "13. Primire ISAM – Intersoft", "done": false, "deadline": "2027-01-07", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 9.1.2 · Ref. Excel: 9.1.2", "startDate": "2027-01-07", "duration": 1, "estMinutes": 30, "dependsOn": ["t24-mth6dcq8oirh"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["2. Lista de cantitati (LDC)"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st25-mth6dcq83h7g", "text": "🎯 Fisier ISAM primit", "done": false, "note": "", "archived": false, "deadline": "2027-01-07", "dateMode": "fixed", "startDate": "2027-01-07", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t28-mth6dcq8t1p8", "text": "14. Import LDC in iTWO (din ISAM)", "done": false, "deadline": "2027-01-07", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 9.1.3 · Ref. Excel: 9.1.3", "startDate": "2027-01-07", "duration": 1, "estMinutes": 240, "dependsOn": ["t26-mth6dcq8ycir"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["2. Lista de cantitati (LDC)"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st27-mth6dcq8dfxi", "text": "🎯 LDC importat in iTWO", "done": false, "note": "", "archived": false, "deadline": "2027-01-07", "dateMode": "fixed", "startDate": "2027-01-07", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t30-mth6dcq81kjz", "text": "15. Propunere proiectant (daca NU avem LDC — proiectare+executie)", "done": false, "deadline": "2027-01-05", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 9.3 · Ref. Excel: 9.3", "startDate": "2027-01-05", "duration": 1, "estMinutes": 30, "dependsOn": ["t22-mth6dcq8a8ox"], "milestone": false, "assignee": "Mihai Patrascu, Toată echipa", "link": "", "recurEvery": 1, "tags": ["2. Lista de cantitati (LDC)"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st29-mth6dcq8gmku", "text": "🎯 Proiectant propus", "done": false, "note": "", "archived": false, "deadline": "2027-01-05", "dateMode": "fixed", "startDate": "2027-01-05", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Mihai Patrascu, Toată echipa", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t32-mth6dcq8c7qv", "text": "16. Solicitare LDC proiectant", "done": false, "deadline": "2027-01-05", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 9.4 · Ref. Excel: 9.4", "startDate": "2027-01-05", "duration": 1, "estMinutes": 120, "dependsOn": ["t30-mth6dcq81kjz"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["2. Lista de cantitati (LDC)"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st31-mth6dcq80jv7", "text": "🎯 Cerere LDC transmisa", "done": false, "note": "", "archived": false, "deadline": "2027-01-05", "dateMode": "fixed", "startDate": "2027-01-05", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t34-mth6dcq8733t", "text": "17. Solicitare detalii compliance la proiectant", "done": false, "deadline": "2027-01-06", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 9.5 · Ref. Excel: 9.5", "startDate": "2027-01-06", "duration": 1, "estMinutes": 120, "dependsOn": ["t30-mth6dcq81kjz"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["2. Lista de cantitati (LDC)"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st33-mth6dcq8i891", "text": "🎯 Cerere compliance transmisa", "done": false, "note": "", "archived": false, "deadline": "2027-01-06", "dateMode": "fixed", "startDate": "2027-01-06", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t36-mth6dcq8v2wv", "text": "18. Solicitare compliance check proiectant de la SGB", "done": false, "deadline": "2027-01-06", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 9.6 · Ref. Excel: 9.6", "startDate": "2027-01-06", "duration": 1, "estMinutes": 120, "dependsOn": ["t34-mth6dcq8733t"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["2. Lista de cantitati (LDC)"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st35-mth6dcq88qjf", "text": "🎯 Compliance check solicitat", "done": false, "note": "", "archived": false, "deadline": "2027-01-06", "dateMode": "fixed", "startDate": "2027-01-06", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t38-mth6dcq86vxg", "text": "19. Primire LDC proiectant", "done": false, "deadline": "2027-01-10", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 9.7 — durata estimata 5 zile · Ref. Excel: 9.7", "startDate": "2027-01-10", "duration": 1, "estMinutes": 30, "dependsOn": ["t32-mth6dcq8c7qv"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["2. Lista de cantitati (LDC)"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st37-mth6dcq8m3vm", "text": "🎯 LDC proiectant primit", "done": false, "note": "", "archived": false, "deadline": "2027-01-10", "dateMode": "fixed", "startDate": "2027-01-10", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t40-mth6dcq88nbm", "text": "20. Realizare vizita amplasament", "done": false, "deadline": "2027-01-10", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 10 — asap, neoficial · Ref. Excel: 10", "startDate": "2027-01-10", "duration": 1, "estMinutes": 480, "dependsOn": ["t28-mth6dcq8t1p8"], "milestone": false, "assignee": "Alex Trif, Andrei Loiso, Paul Adam, Mihai Patrascu, Andrei Elefterescu", "link": "", "recurEvery": 1, "tags": ["3. Teren si cantitati"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st39-mth6dcq8c5gw", "text": "🎯 Raport vizita amplasament", "done": false, "note": "", "archived": false, "deadline": "2027-01-10", "dateMode": "fixed", "startDate": "2027-01-10", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Alex Trif, Andrei Loiso, Paul Adam, Mihai Patrascu, Andrei Elefterescu", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t42-mth6dcq81ylx", "text": "21. Verificare cantitati LDC", "done": false, "deadline": "2027-01-11", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 11 · Ref. Excel: 11", "startDate": "2027-01-11", "duration": 1, "estMinutes": 360, "dependsOn": ["t40-mth6dcq88nbm"], "milestone": false, "assignee": "Alex Trif", "link": "", "recurEvery": 1, "tags": ["3. Teren si cantitati"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st41-mth6dcq839hz", "text": "🎯 Cantitati verificate", "done": false, "note": "", "archived": false, "deadline": "2027-01-11", "dateMode": "fixed", "startDate": "2027-01-11", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Alex Trif", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t44-mth6dcq8h2gi", "text": "22. Import LDC in iTWO (dupa verificare cantitati)", "done": false, "deadline": "2027-01-10", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 12 · Ref. Excel: 12", "startDate": "2027-01-10", "duration": 1, "estMinutes": 180, "dependsOn": ["t42-mth6dcq81ylx"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["3. Teren si cantitati"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st43-mth6dcq8992o", "text": "🎯 LDC actualizat in iTWO", "done": false, "note": "", "archived": false, "deadline": "2027-01-10", "dateMode": "fixed", "startDate": "2027-01-10", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t46-mth6dcq8vxu1", "text": "23. Estimare grosiera valoare calculatie – incadrare in buget", "done": false, "deadline": "2027-01-10", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 13 · Ref. Excel: 13", "startDate": "2027-01-10", "duration": 1, "estMinutes": 240, "dependsOn": ["t44-mth6dcq8h2gi"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["3. Teren si cantitati"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st45-mth6dcq8njjr", "text": "🎯 Estimare preliminara valoare", "done": false, "note": "", "archived": false, "deadline": "2027-01-10", "dateMode": "fixed", "startDate": "2027-01-10", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t48-mth6dcq82y98", "text": "24. Pregatire SELECTION + Presentation", "done": false, "deadline": "2027-01-12", "dateMode": "fixed", "priority": false, "note": "Condiție: >3M EUR (sau CML 5-10M EUR) · Ref. orig. 14 — doar peste prag · Ref. Excel: 14", "startDate": "2027-01-12", "duration": 1, "estMinutes": 480, "dependsOn": ["t46-mth6dcq8vxu1"], "milestone": false, "assignee": "Andreea Balan, Alex Trif, Mihai Patrascu", "link": "", "recurEvery": 1, "tags": ["4. Selectie interna"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st47-mth6dcq8lznq", "text": "🎯 Prezentare Selection", "done": false, "note": "", "archived": false, "deadline": "2027-01-12", "dateMode": "fixed", "startDate": "2027-01-12", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andreea Balan, Alex Trif, Mihai Patrascu", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t50-mth6dcq8lb6f", "text": "25. Pregatire pachete ofertare + fise tehnice in iTWO", "done": false, "deadline": "2027-01-12", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 15 — clarificat: responsabil Alex Trif · Ref. Excel: 15", "startDate": "2027-01-09", "duration": 3, "estMinutes": 360, "dependsOn": ["t46-mth6dcq8vxu1"], "milestone": false, "assignee": "Alex Trif, Andrei Elefterescu, Anastasia Lungu", "link": "", "recurEvery": 1, "tags": ["5. Achizitii si ofertare subcontractori"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st49-mth6dcq87puq", "text": "🎯 Pachete ofertare subcontractori", "done": false, "note": "", "archived": false, "deadline": "2027-01-12", "dateMode": "fixed", "startDate": "2027-01-12", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Alex Trif, Andrei Elefterescu, Anastasia Lungu", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t52-mth6dcq898kd", "text": "26. Transmitere solicitare cotatie pret asigurari + ZT + TPA + BMTI", "done": false, "deadline": "2027-01-12", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 16 · Ref. Excel: 16", "startDate": "2027-01-09", "duration": 3, "estMinutes": 120, "dependsOn": ["t46-mth6dcq8vxu1"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["5. Achizitii si ofertare subcontractori"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st51-mth6dcq86rf5", "text": "🎯 Cereri cotatie transmise", "done": false, "note": "", "archived": false, "deadline": "2027-01-12", "dateMode": "fixed", "startDate": "2027-01-12", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t54-mth6dcq8z5ci", "text": "27. Pregatire / transmitere clarificari catre Autoritatea Contractanta", "done": false, "deadline": "2027-01-12", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 17 · Ref. Excel: 17", "startDate": "2027-01-09", "duration": 3, "estMinutes": 30, "dependsOn": ["t20-mth6dcq8v6ne"], "milestone": false, "assignee": "Toată echipa", "link": "", "recurEvery": 1, "tags": ["5. Achizitii si ofertare subcontractori"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st53-mth6dcq8u42w", "text": "🎯 Clarificari transmise catre AC", "done": false, "note": "", "archived": false, "deadline": "2027-01-12", "dateMode": "fixed", "startDate": "2027-01-12", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Toată echipa", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t56-mth6dcq8jyc8", "text": "28. Transmitere cereri oferte Strabis/SPS", "done": false, "deadline": "2027-01-13", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 18 · Ref. Excel: 18", "startDate": "2027-01-10", "duration": 3, "estMinutes": 240, "dependsOn": ["t50-mth6dcq8lb6f"], "milestone": false, "assignee": "Andrei Elefterescu, Anastasia Lungu", "link": "", "recurEvery": 1, "tags": ["5. Achizitii si ofertare subcontractori"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st55-mth6dcq8bn1k", "text": "🎯 Cereri oferte transmise", "done": false, "note": "", "archived": false, "deadline": "2027-01-13", "dateMode": "fixed", "startDate": "2027-01-13", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Elefterescu, Anastasia Lungu", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t58-mth6dcq8u999", "text": "29. Primire oferte (termen standard 5 zile)", "done": false, "deadline": "2027-01-18", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 19 · Ref. Excel: 19", "startDate": "2027-01-15", "duration": 3, "estMinutes": 30, "dependsOn": ["t56-mth6dcq8jyc8"], "milestone": false, "assignee": "Andrei Elefterescu, Anastasia Lungu", "link": "", "recurEvery": 1, "tags": ["5. Achizitii si ofertare subcontractori"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st57-mth6dcq8969u", "text": "🎯 Oferte subcontractori/furnizori primite", "done": false, "note": "", "archived": false, "deadline": "2027-01-18", "dateMode": "fixed", "startDate": "2027-01-18", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Elefterescu, Anastasia Lungu", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t60-mth6dcq8fdef", "text": "30. Realizare calculatie in iTWO", "done": false, "deadline": "2027-01-14", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 20 · Ref. Excel: 20", "startDate": "2027-01-11", "duration": 3, "estMinutes": 960, "dependsOn": ["t58-mth6dcq8u999"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["5. Achizitii si ofertare subcontractori"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st59-mth6dcq8o6v9", "text": "🎯 Calculatie preliminara", "done": false, "note": "", "archived": false, "deadline": "2027-01-14", "dateMode": "fixed", "startDate": "2027-01-14", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t62-mth6dcq8c99c", "text": "31. Finalizare fise tehnice F5", "done": false, "deadline": "2027-01-20", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 21 · Ref. Excel: 21", "startDate": "2027-01-17", "duration": 3, "estMinutes": 360, "dependsOn": ["t58-mth6dcq8u999"], "milestone": false, "assignee": "Andrei Elefterescu", "link": "", "recurEvery": 1, "tags": ["5. Achizitii si ofertare subcontractori"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st61-mth6dcq8g8e8", "text": "🎯 Fise tehnice F5", "done": false, "note": "", "archived": false, "deadline": "2027-01-20", "dateMode": "fixed", "startDate": "2027-01-20", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Elefterescu", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t64-mth6dcq83nir", "text": "32. Pregatire liste furnizori principali + trasee", "done": false, "deadline": "2027-01-20", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 22 · Ref. Excel: 22", "startDate": "2027-01-17", "duration": 3, "estMinutes": 240, "dependsOn": ["t58-mth6dcq8u999"], "milestone": false, "assignee": "Andrei Elefterescu", "link": "", "recurEvery": 1, "tags": ["5. Achizitii si ofertare subcontractori"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st63-mth6dcq87suc", "text": "🎯 Liste furnizori si trasee", "done": false, "note": "", "archived": false, "deadline": "2027-01-20", "dateMode": "fixed", "startDate": "2027-01-20", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Elefterescu", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t66-mth6dcq8arzo", "text": "33. Transmitere subcontractanti la PQ/Tehnic", "done": false, "deadline": "2027-01-18", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 23 · Ref. Excel: 23", "startDate": "2027-01-15", "duration": 3, "estMinutes": 180, "dependsOn": ["t56-mth6dcq8jyc8"], "milestone": false, "assignee": "Andrei Elefterescu", "link": "", "recurEvery": 1, "tags": ["5. Achizitii si ofertare subcontractori"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st65-mth6dcq8p0fm", "text": "🎯 Lista subcontractanti transmisa", "done": false, "note": "", "archived": false, "deadline": "2027-01-18", "dateMode": "fixed", "startDate": "2027-01-18", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Elefterescu", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t68-mth6dcq8cf45", "text": "34. Modificari dupa primire raspunsuri clarificari", "done": false, "deadline": "", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 24 — activitate continua/in paralel · Ref. Excel: 24", "startDate": "", "duration": 1, "estMinutes": 30, "dependsOn": ["t54-mth6dcq8z5ci"], "milestone": false, "assignee": "Toată echipa", "link": "", "recurEvery": 1, "tags": ["5. Achizitii si ofertare subcontractori"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st67-mth6dcq87hrn", "text": "🎯 Documente actualizate", "done": false, "note": "", "archived": false, "deadline": "", "dateMode": "fixed", "startDate": "", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Toată echipa", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t70-mth6dcq80rxx", "text": "35. Realizare Zuschlag Blatt", "done": false, "deadline": "2027-01-14", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 25 · Ref. Excel: 25", "startDate": "2027-01-11", "duration": 3, "estMinutes": 240, "dependsOn": ["t60-mth6dcq8fdef"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["6. Calculatie si optimizare"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st69-mth6dcq8dp1v", "text": "🎯 Zuschlag Blatt", "done": false, "note": "", "archived": false, "deadline": "2027-01-14", "dateMode": "fixed", "startDate": "2027-01-14", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t72-mth6dcq8f19d", "text": "36. Finalizare calculatie iTWO – 0 ESTIMATE", "done": false, "deadline": "2027-01-19", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 26 · Ref. Excel: 26", "startDate": "2027-01-16", "duration": 3, "estMinutes": 480, "dependsOn": ["t70-mth6dcq80rxx"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["6. Calculatie si optimizare"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st71-mth6dcq8ew0s", "text": "🎯 0 Estimate finalizat", "done": false, "note": "", "archived": false, "deadline": "2027-01-19", "dateMode": "fixed", "startDate": "2027-01-19", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t74-mth6dcq82obm", "text": "37. Incepere grafic executie (intern + IS)", "done": false, "deadline": "", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 27 — import resurse din Intersoft in MS Project · Ref. Excel: 27", "startDate": "", "duration": 1, "estMinutes": 360, "dependsOn": ["t46-mth6dcq8vxu1"], "milestone": false, "assignee": "Alex Trif, Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["6. Calculatie si optimizare"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st73-mth6dcq8f5ff", "text": "🎯 Grafic executie – draft", "done": false, "note": "", "archived": false, "deadline": "", "dateMode": "fixed", "startDate": "", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Alex Trif, Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t76-mth6dcq8f37n", "text": "38. Transmitere 0 Estimate + verificare incadrare in buget", "done": false, "deadline": "2027-01-19", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 28 — clarificat: responsabil = calculantul (AL sau PA) care a facut calculatia · Ref. Excel: 28", "startDate": "2027-01-16", "duration": 3, "estMinutes": 120, "dependsOn": ["t72-mth6dcq8f19d"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["6. Calculatie si optimizare"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st75-mth6dcq8ywrj", "text": "🎯 Mail rezultat calculatie", "done": false, "note": "", "archived": false, "deadline": "2027-01-19", "dateMode": "fixed", "startDate": "2027-01-19", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t78-mth6dcq8bomk", "text": "39. Optimizare calculatie – C+R", "done": false, "deadline": "2027-01-20", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 29 · Ref. Excel: 29", "startDate": "2027-01-17", "duration": 3, "estMinutes": 360, "dependsOn": ["t76-mth6dcq8f37n"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["6. Calculatie si optimizare"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st77-mth6dcq85nsa", "text": "🎯 Calculatie optimizata", "done": false, "note": "", "archived": false, "deadline": "2027-01-20", "dateMode": "fixed", "startDate": "2027-01-20", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t80-mth6dcq8revz", "text": "40. Realizare grafic executie PK", "done": false, "deadline": "", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 30 · Ref. Excel: 30", "startDate": "", "duration": 1, "estMinutes": 240, "dependsOn": ["t74-mth6dcq82obm"], "milestone": false, "assignee": "Alex Trif", "link": "", "recurEvery": 1, "tags": ["6. Calculatie si optimizare"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st79-mth6dcq8eo3d", "text": "🎯 Grafic executie PK", "done": false, "note": "", "archived": false, "deadline": "", "dateMode": "fixed", "startDate": "", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Alex Trif", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t82-mth6dcq8hng4", "text": "41. Price Kommission (prezentare proiect)", "done": false, "deadline": "2027-01-22", "dateMode": "fixed", "priority": false, "note": "Condiție: >5M EUR · Ref. orig. 31 — doar peste prag · Ref. Excel: 31", "startDate": "2027-01-19", "duration": 3, "estMinutes": 240, "dependsOn": ["t78-mth6dcq8bomk"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["7. Price Kommission"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st81-mth6dcq87rbu", "text": "🎯 Decizie Price Kommission", "done": false, "note": "", "archived": false, "deadline": "2027-01-22", "dateMode": "fixed", "startDate": "2027-01-22", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t84-mth6dcq8bdg7", "text": "42. Discutie pregatire prezentare PK", "done": false, "deadline": "", "dateMode": "fixed", "priority": false, "note": "Condiție: >5M EUR · Ref. orig. 32 · Ref. Excel: 32", "startDate": "", "duration": 1, "estMinutes": 180, "dependsOn": ["t82-mth6dcq8hng4"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam, Mihai Patrascu", "link": "", "recurEvery": 1, "tags": ["7. Price Kommission"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st83-mth6dcq8xmen", "text": "🎯 Prezentare PK pregatita", "done": false, "note": "", "archived": false, "deadline": "", "dateMode": "fixed", "startDate": "", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam, Mihai Patrascu", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t86-mth6dcq819j4", "text": "43. DETERMINATION (cf. procedurii SBG)", "done": false, "deadline": "2027-01-22", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 33 · Ref. Excel: 33", "startDate": "2027-01-19", "duration": 3, "estMinutes": 240, "dependsOn": ["t82-mth6dcq8hng4"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["7. Price Kommission"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st85-mth6dcq8oh2e", "text": "🎯 Determination finalizat", "done": false, "note": "", "archived": false, "deadline": "2027-01-22", "dateMode": "fixed", "startDate": "2027-01-22", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t88-mth6dcq84wic", "text": "44. Calculatie Intersoft (pregatire LDC, introducere baza pret, corectii, generare rapoarte)", "done": false, "deadline": "2027-01-25", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 34 · Ref. Excel: 34", "startDate": "2027-01-22", "duration": 3, "estMinutes": 480, "dependsOn": ["t86-mth6dcq819j4"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["8. Finalizare calculatie"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st87-mth6dcq8ofiz", "text": "🎯 Rapoarte Intersoft", "done": false, "note": "", "archived": false, "deadline": "2027-01-25", "dateMode": "fixed", "startDate": "2027-01-25", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t90-mth6dcq8tnak", "text": "45. Finalizare grafic executie", "done": false, "deadline": "2027-01-25", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 35 · Ref. Excel: 35", "startDate": "2027-01-22", "duration": 3, "estMinutes": 240, "dependsOn": ["t80-mth6dcq8revz"], "milestone": false, "assignee": "Alex Trif", "link": "", "recurEvery": 1, "tags": ["8. Finalizare calculatie"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st89-mth6dcq84n4j", "text": "🎯 Grafic executie final", "done": false, "note": "", "archived": false, "deadline": "2027-01-25", "dateMode": "fixed", "startDate": "2027-01-25", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Alex Trif", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t92-mth6dcq83lmq", "text": "46. Finalizare documentatie de depus (Propunere Tehnica, Propunere Financiara, documente eligibilitate)", "done": false, "deadline": "2027-01-29", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 36 · Ref. Excel: 36", "startDate": "2027-01-29", "duration": 1, "estMinutes": 480, "dependsOn": ["t88-mth6dcq84wic", "t90-mth6dcq8tnak"], "milestone": false, "assignee": "Toată echipa", "link": "", "recurEvery": 1, "tags": ["9. Depunere"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st91-mth6dcq8gvjy", "text": "🎯 Dosar complet de depunere", "done": false, "note": "", "archived": false, "deadline": "2027-01-29", "dateMode": "fixed", "startDate": "2027-01-29", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Toată echipa", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t94-mth6dcq8dm5r", "text": "47. SUBMITTAL STRATEK (inregistrare interna, cf. procedurii)", "done": false, "deadline": "2027-01-31", "dateMode": "fixed", "priority": false, "note": "Ref. orig. 37 — tracking intern, nu depunere SEAP · Ref. Excel: 37", "startDate": "2027-01-31", "duration": 1, "estMinutes": 120, "dependsOn": ["t92-mth6dcq83lmq"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": ["9. Depunere"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st93-mth6dcq87g10", "text": "🎯 Inregistrare STRATEK", "done": false, "note": "", "archived": false, "deadline": "2027-01-31", "dateMode": "fixed", "startDate": "2027-01-31", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t96-mth6dcq8gpdv", "text": "48. Depunere efectiva SEAP (DUAE, garantie de participare, semnatura electronica, upload documente)", "done": false, "deadline": "2027-01-31", "dateMode": "fixed", "priority": false, "note": "Pas separat de STRATEK, conform clarificarii primite · Ref. Excel: NOU", "startDate": "2027-01-31", "duration": 1, "estMinutes": 180, "dependsOn": ["t94-mth6dcq8dm5r"], "milestone": false, "assignee": "Andreea Balan", "link": "", "recurEvery": 1, "tags": ["9. Depunere", "nou"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st95-mth6dcq8kmch", "text": "🎯 Oferta depusa in SEAP", "done": false, "note": "", "archived": false, "deadline": "2027-01-31", "dateMode": "fixed", "startDate": "2027-01-31", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andreea Balan", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t98-mth6dcq85kzk", "text": "49. Verificare finala / dry-run upload (daca depunere electronica)", "done": false, "deadline": "2027-01-30", "dateMode": "fixed", "priority": false, "note": "Recomandare din analiza CPS / Tender Guideline · Ref. Excel: NOU", "startDate": "2027-01-30", "duration": 1, "estMinutes": 120, "dependsOn": ["t92-mth6dcq83lmq"], "milestone": false, "assignee": "Toată echipa", "link": "", "recurEvery": 1, "tags": ["9. Depunere", "nou"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st97-mth6dcq8w5fp", "text": "🎯 Confirmare test upload", "done": false, "note": "", "archived": false, "deadline": "2027-01-30", "dateMode": "fixed", "startDate": "2027-01-30", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Toată echipa", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t100-mth6dcq80jsb", "text": "50. Raspuns la clarificari solicitate de Autoritatea Contractanta post-depunere", "done": false, "deadline": "", "dateMode": "fixed", "priority": false, "note": "Adaugat — lipsea din fluxul original · Ref. Excel: NOU", "startDate": "", "duration": 1, "estMinutes": 30, "dependsOn": ["t96-mth6dcq8gpdv"], "milestone": false, "assignee": "Andrei Loiso, Paul Adam, Cristina Bolovaneanu, Andreea Balan", "link": "", "recurEvery": 1, "tags": ["10. Follow-up", "nou"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st99-mth6dcq8lbx4", "text": "🎯 Raspunsuri clarificari transmise", "done": false, "note": "", "archived": false, "deadline": "", "dateMode": "fixed", "startDate": "", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andrei Loiso, Paul Adam, Cristina Bolovaneanu, Andreea Balan", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t102-mth6dcq8aewd", "text": "51. Comunicare rezultat licitatie catre echipa si management", "done": false, "deadline": "", "dateMode": "fixed", "priority": false, "note": "Adaugat — lipsea din fluxul original · Ref. Excel: NOU", "startDate": "", "duration": 1, "estMinutes": 30, "dependsOn": ["t96-mth6dcq8gpdv"], "milestone": false, "assignee": "Mihai Patrascu", "link": "", "recurEvery": 1, "tags": ["10. Follow-up", "nou"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st101-mth6dcq8ox8p", "text": "🎯 Rezultat comunicat", "done": false, "note": "", "archived": false, "deadline": "", "dateMode": "fixed", "startDate": "", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Mihai Patrascu", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}, {"id": "t104-mth6dcq8e31q", "text": "52. Actualizare status proiect / arhivare documentatie / lectii invatate", "done": false, "deadline": "", "dateMode": "fixed", "priority": false, "note": "Adaugat — echivalent 'Tender follow up' din CPS · Ref. Excel: NOU", "startDate": "", "duration": 1, "estMinutes": 180, "dependsOn": ["t102-mth6dcq8aewd"], "milestone": false, "assignee": "Andreea Balan", "link": "", "recurEvery": 1, "tags": ["10. Follow-up", "nou"], "asap": false, "pinned": false, "important": false, "urgent": false, "recurrence": null, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "createdDate": null, "doneDate": null, "archived": false, "smartDismissed": false, "subtasks": [{"id": "st103-mth6dcq8ljah", "text": "🎯 Arhiva + lectii invatate", "done": false, "note": "", "archived": false, "deadline": "", "dateMode": "fixed", "startDate": "", "duration": 1, "estMinutes": 0, "dependsOn": [], "milestone": true, "assignee": "Andreea Balan", "link": "", "recurEvery": 1, "tags": [], "important": false, "urgent": false, "recurrence": null, "pinned": false, "reminderAt": "", "reminderMsg": "", "reminderFired": false, "fontColorIdx": 6}], "flowType": "task", "dependsOnLabels": {}, "fcPhase": null, "fcCol": null}]}};
+// Id fix (nu mai generat aleator la fiecare reînsămânțare) — esențial ca un
+// „mormânt" (tombstone) înregistrat la ștergere să poată bloca definitiv
+// reapariția ACESTUI șablon anume, oriunde s-ar reîncărca aplicația.
+const EMBEDDED_SEAP_TEMPLATE_ID = 'tpl-seap-embedded-standard-v1';
 function seedEmbeddedTemplatesIfNeeded() {
   try {
     if (localStorage.getItem(SEAP_TEMPLATE_SEEDED_KEY)) return;
   } catch(e) { /* localStorage indisponibil — nu insistăm, doar nu marcăm */ }
+  // Dacă a fost șters explicit (oricând, pe orice dispozitiv — tombstone-ul se
+  // sincronizează în cloud), nu se mai reînsămânțează niciodată.
+  const tombstoned = !!deletedTemplateIds[EMBEDDED_SEAP_TEMPLATE_ID];
   const already = (templates || []).some(t => t.kind === 'project' && t.name === EMBEDDED_SEAP_TEMPLATE.name);
-  if (!already) {
+  if (!already && !tombstoned) {
     const nt = JSON.parse(JSON.stringify(EMBEDDED_SEAP_TEMPLATE));
-    nt.id = genId('tpl');
+    nt.id = EMBEDDED_SEAP_TEMPLATE_ID;
     nt.savedAt = todayISO();
     nt.updatedAt = Date.now();
     templates.push(nt);
@@ -6195,14 +6480,15 @@ function seedEmbeddedTemplatesIfNeeded() {
 // ===================== /ȘABLON EMBEDAT =====================
 
 function load() {
+  loadTemplateTombstones();
   loadTemplates();
   seedEmbeddedTemplatesIfNeeded();
   const raw = localStorage.getItem(STORAGE_KEY);
   if (raw) {
     try { state = JSON.parse(raw); if (!state.sheets) throw new Error('bad shape'); state = migrateColors(state); migrateTemplatesFromState(); persist(); }
-    catch(e) { state = seedData(); }
+    catch(e) { state = migrateColors(seedData()); }
   } else {
-    state = seedData();
+    state = migrateColors(seedData());
   }
   lastSnapshot = JSON.stringify(state);
   applyTheme(localStorage.getItem(THEME_KEY) || 'light');
@@ -6338,13 +6624,11 @@ function schedulePush() {
 //     în cealaltă — nu se pierde niciodată;
 //   - un șablon care există în ambele părți păstrează varianta cu `updatedAt`
 //     mai recent (fiecare mutație a unui șablon îi actualizează acest câmp).
-// LIMITARE ASUMATĂ: ștergerea unui șablon NU se propagă automat către alte
-// dispozitive — dacă ștergi un șablon aici, el poate reapărea la următoarea
-// sincronizare dacă alt dispozitiv încă îl are (pentru că merge-ul de mai sus
-// nu elimină niciodată, doar adaugă/actualizează). E un compromis deliberat,
-// în aceeași logică „nu pierde niciodată date" ca separarea de `state` — o
-// ștergere sincronizată corect (cu „tombstones") ar fi mult mai complexă și a
-// rămas în afara scopului acestui pas.
+// Ștergerea SE propagă între dispozitive, prin „morminte" (tombstones) — vezi
+// TEMPLATES_TOMBSTONES_KEY / deletedTemplateIds mai sus de tot în fișier: id-ul
+// unui șablon șters e reținut permanent (local + în același document din
+// cloud, câmpul `deletedIds`) și blochează definitiv orice readăugare a acelui
+// id, fie prin merge, fie prin reînsămânțarea șablonului embedat SEAP.
 let tplPushTimer = null, tplApplyingRemote = false, tplSyncUnsub = null;
 
 function templatesDocRef() {
@@ -6357,7 +6641,7 @@ async function pushTemplatesNow() {
   if (!ref || tplApplyingRemote) return;
   const F = window.__FB;
   try {
-    await F.setDoc(ref, { templates: JSON.stringify(templates), updatedAt: Date.now(), writer: SYNC_WRITER });
+    await F.setDoc(ref, { templates: JSON.stringify(templates), deletedIds: JSON.stringify(deletedTemplateIds), updatedAt: Date.now(), writer: SYNC_WRITER });
   } catch (e) {
     // Nespus utilizatorului direct — starea principală (checklist-ul) are
     // propriul indicator de eroare de sincronizare; șabloanele rămân oricum
@@ -6369,22 +6653,37 @@ function scheduleTemplatesPush() {
   clearTimeout(tplPushTimer);
   tplPushTimer = setTimeout(pushTemplatesNow, 1500);
 }
-function mergeRemoteTemplates(remoteList) {
-  if (!Array.isArray(remoteList)) return false;
+// Fuzionează lista de șabloane primită din cloud cu cea locală, ȘI mormintele
+// (id-uri șterse) primite — un id tombstoned nu mai e readăugat, indiferent de
+// pe ce dispozitiv vine, iar dacă există deja local (readăugat de un dispozitiv
+// mai vechi, fără acest cod) e eliminat din nou aici.
+function mergeRemoteTemplates(remoteList, remoteDeletedIds) {
   let changed = false;
-  const byId = new Map((templates||[]).map(t => [t.id, t]));
-  remoteList.forEach(rt => {
-    if (!rt || !rt.id) return;
-    const lt = byId.get(rt.id);
-    if (!lt) {
-      templates.push(rt);
-      byId.set(rt.id, rt);
-      changed = true;
-    } else if ((rt.updatedAt||0) > (lt.updatedAt||0)) {
-      const idx = templates.indexOf(lt);
-      if (idx > -1) { templates[idx] = rt; byId.set(rt.id, rt); changed = true; }
-    }
-  });
+  let tombstonesChanged = false;
+  if (remoteDeletedIds && typeof remoteDeletedIds === 'object') {
+    Object.keys(remoteDeletedIds).forEach(id => {
+      if (deletedTemplateIds[id] === undefined) { deletedTemplateIds[id] = remoteDeletedIds[id]; tombstonesChanged = true; }
+    });
+  }
+  if (tombstonesChanged) persistTemplateTombstones();
+  const beforeLen = (templates||[]).length;
+  templates = (templates||[]).filter(t => !deletedTemplateIds[t.id]);
+  if (templates.length !== beforeLen) changed = true;
+  if (Array.isArray(remoteList)) {
+    const byId = new Map((templates||[]).map(t => [t.id, t]));
+    remoteList.forEach(rt => {
+      if (!rt || !rt.id || deletedTemplateIds[rt.id]) return;
+      const lt = byId.get(rt.id);
+      if (!lt) {
+        templates.push(rt);
+        byId.set(rt.id, rt);
+        changed = true;
+      } else if ((rt.updatedAt||0) > (lt.updatedAt||0)) {
+        const idx = templates.indexOf(lt);
+        if (idx > -1) { templates[idx] = rt; byId.set(rt.id, rt); changed = true; }
+      }
+    });
+  }
   return changed;
 }
 async function startTemplatesSync() {
@@ -6398,12 +6697,14 @@ async function startTemplatesSync() {
     } else {
       let remoteList = [];
       try { remoteList = JSON.parse(snap.data().templates); } catch(e) { remoteList = []; }
+      let remoteDeletedIds = {};
+      try { remoteDeletedIds = snap.data().deletedIds ? JSON.parse(snap.data().deletedIds) : {}; } catch(e) { remoteDeletedIds = {}; }
       tplApplyingRemote = true;
-      const changed = mergeRemoteTemplates(remoteList);
+      const changed = mergeRemoteTemplates(remoteList, remoteDeletedIds);
       normalizeTemplates();
       tplApplyingRemote = false;
       if (changed) { persistTemplates(); renderTemplatesBrowse(); }
-      await pushTemplatesNow(); // reconciliază — trimite în cloud și șabloanele doar-locale
+      await pushTemplatesNow(); // reconciliază — trimite în cloud și șabloanele/mormintele doar-locale
     }
     if (tplSyncUnsub) { try { tplSyncUnsub(); } catch(e){} tplSyncUnsub = null; }
     tplSyncUnsub = F.onSnapshot(ref, s => {
@@ -6412,13 +6713,15 @@ async function startTemplatesSync() {
       if (!d.templates || d.writer === SYNC_WRITER) return;
       let remoteList = [];
       try { remoteList = JSON.parse(d.templates); } catch(e) { return; }
+      let remoteDeletedIds = {};
+      try { remoteDeletedIds = d.deletedIds ? JSON.parse(d.deletedIds) : {}; } catch(e) { remoteDeletedIds = {}; }
       tplApplyingRemote = true;
-      const changed = mergeRemoteTemplates(remoteList);
+      const changed = mergeRemoteTemplates(remoteList, remoteDeletedIds);
       tplApplyingRemote = false;
       if (changed) {
         persistTemplates();
         renderTemplatesBrowse();
-        showToast('Șabloane actualizate din cloud', 'Adăugate/actualizate de pe alt dispozitiv.');
+        showToast('Șabloane actualizate din cloud', 'Adăugate/actualizate/șterse de pe alt dispozitiv.');
       }
     }, () => { /* eroare de sincronizare a șabloanelor — șabloanele rămân salvate local */ });
   } catch (e) { /* vezi nota de mai sus: nu blocăm restul aplicației pentru asta */ }
@@ -6665,7 +6968,7 @@ function renderCloudModal() {
     + '<div class="cloud-actions"><button type="button" class="primary" id="cloud-pushnow">Sincronizează acum</button>'
     + '<button type="button" id="cloud-signout">Deconectează-te</button></div>'
     + '<p class="cloud-note">Modificările se salvează automat, la câteva secunde după fiecare schimbare.</p>'
-    + '<p class="cloud-note">📋 Șabloanele se sincronizează separat, automat — se adaugă între dispozitive, dar o ștergere nu se propagă automat (rămân salvate pe celelalte dispozitive care le au deja).</p>';
+    + '<p class="cloud-note">📋 Șabloanele se sincronizează separat, dar la fel de automat — orice adăugare, modificare (inclusiv mutarea într-un folder sau arhivarea) sau ștergere ajunge în cloud și pe celelalte dispozitive la câteva secunde după ce o faci, fără nicio acțiune suplimentară.</p>';
 }
 
 document.getElementById('install-btn').addEventListener('click', async () => {
@@ -6793,6 +7096,7 @@ function undo() {
   writeState(prevJSON);
   render();
   updateUndoRedoButtons();
+  syncFlowchartModalAfterHistoryChange();
 }
 
 function redo() {
@@ -6806,6 +7110,39 @@ function redo() {
   writeState(nextJSON);
   render();
   updateUndoRedoButtons();
+  syncFlowchartModalAfterHistoryChange();
+}
+
+// Undo/redo schimbă `state` direct și doar re-randează dashboard-ul (render()).
+// Dacă modalul „Schemă logică" e deschis peste asta, canvas-ul lui rămâne cu
+// desenul vechi (stale) până la următoarea acțiune manuală din diagramă — bug
+// raportat de utilizator. Funcția de mai jos re-randează diagrama vizibilă cu
+// datele proaspete după orice undo/redo, păstrând modul curent (proiect/
+// capitol/rutină); dacă entitatea afișată nu mai există după schimbare
+// (a fost ea însăși ștearsă/adăugată-eliminată de-a lungul istoricului),
+// închide modalul în loc să afișeze o diagramă goală sau să dea eroare.
+function syncFlowchartModalAfterHistoryChange() {
+  if (!fcModalOpen()) return;
+  const closeModal = () => {
+    const fModal = document.getElementById('flowchart-modal');
+    if (fModal) fModal.style.display = 'none';
+    fcDrillFromChapterId = null; fcDrillFromRoutine = false;
+    fcZoom = 1; fcZoomProjectId = null;
+  };
+  const sheet = activeSheet();
+  if (!sheet) { closeModal(); return; }
+  if (fcViewMode === 'routine') {
+    renderRoutineFlowchart();
+  } else if (fcViewMode === 'chapter') {
+    const chapter = sheet.chapters.find(c => c.id === fcCurrentChapterId);
+    if (!chapter) { closeModal(); return; }
+    renderChapterFlowchart(fcCurrentChapterId);
+  } else if (fcViewMode === 'project') {
+    const chapter = sheet.chapters.find(c => c.id === fcCurrentChapterId);
+    const project = chapter && chapter.projects.find(p => p.id === fcCurrentProjectId);
+    if (!chapter || !project) { closeModal(); return; }
+    renderFlowchart(fcCurrentChapterId, fcCurrentProjectId);
+  }
 }
 
 function updateUndoRedoButtons() {
@@ -6823,6 +7160,13 @@ function updateUndoRedoButtons() {
 
 function todayISO() { return new Date().toISOString().slice(0,10); }
 function addDays(iso, n) { const d = new Date(iso); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+// Termen implicit pentru o sarcină/subsarcină nou creată de utilizator — azi,
+// dacă comutatorul global „dată automată sarcini noi" (Alt+Shift+D) e activ
+// (implicit: activ). Nu se aplică la conversii, duplicări, promovări sau
+// sarcini generate din recurență — acolo data se preia explicit din sursă.
+function autoDateDefault() {
+  return (state && state.settings && state.settings.autoDateNewItems === false) ? '' : todayISO();
+}
 function fmtDate(iso) { if (!iso) return ''; const [y,m,d] = iso.split('-'); return d+'.'+m+'.'+y; }
 function fmtDayMonth(iso) { const [y,m,d] = iso.split('-'); return d+'.'+m; }
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
@@ -7113,20 +7457,84 @@ function promoteSubtaskToTask(project, parentTaskId, subtaskId, insertBeforeTask
 }
 
 function taskKey(sheetId, chapterId, projectId, taskId) { return sheetId+'::'+chapterId+'::'+projectId+'::'+taskId; }
+// O intrare de selecție e fie o sarcină (subtaskId absent/null), fie o subsarcină
+// (subtaskId setat) — cele două tipuri sunt independente: selectarea unei sarcini
+// nu selectează automat subsarcinile ei, și invers (la fel cum funcționează
+// bifele de checkbox individuale pentru fiecare rând).
 function isTaskSelected(sheetId, chapterId, projectId, taskId) {
-  return ui.selectedTasks.some(s => s.sheetId===sheetId && s.chapterId===chapterId && s.projectId===projectId && s.taskId===taskId);
+  return ui.selectedTasks.some(s => s.sheetId===sheetId && s.chapterId===chapterId && s.projectId===projectId && s.taskId===taskId && !s.subtaskId);
 }
-function toggleTaskSelection(sheetId, chapterId, projectId, taskId) {
-  const idx = ui.selectedTasks.findIndex(s => s.sheetId===sheetId && s.chapterId===chapterId && s.projectId===projectId && s.taskId===taskId);
-  if (idx === -1) ui.selectedTasks.push({sheetId, chapterId, projectId, taskId});
+function isSubtaskSelected(sheetId, chapterId, projectId, taskId, subtaskId) {
+  return ui.selectedTasks.some(s => s.sheetId===sheetId && s.chapterId===chapterId && s.projectId===projectId && s.taskId===taskId && s.subtaskId===subtaskId);
+}
+function toggleTaskSelection(sheetId, chapterId, projectId, taskId, subtaskId) {
+  const idx = ui.selectedTasks.findIndex(s => s.sheetId===sheetId && s.chapterId===chapterId && s.projectId===projectId && s.taskId===taskId && (s.subtaskId||null) === (subtaskId||null));
+  if (idx === -1) ui.selectedTasks.push(subtaskId ? {sheetId, chapterId, projectId, taskId, subtaskId} : {sheetId, chapterId, projectId, taskId});
   else ui.selectedTasks.splice(idx, 1);
+}
+// Rezolvă o intrare de selecție la obiectul ei real din `state` (sarcină sau
+// subsarcină) — folosit de acțiunile în bloc care nu au nevoie să distingă
+// structural cele două cazuri (aplică proprietăți, șablon, ștergere).
+function resolveSelectionEntry(sel) {
+  const sh = state.sheets.find(s => s.id === sel.sheetId);
+  const ch = sh && sh.chapters.find(c => c.id === sel.chapterId);
+  const pj = ch && ch.projects.find(p => p.id === sel.projectId);
+  if (!pj) return null;
+  const task = pj.tasks.find(t => t.id === sel.taskId);
+  if (!task) return null;
+  if (sel.subtaskId) {
+    const subtask = (task.subtasks || []).find(s => s.id === sel.subtaskId);
+    if (!subtask) return null;
+    return { sheet: sh, chapter: ch, project: pj, task, target: subtask, isSubtask: true };
+  }
+  return { sheet: sh, chapter: ch, project: pj, task, target: task, isSubtask: false };
+}
+// Domeniul de „selectează tot" pentru un proiect — respectă exact aceleași
+// reguli de vizibilitate ca listele randate (arhivate ascunse, cu excepția
+// scope-urilor unde sunt arătate explicit).
+function projectSelectionScope(chapterId, projectId) {
+  const sheet = activeSheet();
+  const chapter = sheet.chapters.find(c => c.id === chapterId);
+  const project = chapter && chapter.projects.find(p => p.id === projectId);
+  if (!project) return null;
+  const showArch = !!ui.showArchivedAll || !!ui.showArchivedScope[projectId] || !!ui.showArchivedScope[chapterId];
+  const tasks = showArch ? project.tasks : project.tasks.filter(t => !t.archived);
+  return { sheet, chapter, project, showArch, tasks };
+}
+function visibleSubtasksOf(tk, showArch) {
+  return showArch ? (tk.subtasks || []) : (tk.subtasks || []).filter(s => !s.archived);
+}
+function isProjectFullySelected(chapterId, projectId) {
+  const scope = projectSelectionScope(chapterId, projectId);
+  if (!scope || !scope.tasks.length) return false;
+  const sheetId = scope.sheet.id;
+  return scope.tasks.every(tk => {
+    if (!isTaskSelected(sheetId, chapterId, projectId, tk.id)) return false;
+    return visibleSubtasksOf(tk, scope.showArch).every(s => isSubtaskSelected(sheetId, chapterId, projectId, tk.id, s.id));
+  });
+}
+function toggleSelectAllProject(chapterId, projectId) {
+  const scope = projectSelectionScope(chapterId, projectId);
+  if (!scope) return;
+  const sheetId = scope.sheet.id;
+  const allSelected = isProjectFullySelected(chapterId, projectId);
+  if (allSelected) {
+    ui.selectedTasks = ui.selectedTasks.filter(s => !(s.sheetId===sheetId && s.chapterId===chapterId && s.projectId===projectId));
+    return;
+  }
+  scope.tasks.forEach(tk => {
+    if (!isTaskSelected(sheetId, chapterId, projectId, tk.id)) ui.selectedTasks.push({sheetId, chapterId, projectId, taskId: tk.id});
+    visibleSubtasksOf(tk, scope.showArch).forEach(s => {
+      if (!isSubtaskSelected(sheetId, chapterId, projectId, tk.id, s.id)) ui.selectedTasks.push({sheetId, chapterId, projectId, taskId: tk.id, subtaskId: s.id});
+    });
+  });
 }
 
 function updateBulkMoveBar() {
   const bar = document.getElementById('bulk-move-bar');
   if (!ui.selectionMode || ui.selectedTasks.length === 0) { bar.style.display = 'none'; return; }
   bar.style.display = 'flex';
-  document.getElementById('bulk-move-count').textContent = ui.selectedTasks.length + (ui.selectedTasks.length === 1 ? ' sarcină selectată' : ' sarcini selectate');
+  document.getElementById('bulk-move-count').textContent = ui.selectedTasks.length + (ui.selectedTasks.length === 1 ? ' element selectat' : ' elemente selectate');
 
   const sheetSel = document.getElementById('bulk-move-sheet');
   const prevSheetVal = sheetSel.value;
@@ -7165,21 +7573,23 @@ function updateBulkMoveBar() {
 function executeSaveSelectionAsTemplate() {
   if (!ui.selectedTasks.length) return;
   const n = ui.selectedTasks.length;
-  const name = prompt('Nume pentru șablon ('+n+(n===1?' sarcină selectată':' sarcini selectate')+'):', '');
+  const name = prompt('Nume pentru șablon ('+n+(n===1?' element selectat':' elemente selectate')+'):', '');
   if (!name || !name.trim()) return;
   const collected = [];
   ui.selectedTasks.forEach(sel => {
-    const srcSheet = state.sheets.find(s=>s.id===sel.sheetId);
-    const srcChapter = srcSheet && srcSheet.chapters.find(c=>c.id===sel.chapterId);
-    const srcProject = srcChapter && srcChapter.projects.find(p=>p.id===sel.projectId);
-    const task = srcProject && srcProject.tasks.find(t=>t.id===sel.taskId);
-    if (task) collected.push(cleanTaskForTemplate(task));
+    const r = resolveSelectionEntry(sel);
+    if (!r) return;
+    // O subsarcină selectată individual devine, în șablon, o sarcină liberă
+    // de sine stătătoare — exact ca la transferul „⧉" al unei singure
+    // subsarcini într-un alt proiect (nu apare ca subsarcină a nimănui).
+    const asTask = r.isSubtask ? convSubtaskToTask(r.target) : r.target;
+    collected.push(cleanTaskForTemplate(asTask));
   });
-  if (!collected.length) { alert('Nicio sarcină din selecție nu a mai putut fi găsită.'); return; }
+  if (!collected.length) { alert('Niciun element din selecție nu a mai putut fi găsit.'); return; }
   templates.push({ id: genId('tpl'), name: name.trim(), savedAt: todayISO(), kind: 'tasks', tasks: collected, status: 'draft', usageCount: 0, lastUsedAt: null, updatedAt: Date.now() });
   persistTemplates();
   render();
-  showToast('Șablon salvat: "'+name.trim()+'"', collected.length+(collected.length===1?' sarcină':' sarcini')+' · îl aplici din „Din șablon…" în antetul oricărui proiect, sau din „⎘ Șabloane".');
+  showToast('Șablon salvat: "'+name.trim()+'"', collected.length+(collected.length===1?' element':' elemente')+' · îl aplici din „Din șablon…" în antetul oricărui proiect, sau din „⎘ Șabloane".');
 }
 
 function executeBulkMove() {
@@ -7200,6 +7610,18 @@ function executeBulkMove() {
     if (!srcChapter) return;
     const srcProject = srcChapter.projects.find(p=>p.id===sel.projectId);
     if (!srcProject) return;
+    if (sel.subtaskId) {
+      // O subsarcină mutată individual devine sarcină de sine stătătoare în
+      // proiectul țintă — la fel ca transferul „⧉" al unei subsarcini unice.
+      const promoted = promoteSubtaskToTask(srcProject, sel.taskId, sel.subtaskId);
+      if (!promoted) return;
+      if (srcProject === targetProject) { movedCount++; return; }
+      const pIdx = srcProject.tasks.findIndex(t => t.id === promoted.id);
+      if (pIdx !== -1) srcProject.tasks.splice(pIdx, 1);
+      targetProject.tasks.push(promoted);
+      movedCount++;
+      return;
+    }
     const idx = srcProject.tasks.findIndex(t=>t.id===sel.taskId);
     if (idx === -1) return;
     if (srcProject === targetProject) return;
@@ -7209,7 +7631,57 @@ function executeBulkMove() {
   });
   ui.selectedTasks = [];
   persist(); render();
-  showToast(movedCount + (movedCount===1?' sarcină mutată':' sarcini mutate') + ' în "'+targetProject.name+'"', 'Poți anula cu Ctrl+Z dacă e nevoie.');
+  showToast(movedCount + (movedCount===1?' element mutat':' elemente mutate') + ' în "'+targetProject.name+'"', 'Poți anula cu Ctrl+Z dacă e nevoie.');
+}
+
+// Șterge toate elementele selectate (sarcini și/sau subsarcini, eventual din
+// proiecte diferite) dintr-o singură acțiune — completează Mută/💾 Șablon,
+// care erau până acum singurele acțiuni în bloc disponibile pe selecție.
+// Fiecare element șters e reținut cu poziția lui exactă, ca la ștergerea
+// individuală (✕/Delete), și restaurat în ordine inversă la anulare — astfel
+// încât o sarcină ȘI una din propriile ei subsarcini, ambele selectate, se
+// restaurează corect (sarcina întâi, apoi subsarcina înapoi în ea).
+function executeBulkDelete() {
+  if (!ui.selectedTasks.length) return;
+  const n = ui.selectedTasks.length;
+  if (!confirm('Ștergi '+n+(n===1?' element selectat':' elemente selectate')+'? Poți anula imediat după cu Ctrl+Z.')) return;
+  const removals = [];
+  ui.selectedTasks.forEach(sel => {
+    const srcSheet = state.sheets.find(s=>s.id===sel.sheetId);
+    const srcChapter = srcSheet && srcSheet.chapters.find(c=>c.id===sel.chapterId);
+    const srcProject = srcChapter && srcChapter.projects.find(p=>p.id===sel.projectId);
+    if (!srcProject) return;
+    if (sel.subtaskId) {
+      const task = srcProject.tasks.find(t=>t.id===sel.taskId);
+      if (!task || !task.subtasks) return;
+      const idx = task.subtasks.findIndex(s=>s.id===sel.subtaskId);
+      if (idx === -1) return;
+      const [removed] = task.subtasks.splice(idx, 1);
+      removals.push({ type: 'subtask', sheetId: sel.sheetId, chapterId: sel.chapterId, projectId: sel.projectId, taskId: sel.taskId, idx, obj: removed });
+    } else {
+      const idx = srcProject.tasks.findIndex(t=>t.id===sel.taskId);
+      if (idx === -1) return;
+      const [removed] = srcProject.tasks.splice(idx, 1);
+      removals.push({ type: 'task', sheetId: sel.sheetId, chapterId: sel.chapterId, projectId: sel.projectId, idx, obj: removed });
+    }
+  });
+  ui.selectedTasks = [];
+  persist(); render();
+  showUndoToast(removals.length + (removals.length===1?' element șters':' elemente șterse'), () => {
+    removals.slice().reverse().forEach(r => {
+      const sh = state.sheets.find(s=>s.id===r.sheetId);
+      const ch = sh && sh.chapters.find(c=>c.id===r.chapterId);
+      const pj = ch && ch.projects.find(p=>p.id===r.projectId);
+      if (!pj) return;
+      if (r.type === 'task') {
+        pj.tasks.splice(Math.min(r.idx, pj.tasks.length), 0, r.obj);
+      } else {
+        const task = pj.tasks.find(t=>t.id===r.taskId);
+        if (task) { if (!task.subtasks) task.subtasks = []; task.subtasks.splice(Math.min(r.idx, task.subtasks.length), 0, r.obj); }
+      }
+    });
+    persist(); render();
+  });
 }
 
 function resolveTarget(sheet, ds) {
@@ -7347,6 +7819,31 @@ function toggleScopedArchived(ctx) {
   render();
   showToast(ui.showArchivedScope[scopeId] ? 'Arhivate arătate' : 'Arhivate ascunse', 'În ' + scopeLabel + '.');
 }
+// Comutator LOCAL (G) pentru sarcinile bifate — arată/ascunde sarcinile și
+// subsarcinile deja finalizate doar din capitolul/proiectul de sub mouse,
+// exact ca H pentru arhivate, dar independent de acela.
+function toggleScopedHideDone(ctx) {
+  if (!ctx) {
+    showToast('Treci cu mouse-ul peste un capitol, proiect, sarcină sau subsarcină', 'Apoi apasă G ca să arăți/ascunzi sarcinile bifate din acel capitol/proiect.');
+    return;
+  }
+  const sheet = activeSheet();
+  let scopeId, scopeLabel;
+  if (ctx.type === 'chapter') {
+    if (ctx.chapterId === '__pinned__') { showToast('Nu se poate aplica', 'Secțiunea „Azi, mâine, restante" nu e un capitol real.'); return; }
+    const chapter = sheet.chapters.find(c => c.id === ctx.chapterId);
+    if (!chapter) return;
+    scopeId = chapter.id; scopeLabel = 'capitolul „' + chapter.name + '"';
+  } else {
+    const chapter = sheet.chapters.find(c => c.id === ctx.chapterId);
+    const project = chapter && chapter.projects.find(p => p.id === ctx.projectId);
+    if (!project) return;
+    scopeId = project.id; scopeLabel = 'proiectul „' + project.name + '"';
+  }
+  ui.hideDoneScope[scopeId] = !ui.hideDoneScope[scopeId];
+  render();
+  showToast(ui.hideDoneScope[scopeId] ? 'Sarcinile bifate ascunse' : 'Sarcinile bifate arătate', 'În ' + scopeLabel + '.');
+}
 // Echivalentul lui getHoverContext(), pentru modul „Vizualizare carduri" — acolo
 // nu există o ierarhie de <details> capitol/proiect, ci un grid plat de carduri
 // (domeniu, proiect, sarcină sau subsarcină), fiecare cu propriul id pe atributul
@@ -7468,6 +7965,44 @@ function placeholderBtn(content) {
 function renderPriorityBtn(chapterId, projectId, taskId, state, subtaskId) {
   const subAttr = subtaskId ? ' data-subtask="'+subtaskId+'"' : '';
   return '<button type="button" class="icon-btn" data-action="cycle-priority" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'"'+subAttr+' data-tip="(i) - Prioritate: '+PRIORITY_LABELS[state]+' (click pentru a schimba)"><span class="priority-dot '+state+'"></span></button>';
+}
+
+// Iconițe opționale pe sarcini/subsarcini (K) — un mic set curat, la fel ca
+// iconițele de sheet (💼🏠📋✅🎯…), plus culoare automată de font configurabilă
+// per iconiță (implicit: 🎯 → Magenta), cu prioritate sub culoarea manuală
+// (Shift+I) dar peste culoarea automată de termen.
+const TASK_ICONS = ['🎯','⭐','🔥','💡','⚠️','🏆','💰','❤️','🧩','📌'];
+function renderIconColorSwatches(icon) {
+  const map = (state.settings && state.settings.iconColors) || {};
+  const cur = (map[icon] === undefined || map[icon] === null) ? '' : String(map[icon]);
+  const isDark = document.body.classList.contains('dark');
+  const pal = isDark ? FONT_COLOR_PALETTE_DARK : FONT_COLOR_PALETTE;
+  let html = '<div class="fc-swatches">';
+  html += '<button type="button" class="fc-swatch fc-reset'+(cur===''?' selected':'')+'" data-action="set-icon-color" data-icon="'+icon+'" data-idx="" data-tip="Fără culoare automată pentru această iconiță">∅</button>';
+  pal.forEach((c,i) => {
+    html += '<button type="button" class="fc-swatch'+(cur===String(i)?' selected':'')+'" style="color:'+c.text+'" data-action="set-icon-color" data-icon="'+icon+'" data-idx="'+i+'" data-tip="'+c.name+'">A</button>';
+  });
+  html += '</div>';
+  return html;
+}
+function renderIconBtn(chapterId, projectId, taskId, obj, subtaskId) {
+  const subAttr = subtaskId ? ' data-subtask="'+subtaskId+'"' : '';
+  const pickerKey = subtaskId || taskId;
+  let html = '<span class="color-swatch-wrap">';
+  html += '<button type="button" class="icon-btn'+(obj.icon?' recurrence-active':'')+'" data-action="toggle-icon-picker" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'"'+subAttr+' data-tip="(k) - Iconiță'+(obj.icon?': '+obj.icon:'')+'">'+(obj.icon || '🏷️')+'</button>';
+  if (ui.iconPickerTaskId === pickerKey) {
+    html += '<span class="color-picker-popover icon-popover">';
+    html += '<button type="button" class="icon-choice'+(!obj.icon?' selected':'')+'" data-action="set-task-icon" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'"'+subAttr+' data-icon="" data-tip="Fără iconiță">∅</button>';
+    TASK_ICONS.forEach(ic => {
+      html += '<button type="button" class="icon-choice'+(obj.icon===ic?' selected':'')+'" data-action="set-task-icon" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'"'+subAttr+' data-icon="'+ic+'" data-tip="'+ic+'">'+ic+'</button>';
+    });
+    if (obj.icon) {
+      html += '<div class="icon-color-row"><label>Culoare pt. '+obj.icon+'</label>'+renderIconColorSwatches(obj.icon)+'</div>';
+    }
+    html += '</span>';
+  }
+  html += '</span>';
+  return html;
 }
 
 function quadrantLabel(tk) {
@@ -10447,7 +10982,7 @@ document.getElementById('flowchart-modal').addEventListener('click', e => {
     const chapter = sheet.chapters.find(c => c.id === fcCurrentChapterId);
     const project = chapter && chapter.projects.find(p => p.id === fcCurrentProjectId);
     if (!project) return;
-    const nt = mkTask('');
+    const nt = mkTask('', { deadline: autoDateDefault() });
     project.tasks.push(nt);
     setEditingTarget('task', nt.id);
     persist();
@@ -11266,13 +11801,15 @@ const FONT_COLOR_PALETTE = [
   { name: 'Roșu', text: '#c0392b' }, { name: 'Portocaliu', text: '#d35400' },
   { name: 'Galben', text: '#9e7d0a' }, { name: 'Verde', text: '#2e7d32' },
   { name: 'Turcoaz', text: '#00695c' }, { name: 'Albastru', text: '#1565c0' },
-  { name: 'Mov', text: '#8e24aa' }, { name: 'Roz', text: '#ad1457' }
+  { name: 'Mov', text: '#8e24aa' }, { name: 'Roz', text: '#ad1457' },
+  { name: 'Magenta', text: '#a3128f' }
 ];
 const FONT_COLOR_PALETTE_DARK = [
   { name: 'Roșu', text: '#ff6b6b' }, { name: 'Portocaliu', text: '#ffa94d' },
   { name: 'Galben', text: '#fff59d' }, { name: 'Verde', text: '#a5d6a7' },
   { name: 'Turcoaz', text: '#80deea' }, { name: 'Albastru', text: '#90caf9' },
-  { name: 'Mov', text: '#ce93d8' }, { name: 'Roz', text: '#f48fb1' }
+  { name: 'Mov', text: '#ce93d8' }, { name: 'Roz', text: '#f48fb1' },
+  { name: 'Magenta', text: '#ef7fe0' }
 ];
 function fontColorHex(idx) {
   if (idx === null || idx === undefined || idx === '') return '';
@@ -11280,8 +11817,31 @@ function fontColorHex(idx) {
   const pal = isDark ? FONT_COLOR_PALETTE_DARK : FONT_COLOR_PALETTE;
   return pal[idx] ? pal[idx].text : '';
 }
+// Culoare automată de font pe baza termenului planificat — activă doar cât
+// timp sarcina/subsarcina nu are o culoare manuală (Shift+I) setată explicit,
+// care are mereu prioritate. Azi (sau restant, adică termen deja trecut) =
+// roșu; mâine = portocaliu; oricând altcândva în restul săptămânii curente =
+// mov; neplanificat sau mai departe de atât (inclusiv săptămâna viitoare) =
+// alb (fără culoare automată). O sarcină deja bifată nu se colorează automat.
+function deadlineAutoColorHex(obj) {
+  if (obj.done || !obj.deadline) return '';
+  const t = todayISO();
+  const isDark = document.body.classList.contains('dark');
+  const pal = isDark ? FONT_COLOR_PALETTE_DARK : FONT_COLOR_PALETTE;
+  if (obj.deadline <= t) return pal[0].text; // Roșu: azi sau restant
+  if (obj.deadline === addDays(t, 1)) return pal[1].text; // Portocaliu: mâine
+  if (obj.deadline <= weekRangeOf(t).end) return pal[6].text; // Mov: restul săptămânii asta
+  return '';
+}
+function iconAutoColorHex(obj) {
+  if (!obj.icon) return '';
+  const map = (state && state.settings && state.settings.iconColors) || {};
+  const idx = map[obj.icon];
+  if (idx === undefined || idx === null || idx === '') return '';
+  return fontColorHex(idx);
+}
 function taskFontStyle(obj) {
-  const hex = fontColorHex(obj.fontColorIdx);
+  const hex = fontColorHex(obj.fontColorIdx) || iconAutoColorHex(obj) || deadlineAutoColorHex(obj);
   return hex ? ' style="color:'+hex+'"' : '';
 }
 function renderFontColorSwatches(chapterId, projectId, taskId, o, subtaskId) {
@@ -11495,6 +12055,7 @@ function renderChapterBlock(c, sheet, anyFilterActive) {
                     : '<span class="project-name" data-action="edit-project-name" data-chapter="'+c.id+'" data-project="'+p.id+'" data-tip="Dublu-click pentru redenumire">'+escapeHtml(p.name)+'</span>')
                 + '<span class="dur-badge" data-tip="Durată estimată totală a proiectului">⏱ '+fmtDuration(projectEstMinutes(p))+'</span>'
                 + '<button type="button" class="mini-expand-btn" draggable="false" data-action="quick-add-task" data-chapter="'+c.id+'" data-project="'+p.id+'" data-tip="(a) - Adaugă o sarcină nouă în acest proiect">+ Sarcină</button>'
+                + (ui.selectionMode ? '<button type="button" class="mini-expand-btn always-visible-hdr-btn'+(isProjectFullySelected(c.id, p.id)?' extras-active':'')+'" draggable="false" data-action="select-all-project" data-chapter="'+c.id+'" data-project="'+p.id+'" data-tip="(Ctrl+A pe hover) - '+(isProjectFullySelected(c.id, p.id)?'Deselectează tot din acest proiect':'Selectează toate sarcinile și subsarcinile din acest proiect')+'">'+(isProjectFullySelected(c.id, p.id)?'☑️':'⬜')+'</button>' : '')
                 + (function(){ var tTpls=(templates||[]).filter(function(t){return t.kind==='tasks';}); return tTpls.length ? '<select class="tpl-tasks-select" data-chapter="'+c.id+'" data-project="'+p.id+'" data-tip="Adaugă în acest proiect sarcinile dintr-un șablon"><option value="">Din șablon…</option>'+tTpls.map(function(t){return '<option value="'+t.id+'">'+escapeHtml(t.name)+' ('+(t.tasks||[]).length+')</option>';}).join('')+'</select>' : ''; })()
                 + '<button type="button" class="mini-expand-btn hdr-toggle'+(iconsCollapsed(ui.projectIconsCollapsed, p.id)?'':' active')+'" draggable="false" data-action="toggle-header-icons" data-kind="project" data-project="'+p.id+'" data-tip="(Shift+Z pe hover) - '+(iconsCollapsed(ui.projectIconsCollapsed, p.id)?'Arată butoanele din antet':'Restrânge butoanele din antet')+'">🎛️</button>'
                 + '<span class="always-visible-hdr-btn">'+renderTransferPopover('project', c.id, p.id)+'</span>'
@@ -11513,7 +12074,10 @@ function renderChapterBlock(c, sheet, anyFilterActive) {
       projHtml += '<div class="project-body">';
       const baseList = anyFilterActive ? visibleTasks : p.tasks;
       const showArch = !!ui.showArchivedAll || !!ui.showArchivedScope[p.id] || !!ui.showArchivedScope[c.id];
-      const list = showArch ? baseList : baseList.filter(tk => !tk.archived);
+      const hideDone = !!ui.hideDoneScope[p.id] || !!ui.hideDoneScope[c.id];
+      const list = (showArch ? baseList : baseList.filter(tk => !tk.archived))
+        .filter(tk => !hideDone || !tk.done)
+        .filter(tk => ui.showHiddenAll || !tk.hidden);
       if (list.length === 0) projHtml += '<p class="empty-note">Nicio sarcină.</p>';
       list.forEach(tk => { projHtml += renderTaskRow(c.id, p.id, tk); });
       projHtml += '</div></details>';
@@ -11707,7 +12271,7 @@ function renderTaskRow(chapterId, projectId, tk, extra) {
   const isBlank = tk.text === '';
   const isEditingText = isBlank || (ui.editingTaskId === tk.id && !extra.hideActions);
   const sheetIdForRow = extra.sheetId || activeSheet().id;
-  let html = '<div class="task-row'+(tk.archived?' is-archived':'')+(ui.showRowExtras[projectId]?' show-extras':'')+'" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+tk.id+'"'+(extra.sheetId?' data-sheet="'+extra.sheetId+'"':'')+(isEditingText||extra.hideActions||extra.sheetId?'':' draggable="true"')+'>';
+  let html = '<div class="task-row'+(tk.archived?' is-archived':'')+(tk.hidden?' is-hidden-manual':'')+(ui.showRowExtras[projectId]?' show-extras':'')+'" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+tk.id+'"'+(extra.sheetId?' data-sheet="'+extra.sheetId+'"':'')+(isEditingText||extra.hideActions||extra.sheetId?'':' draggable="true"')+'>';
   if (ui.selectionMode && !isBlank) {
     html += '<input type="checkbox" class="select-checkbox" draggable="false" data-action="toggle-task-select" data-sheet="'+sheetIdForRow+'" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+tk.id+'" '+(isTaskSelected(sheetIdForRow, chapterId, projectId, tk.id)?'checked':'')+'>';
   }
@@ -11718,12 +12282,12 @@ function renderTaskRow(chapterId, projectId, tk, extra) {
   } else {
     if (extra.tag) html += '<span class="tag">'+extra.tag+'</span>';
     if (extra.hideActions) {
-      html += '<div class="task-text'+(tk.done?' done':'')+' task-text-link"'+taskFontStyle(tk)+' data-action="jump-to-source" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+tk.id+'" data-tip="Click pentru a o edita în proiectul de origine">'+escapeHtml(tk.text)
+      html += '<div class="task-text'+(tk.done?' done':'')+' task-text-link"'+taskFontStyle(tk)+' data-action="jump-to-source" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+tk.id+'" data-tip="Click pentru a o edita în proiectul de origine">'+(tk.icon?tk.icon+' ':'')+escapeHtml(tk.text)
           + extraBadges(tk)
           + (tk.reminderAt&&!tk.reminderFired?'<span class="badge reminder" data-action="open-reminder" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+tk.id+'">⏰ '+fmtReminder(tk.reminderAt)+'</span>':'')
           + '</div>';
     } else {
-      html += '<div class="task-text'+(tk.done?' done':'')+'"'+taskFontStyle(tk)+' data-action="edit-task-text" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+tk.id+'" data-tip="Dublu-click pentru redenumire">'+escapeHtml(tk.text)
+      html += '<div class="task-text'+(tk.done?' done':'')+'"'+taskFontStyle(tk)+' data-action="edit-task-text" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+tk.id+'" data-tip="Dublu-click pentru redenumire">'+(tk.icon?tk.icon+' ':'')+escapeHtml(tk.text)
           + extraBadges(tk)
           + (tk.reminderAt&&!tk.reminderFired?'<span class="badge reminder" data-action="open-reminder" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+tk.id+'">⏰ '+fmtReminder(tk.reminderAt)+'</span>':'')
           + '</div>';
@@ -11772,6 +12336,8 @@ function renderTaskRow(chapterId, projectId, tk, extra) {
       html += '<button type="button" class="icon-btn" data-action="task-to-project" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+tk.id+'" data-tip="Transformă sarcina în proiect (subsarcinile devin sarcini)">📂</button>';
       html += '<button type="button" class="icon-btn"'+(_first?' disabled':'')+' data-action="task-to-subtask" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+tk.id+'" data-tip="'+(_first?'E deja prima sarcină — nimic deasupra':'(Shift+V) - Transformă în subsarcina celei de deasupra')+'">⬇️</button>';
       html += '<button type="button" class="icon-btn'+(tk.archived?' archived-active':'')+'" data-action="toggle-archive" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+tk.id+'" data-tip="(Shift+A) - '+(tk.archived?'Scoate din arhivă':'Arhivează sarcina')+'">'+(tk.archived?'📤':'🗄')+'</button>';
+      html += '<button type="button" class="icon-btn'+(tk.hidden?' archived-active':'')+'" data-action="toggle-hidden" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+tk.id+'" data-tip="(Shift+H) - '+(tk.hidden?'Arată din nou (ascunsă manual)':'Ascunde manual (chiar dacă nu e bifată)')+'">'+(tk.hidden?'🙉':'🙈')+'</button>';
+      html += renderIconBtn(chapterId, projectId, tk.id, tk);
       html += '<button type="button" class="icon-btn" data-action="dup-task" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+tk.id+'" data-tip="(u) - Duplică sarcina (cu subsarcini)">⎘</button>';
       if (tk.subtasks && tk.subtasks.length > 0) {
         const subOpenNow = ui.subtasksOpen[tk.id] !== false;
@@ -11788,7 +12354,10 @@ function renderTaskRow(chapterId, projectId, tk, extra) {
   html += '</div>';
   if (!isBlank && tk.subtasks && tk.subtasks.length > 0 && !extra.hideActions) {
     const showArchSub = !!ui.showArchivedAll || !!ui.showArchivedScope[projectId] || !!ui.showArchivedScope[chapterId];
-    const visSubs = showArchSub ? tk.subtasks : tk.subtasks.filter(s => !s.archived);
+    const hideDoneSub = !!ui.hideDoneScope[projectId] || !!ui.hideDoneScope[chapterId];
+    const visSubs = (showArchSub ? tk.subtasks : tk.subtasks.filter(s => !s.archived))
+      .filter(s => !hideDoneSub || !s.done)
+      .filter(s => ui.showHiddenAll || !s.hidden);
     if (visSubs.length > 0) {
       const subtasksOpen = ui.subtasksOpen[tk.id] !== false;
       if (subtasksOpen) {
@@ -11807,12 +12376,16 @@ function renderTaskRow(chapterId, projectId, tk, extra) {
 function renderSubtaskRow(chapterId, projectId, taskId, sub) {
   const isBlank = sub.text === '';
   const isEditing = isBlank || ui.editingSubtaskId === sub.id;
-  let html = '<div class="subtask-row'+(sub.archived?' is-archived':'')+(ui.showRowExtras[projectId]?' show-extras':'')+'" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'" data-subtask="'+sub.id+'"'+(isEditing?'':' draggable="true"')+'>';
+  let html = '<div class="subtask-row'+(sub.archived?' is-archived':'')+(sub.hidden?' is-hidden-manual':'')+(ui.showRowExtras[projectId]?' show-extras':'')+'" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'" data-subtask="'+sub.id+'"'+(isEditing?'':' draggable="true"')+'>';
+  if (ui.selectionMode && !isBlank) {
+    const _selSheetId = activeSheet().id;
+    html += '<input type="checkbox" class="select-checkbox" draggable="false" data-action="toggle-task-select" data-sheet="'+_selSheetId+'" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'" data-subtask="'+sub.id+'" '+(isSubtaskSelected(_selSheetId, chapterId, projectId, taskId, sub.id)?'checked':'')+'>';
+  }
   html += '<input type="checkbox" draggable="false" data-action="toggle-subtask-done" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'" data-subtask="'+sub.id+'" data-tip="(Space) - Marchează subsarcina ca finalizată/nefinalizată" '+(sub.done?'checked':'')+'>';
   if (isEditing) {
     html += '<input type="text" class="subtask-text-input" data-action="commit-subtask" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'" data-subtask="'+sub.id+'" placeholder="Scrie subsarcina…" value="'+escapeHtml(sub.text)+'">';
   } else {
-    html += '<span class="subtask-text'+(sub.done?' done':'')+'"'+taskFontStyle(sub)+' data-action="edit-subtask-text" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'" data-subtask="'+sub.id+'" data-tip="Dublu-click pentru redenumire">'+escapeHtml(sub.text)
+    html += '<span class="subtask-text'+(sub.done?' done':'')+'"'+taskFontStyle(sub)+' data-action="edit-subtask-text" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'" data-subtask="'+sub.id+'" data-tip="Dublu-click pentru redenumire">'+(sub.icon?sub.icon+' ':'')+escapeHtml(sub.text)
           + extraBadges(sub)
           + (sub.reminderAt&&!sub.reminderFired?'<span class="badge reminder" data-action="open-reminder" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'" data-subtask="'+sub.id+'">⏰ '+fmtReminder(sub.reminderAt)+'</span>':'')
           + '</span>';
@@ -11844,13 +12417,15 @@ function renderSubtaskRow(chapterId, projectId, taskId, sub) {
     html += moveBtns('subtask', chapterId, projectId, taskId, sub.id, _sFirst, _sLast);
     html += '<button type="button" class="icon-btn" data-action="subtask-to-task" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'" data-subtask="'+sub.id+'" data-tip="(v) - Transformă subsarcina în sarcină de sine stătătoare">⬆️</button>';
     html += '<button type="button" class="icon-btn'+(sub.archived?' archived-active':'')+'" data-action="toggle-archive" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'" data-subtask="'+sub.id+'" data-tip="(Shift+A) - '+(sub.archived?'Scoate din arhivă':'Arhivează subsarcina')+'">'+(sub.archived?'📤':'🗄')+'</button>';
+    html += '<button type="button" class="icon-btn'+(sub.hidden?' archived-active':'')+'" data-action="toggle-hidden" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'" data-subtask="'+sub.id+'" data-tip="(Shift+H) - '+(sub.hidden?'Arată din nou (ascunsă manual)':'Ascunde manual (chiar dacă nu e bifată)')+'">'+(sub.hidden?'🙉':'🙈')+'</button>';
+    html += renderIconBtn(chapterId, projectId, taskId, sub, sub.id);
     html += '<button type="button" class="icon-btn" data-action="dup-subtask" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'" data-subtask="'+sub.id+'" data-tip="(u) - Duplică subsarcina">⎘</button>';
     html += placeholderBtn('⌃');
     html += '</span>';
     html += noteIconHtml(chapterId, projectId, taskId, sub, sub.id);
     html += placeholderBtn('↳');
     html += '<button type="button" class="icon-btn" data-action="del-subtask" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'" data-subtask="'+sub.id+'" data-tip="(Delete) - Șterge subsarcina">✕</button>';
-    html += placeholderBtn('+');
+    html += '<button type="button" class="icon-btn" data-action="add-subtask-after" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'" data-subtask="'+sub.id+'" data-tip="(a) - Adaugă subsarcină nouă după aceasta">+</button>';
     html += '</div>';
   } else {
     html += '<button type="button" class="icon-btn" data-action="del-subtask" data-chapter="'+chapterId+'" data-project="'+projectId+'" data-task="'+taskId+'" data-subtask="'+sub.id+'" data-tip="Șterge subsarcina">✕</button>';
@@ -12009,18 +12584,11 @@ app.addEventListener('click', e => {
   const btn = e.target.closest('[data-action]');
   const sheet = resolveEventSheet(e.target);
 
-  const HDR_ICONS_KEEP_OPEN = ['toggle-header-icons', 'toggle-color-picker', 'toggle-transfer'];
-  if (btn && !HDR_ICONS_KEEP_OPEN.includes(btn.dataset.action) && e.target.closest('summary')) {
-    const summaryEl = e.target.closest('summary');
-    const chapterDetails = summaryEl.closest('details.chapter');
-    const projectDetails = summaryEl.closest('details.project');
-    if (projectDetails && projectDetails.dataset.projectId) {
-      ui.projectIconsCollapsed[projectDetails.dataset.projectId] = true;
-    } else if (chapterDetails && chapterDetails.dataset.chapterId) {
-      ui.chapterIconsCollapsed[chapterDetails.dataset.chapterId] = true;
-    }
-  }
-
+  // Notă: butoanele din antetul capitolelor/proiectelor foloseau să se
+  // restrângă automat la orice alt click din antet (extindere capitol, redenumire
+  // etc.), forțând reafișarea lor din 🎛️/Shift+Z de fiecare dată. Acum starea
+  // extins/restrâns e strict manuală — se schimbă doar prin 🎛️, Shift+Z, sau
+  // prin clic direct pe „restrânge" (mai jos), nu ca efect secundar al altor clicuri.
 
   if (e.target.closest('.tab') && e.target.closest('.tab').dataset.action === 'switch-sheet' && !e.target.closest('.del-tab') && !e.target.closest('.color-swatch-wrap')) {
     state.activeSheetId = e.target.closest('.tab').dataset.sheet;
@@ -12140,7 +12708,7 @@ app.addEventListener('click', e => {
     const chapter = sheet.chapters.find(c=>c.id===btn.dataset.chapter);
     const project = chapter.projects.find(p=>p.id===btn.dataset.project);
     const idx = project.tasks.findIndex(t => t.id === btn.dataset.task);
-    const nt = mkTask('', { createdDate: todayISO() });
+    const nt = mkTask('', { createdDate: todayISO(), deadline: autoDateDefault() });
     project.tasks.splice(idx+1, 0, nt);
     persist(); render(); return;
   }
@@ -12148,7 +12716,18 @@ app.addEventListener('click', e => {
     const chapter = sheet.chapters.find(c=>c.id===btn.dataset.chapter);
     const project = chapter.projects.find(p=>p.id===btn.dataset.project);
     const task = project.tasks.find(t=>t.id===btn.dataset.task);
-    task.subtasks.push(mkSubtask(''));
+    task.subtasks.push(mkSubtask('', { deadline: autoDateDefault() }));
+    persist(); render(); return;
+  }
+  if (action === 'add-subtask-after') {
+    const chapter = sheet.chapters.find(c=>c.id===btn.dataset.chapter);
+    const project = chapter.projects.find(p=>p.id===btn.dataset.project);
+    const task = project.tasks.find(t=>t.id===btn.dataset.task);
+    if (!task) return;
+    if (!task.subtasks) task.subtasks = [];
+    const idx = task.subtasks.findIndex(s => s.id === btn.dataset.subtask);
+    const ns = mkSubtask('', { deadline: autoDateDefault() });
+    task.subtasks.splice(idx === -1 ? task.subtasks.length : idx + 1, 0, ns);
     persist(); render(); return;
   }
   if (action === 'del-subtask') {
@@ -12381,13 +12960,12 @@ app.addEventListener('click', e => {
   }
   if (action === 'del-template') {
     e.preventDefault();
-    const idx = (templates||[]).findIndex(t => t.id === btn.dataset.template);
-    if (idx === -1) return;
-    const [removed] = templates.splice(idx, 1);
-    persistTemplates(); renderTemplates();
-    showUndoToast('Șablon șters: "'+removed.name+'"', () => {
-      templates.splice(idx, 0, removed);
-      persistTemplates(); renderTemplates(); render();
+    const result = removeTemplateById(btn.dataset.template);
+    if (!result) return;
+    renderTemplates();
+    showUndoToast('Șablon șters: "'+result.removed.name+'"', () => {
+      restoreRemovedTemplate(result.removed, result.idx);
+      renderTemplates(); render();
     });
     return;
   }
@@ -12537,7 +13115,7 @@ app.addEventListener('click', e => {
     const ch = sheet.chapters.find(x => x.id === btn.dataset.chapter);
     const pr = ch && ch.projects.find(x => x.id === btn.dataset.project);
     if (!pr) return;
-    const nt = mkTask('', { createdDate: todayISO() });
+    const nt = mkTask('', { createdDate: todayISO(), deadline: autoDateDefault() });
     pr.tasks.push(nt);
     setEditingTarget('task', nt.id);
     ui.projectOpen[pr.id] = true;
@@ -12651,6 +13229,38 @@ app.addEventListener('click', e => {
     showToast(target.archived ? 'Arhivat' : 'Scos din arhivă', escapeHtml((target.text||'').slice(0,60)));
     return;
   }
+  if (action === 'toggle-hidden') {
+    e.preventDefault();
+    const target = resolveTarget(sheet, btn.dataset);
+    if (!target) return;
+    target.hidden = !target.hidden;
+    persist(); render();
+    showToast(target.hidden ? 'Ascunsă manual' : 'Arătată din nou', escapeHtml((target.text||'').slice(0,60)));
+    return;
+  }
+  if (action === 'toggle-icon-picker') {
+    e.preventDefault();
+    const key = btn.dataset.subtask || btn.dataset.task;
+    ui.iconPickerTaskId = ui.iconPickerTaskId === key ? null : key;
+    render(); return;
+  }
+  if (action === 'set-task-icon') {
+    e.preventDefault();
+    const target = resolveTarget(sheet, btn.dataset);
+    if (!target) return;
+    target.icon = btn.dataset.icon || '';
+    persist(); render(); return;
+  }
+  if (action === 'set-icon-color') {
+    e.preventDefault();
+    if (!state.settings) state.settings = {};
+    if (!state.settings.iconColors) state.settings.iconColors = {};
+    const icon = btn.dataset.icon;
+    const idx = btn.dataset.idx;
+    if (idx === '') delete state.settings.iconColors[icon];
+    else state.settings.iconColors[icon] = parseInt(idx, 10);
+    persist(); render(); return;
+  }
   if (action === 'toggle-smart-group') {
     e.preventDefault();
     const k = btn.dataset.group;
@@ -12712,6 +13322,13 @@ app.addEventListener('click', e => {
     ui.isolatedProjectId = (ui.isolatedProjectId === pr.id) ? null : pr.id;
     render();
     if (ui.isolatedProjectId) showToast('Vezi doar: „'+pr.name+'"', 'Restul proiectelor sunt ascunse temporar. Esc sau butonul „Ieși" le arată la loc.');
+    return;
+  }
+  if (action === 'select-all-project') {
+    e.preventDefault();
+    toggleSelectAllProject(btn.dataset.chapter, btn.dataset.project);
+    render();
+    updateBulkMoveBar();
     return;
   }
   if (action === 'toggle-isolate-chapter') {
@@ -13004,11 +13621,21 @@ app.addEventListener('click', e => {
   }
 });
 
+// Când o sarcină e bifată ca finalizată, toate subsarcinile ei se bifează
+// automat și subsarcinile se restrâng automat — nu mai e nevoie să le bifezi
+// una câte una. Se aplică DOAR la bifare (nu și la debifare) și doar pe
+// sarcini (nu invers, de la subsarcină la sarcină).
+function cascadeTaskDoneToSubtasks(task) {
+  if (!task || !task.subtasks || !task.subtasks.length) return;
+  const today = todayISO();
+  task.subtasks.forEach(s => { if (!s.done) { s.done = true; s.doneDate = today; } });
+  ui.subtasksOpen[task.id] = false;
+}
 app.addEventListener('change', e => {
   const el = e.target;
   const sheet = resolveEventSheet(e.target);
   if (el.dataset.action === 'toggle-task-select') {
-    toggleTaskSelection(el.dataset.sheet, el.dataset.chapter, el.dataset.project, el.dataset.task);
+    toggleTaskSelection(el.dataset.sheet, el.dataset.chapter, el.dataset.project, el.dataset.task, el.dataset.subtask || null);
     updateBulkMoveBar();
     return;
   }
@@ -13026,6 +13653,7 @@ app.addEventListener('change', e => {
         assignee: task.assignee, link: task.link, createdDate: todayISO()
       }));
     }
+    if (task.done) cascadeTaskDoneToSubtasks(task);
     persist(); render(); return;
   }
   if (el.dataset.action === 'toggle-subtask-done') {
@@ -13587,7 +14215,7 @@ document.getElementById('add-form').addEventListener('submit', e => {
     project = chapter.projects.find(p=>p.name.toLowerCase()===projName.toLowerCase());
     if (!project) { project = mkProject(projName, []); chapter.projects.push(project); }
   }
-  project.tasks.push(mkTask(text, {deadline, important, urgent, createdDate: todayISO()}));
+  project.tasks.push(mkTask(text, {deadline: deadline || autoDateDefault(), important, urgent, createdDate: todayISO()}));
   const keepCapId = sheet.type === 'goals' ? document.getElementById('add-form-capitol-select').value : null;
   const keepProjId = sheet.type === 'goals' ? project.id : null;
   persist(); render();
@@ -13904,7 +14532,7 @@ document.getElementById('storage-warning-close').addEventListener('click', () =>
 
 document.getElementById('reset-btn').addEventListener('click', () => {
   if (confirm('Sigur vrei să restaurezi lista inițială? Toate modificările tale se vor pierde.')) {
-    state = seedData(); persist(); render();
+    state = migrateColors(seedData()); persist(); render();
   }
 });
 
