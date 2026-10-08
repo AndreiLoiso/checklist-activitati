@@ -247,7 +247,7 @@
     display: flex; align-items: center; gap: 8px; cursor: grab; position: relative; flex-wrap: wrap;
   }
   .color-swatch-wrap { position: relative; display: inline-flex; flex-shrink: 0; }
-  .color-swatch-btn { width: 17px; height: 17px; border-radius: 50%; border: 2px solid rgba(0,0,0,.3); cursor: pointer; padding: 0; }
+  .color-swatch-btn { width: 17px; height: 17px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1.5px rgba(0,0,0,.6); cursor: pointer; padding: 0; }
   .color-picker-popover {
     position: absolute; top: 100%; left: 0; z-index: 30; margin-top: 6px;
     display: flex; gap: 6px; padding: 8px; background: var(--surface);
@@ -518,6 +518,7 @@
   .task-row input, .task-row button { cursor: auto; }
   .task-row:last-of-type { border-bottom: none; }
   .task-row input[type="checkbox"] { width: 16px; height: 16px; flex-shrink: 0; }
+  .project-done-all-checkbox { width: 16px; height: 16px; flex-shrink: 0; margin: 0 2px 0 0; cursor: pointer; }
   .task-main { flex: 1 1 160px; min-width: 160px; }
   .task-text { font-size: 13.5px; }
   .task-text-link { cursor: pointer; }
@@ -2115,12 +2116,16 @@ function visibleSheets() { return state.sheets.filter(s => !s.private || private
 // ===================== /FOI PRIVATE =====================
 const THEME_KEY = 'sbg-checklist-theme';
 const VIEW_PREFS_KEY = 'sbg-checklist-view-prefs';
-const APP_VERSION = '8.1.1';
+const APP_VERSION = '8.1.2';
 document.getElementById('app-version').textContent = APP_VERSION;
 document.getElementById('h1-version').textContent = 'v' + APP_VERSION;
 document.title = 'Checklist activități v' + APP_VERSION;
 
 const CHANGELOG = [
+  { v:'8.1.2', items:[
+    'Nou: bifă la nivel de proiect, lângă numele proiectului — bifeaz-o și se bifează automat toate sarcinile și subsarcinile din acel proiect; debifeaz-o și sarcinile/subsarcinile revin exact la starea pe care o aveau înainte (nu se debifează în bloc)',
+    'Reparat: butonul de schimbare a culorii capitolului (cercul de lângă numele capitolului) era aproape invizibil, pentru că avea mereu aceeași culoare ca fundalul antetului — acum are un contur dublu (alb + negru) care îl face vizibil pe orice culoare de capitol',
+  ]},
   { v:'8.1.1', items:[
     'Licență reînnoită: cheia veche de licențiere a expirat (01.10.2026) și cheia privată care o putea semna nu mai era disponibilă, așa că s-a generat o pereche de chei nouă — cheia publică din această versiune e NOUĂ, diferită de cea din versiunile anterioare',
     'IMPORTANT: certificatele vechi (emise pentru cheia publică anterioară) nu mai sunt recunoscute de această versiune — e nevoie de certificatul nou, emis odată cu acest build, introdus din „🔑 Licență"',
@@ -12056,7 +12061,7 @@ function renderDashboard() {
 function renderDashboardMode() { ui.mode = 'dashboard'; render(); }
 
 function renderColorSwatch(c) {
-  let html = '<span class="color-swatch-wrap">';
+  let html = '<span class="color-swatch-wrap always-visible-hdr-btn">';
   html += '<button type="button" class="color-swatch-btn" draggable="false" data-action="toggle-color-picker" data-chapter="'+c.id+'" style="background:'+c.color+';" data-tip="Schimbă culoarea capitolului"></button>';
   if (ui.colorPickerChapterId === c.id) {
     html += '<span class="color-picker-popover" draggable="false">';
@@ -12092,6 +12097,7 @@ function renderChapterBlock(c, sheet, anyFilterActive) {
       const isLast = pIdx === c.projects.length - 1;
       projHtml += '<summary style="background:'+hexToRgba(c.color,0.28)+';">'
                 + '<i class="chev" data-tip="(e) - Extinde/restrânge">▸</i>'
+                + '<input type="checkbox" class="project-done-all-checkbox always-visible-hdr-btn" draggable="false" data-action="toggle-project-done-all" data-chapter="'+c.id+'" data-project="'+p.id+'" data-tip="Bifează toate sarcinile și subsarcinile din acest proiect. Debifarea le readuce la starea de dinainte." '+(p.allDoneSnapshot?'checked':'')+'>'
                 + (ui.editingProjectId===p.id
                     ? '<input type="text" class="project-rename-input" draggable="false" data-chapter="'+c.id+'" data-project="'+p.id+'" value="'+escapeHtml(p.name)+'">'
                     : '<span class="project-name" data-action="edit-project-name" data-chapter="'+c.id+'" data-project="'+p.id+'" data-tip="Dublu-click pentru redenumire">'+escapeHtml(p.name)+'</span>')
@@ -13696,6 +13702,38 @@ app.addEventListener('change', e => {
       }));
     }
     if (task.done) cascadeTaskDoneToSubtasks(task);
+    persist(); render(); return;
+  }
+  if (el.dataset.action === 'toggle-project-done-all') {
+    const chapter = sheet.chapters.find(c=>c.id===el.dataset.chapter);
+    const project = chapter.projects.find(p=>p.id===el.dataset.project);
+    if (el.checked) {
+      const snap = { tasks:{}, subtasks:{} };
+      project.tasks.forEach(t => {
+        snap.tasks[t.id] = { done: !!t.done, doneDate: t.doneDate || null };
+        (t.subtasks||[]).forEach(s => { snap.subtasks[s.id] = !!s.done; });
+      });
+      project.allDoneSnapshot = snap;
+      const today = todayISO();
+      project.tasks.forEach(t => {
+        if (!t.done) { t.done = true; t.doneDate = today; }
+        (t.subtasks||[]).forEach(s => { if (!s.done) s.done = true; });
+      });
+    } else {
+      const snap = project.allDoneSnapshot;
+      if (snap) {
+        project.tasks.forEach(t => {
+          if (Object.prototype.hasOwnProperty.call(snap.tasks, t.id)) {
+            t.done = snap.tasks[t.id].done;
+            t.doneDate = snap.tasks[t.id].doneDate;
+          }
+          (t.subtasks||[]).forEach(s => {
+            if (Object.prototype.hasOwnProperty.call(snap.subtasks, s.id)) s.done = snap.subtasks[s.id];
+          });
+        });
+      }
+      project.allDoneSnapshot = null;
+    }
     persist(); render(); return;
   }
   if (el.dataset.action === 'toggle-subtask-done') {
